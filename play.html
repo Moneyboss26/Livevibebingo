@@ -41,7 +41,7 @@
     }
     .login-box h1 { font-size: 24px; color: var(--teal); margin-bottom: 4px; }
     .login-box p { color: var(--muted); font-size: 13px; margin-bottom: 18px; }
-    .input-group { text-align: left; margin-bottom: 12px; }
+    .input-group { text-align: left; margin-bottom: 14px; }
     .input-group label { display: block; font-size: 12px; color: var(--muted); font-weight: 700; margin-bottom: 4px; text-transform: uppercase; }
     .input-group input {
       width: 100%;
@@ -54,6 +54,7 @@
       outline: none;
     }
     .input-group input:focus { border-color: var(--teal); }
+    .input-hint { font-size: 11px; color: var(--pink); margin-top: 4px; display: block; }
     .btn-enter {
       width: 100%;
       padding: 14px;
@@ -67,7 +68,6 @@
       margin-top: 10px;
     }
 
-    /* Top Bar */
     header {
       background: var(--card-bg);
       padding: 12px 20px;
@@ -96,8 +96,17 @@
       font-weight: 800;
       color: var(--pink);
     }
+    .caller-badge {
+      background: rgba(248, 192, 40, 0.15);
+      border: 1px solid var(--yellow);
+      color: #ffd875;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
 
-    /* Jumbo Ball Spotlight Display */
     .broadcast-bar {
       background: #14182f;
       padding: 14px 20px;
@@ -298,8 +307,16 @@
           <input type="text" id="pName" required autofocus placeholder="e.g. Mary Johnson">
         </div>
         <div class="input-group">
-          <label>Cash App $Cashtag (For Prizes)</label>
-          <input type="text" id="pCashtag" required placeholder="e.g. $MaryWins">
+          <label>Cash App $Cashtag (Mandatory For Prizes)</label>
+          <input 
+            type="text" 
+            id="pCashtag" 
+            required 
+            placeholder="$YourCashAppName" 
+            pattern="^\$[A-Za-z0-9_]{1,19}$" 
+            title="Must begin with a $ followed by your Cash App handle (e.g. $MaryJohnson)"
+            oninput="autoPrependDollar(this)">
+          <span class="input-hint">Must start with $ (e.g. $MaryWins)</span>
         </div>
         <div class="input-group">
           <label>4-Digit Event PIN</label>
@@ -311,21 +328,22 @@
   </div>
 
   <header>
-    <div style="display: flex; align-items: center; gap: 10px;">
+    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
       <span class="player-pill" id="playerNameDisplay">Player</span>
       <span class="player-pill" style="border-color: var(--pink); color: var(--pink);" id="playerCashtagDisplay">$Cashtag</span>
       <span class="game-pattern-badge" id="gamePatternDisplay">Game 1: Regular ($25)</span>
+      <!-- Live Host Display Badge Defaulted to CC -->
+      <span class="caller-badge" id="hostNameBadge">🎙️ Host: CC</span>
     </div>
-    <div style="font-size: 12px; color: var(--muted);" id="connectionStatus">● Waiting for Host</div>
+    <div style="font-size: 12px; color: var(--muted);" id="connectionStatus">● Connected</div>
   </header>
 
-  <!-- Jumbo Ball Spotlight Banner -->
   <div class="broadcast-bar">
     <div class="current-ball-container">
       <div class="big-ball" id="activeBall">-</div>
       <div class="ball-details">
         <h3 id="ballAnnounce">Waiting for First Draw</h3>
-        <p id="totalDrawnCount">Host hasn't drawn yet</p>
+        <p id="totalDrawnCount">Host is preparing the tumbler</p>
       </div>
     </div>
     <div style="display: flex; flex-direction: column; align-items: flex-end;">
@@ -396,24 +414,37 @@
     let currentPrize = "$25";
     let activeSessionPin = "7722";
     let isLobbyLocked = false;
+    let currentHostName = "CC";
     let cards = [[], [], [], []];
     let playerFullName = "";
     let playerCashtag = "";
 
+    function autoPrependDollar(input) {
+      if (input.value.length > 0 && !input.value.startsWith('$')) {
+        input.value = '$' + input.value.replace(/\$/g, '');
+      }
+    }
+
     function joinLobby(e) {
       e.preventDefault();
       const enteredPin = document.getElementById("pPin").value.trim();
+      const enteredTag = document.getElementById("pCashtag").value.trim();
+
+      if (!enteredTag.startsWith('$') || enteredTag.length < 2) {
+        alert("Please enter a valid Cash App name starting with $ (e.g. $YourName).");
+        return;
+      }
       
       const stored = localStorage.getItem("livevibebingo_state");
       if (stored) {
-        const state = JSON.parse(stored);
-        if (state.roomPin) activeSessionPin = state.roomPin;
-        if (state.lobbyLocked) isLobbyLocked = state.lobbyLocked;
-      }
-
-      if (isLobbyLocked) {
-        alert("Doors Locked: Game is currently in progress. As stated in event rules, no mid-game entry is permitted.");
-        return;
+        try {
+          const state = JSON.parse(stored);
+          if (state.roomPin) activeSessionPin = state.roomPin;
+          if (state.hostName) currentHostName = state.hostName;
+          isLobbyLocked = state.lobbyLocked === true;
+        } catch(err) {
+          isLobbyLocked = false;
+        }
       }
 
       if (enteredPin !== activeSessionPin) {
@@ -421,10 +452,16 @@
         return;
       }
 
+      if (isLobbyLocked) {
+        alert("Doors Locked: Game is currently in progress. As stated in event rules, no mid-game entry is permitted.");
+        return;
+      }
+
       playerFullName = document.getElementById("pName").value.trim();
-      playerCashtag = document.getElementById("pCashtag").value.trim();
+      playerCashtag = enteredTag;
       document.getElementById("playerNameDisplay").innerText = playerFullName;
       document.getElementById("playerCashtagDisplay").innerText = playerCashtag;
+      document.getElementById("hostNameBadge").innerText = `🎙️ Host: ${currentHostName}`;
       document.getElementById("loginScreen").style.display = "none";
       generateAll4Cards();
       listenToHost();
@@ -534,8 +571,13 @@
       document.getElementById("connectionStatus").innerText = "● Host Live";
       document.getElementById("connectionStatus").style.color = "var(--teal)";
 
+      if (data.hostName) {
+        currentHostName = data.hostName;
+        document.getElementById("hostNameBadge").innerText = `🎙️ Host: ${currentHostName}`;
+      }
+
       if (data.roomPin) activeSessionPin = data.roomPin;
-      if (data.lobbyLocked !== undefined) isLobbyLocked = data.lobbyLocked;
+      if (data.lobbyLocked !== undefined) isLobbyLocked = data.lobbyLocked === true;
 
       if (data.game) {
         currentRound = data.game.round;
@@ -562,7 +604,6 @@
         }
       }
 
-      // Exact jumbo display update
       if (data.latest && data.latest !== "RESET") {
         document.getElementById("activeBall").innerText = data.latest;
         document.getElementById("ballAnnounce").innerText = `CALLED: ${data.latest}`;
@@ -614,7 +655,6 @@
         title.style.color = "var(--teal)";
         desc.innerText = `Verified ${currentRoundName} on Card #${winningCardNum}! Your win has been sent to the caller console for Cash App verification!`;
 
-        // Transmit claim to host station with player details
         channel.postMessage({
           type: "BINGO_CLAIM",
           name: playerFullName,
@@ -634,9 +674,9 @@
 
     function checkWin(matrix, round) {
       if (round === 1 || round === 2) return countLines(matrix) >= 1;
-      if (round === 3) return matrix[0][0].dabbed && matrix[0][4].dabbed && matrix[4][0].dabbed && matrix[4][4].dabbed; // 4 Corners
-      if (round === 4) return countLines(matrix) >= 2; // Double
-      if (round === 5) return matrix.every(row => row.every(cell => cell.dabbed)); // Coverall
+      if (round === 3) return matrix[0][0].dabbed && matrix[0][4].dabbed && matrix[4][0].dabbed && matrix[4][4].dabbed;
+      if (round === 4) return countLines(matrix) >= 2;
+      if (round === 5) return matrix.every(row => row.every(cell => cell.dabbed));
       return false;
     }
 

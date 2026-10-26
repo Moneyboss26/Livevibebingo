@@ -89,23 +89,21 @@
       margin-bottom: 18px;
       border: 1px solid rgba(255,255,255,0.08);
     }
-    .pin-box {
+    .top-input-box {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       background: #060812;
-      padding: 8px 14px;
+      padding: 8px 12px;
       border-radius: 8px;
       border: 1px solid rgba(255,255,255,0.1);
     }
-    .pin-box input {
+    .top-input-box input {
       background: transparent;
       border: none;
       color: var(--teal);
-      font-size: 18px;
+      font-size: 15px;
       font-weight: 900;
-      width: 70px;
-      text-align: center;
       outline: none;
     }
 
@@ -193,7 +191,6 @@
 
     .action-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
 
-    /* Live Claims Banner */
     .claims-log {
       max-height: 200px;
       overflow-y: auto;
@@ -249,20 +246,26 @@
     <div class="top-bar">
       <div>
         <h1 style="font-size: 24px; color: var(--teal);">LiveVibe Caller Station</h1>
-        <span class="badge" id="lobbyStatusBadge">● Doors Open</span>
+        <span class="badge" id="lobbyStatusBadge">● Lobby Open (Players Joining)</span>
       </div>
       <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-        <!-- Voice Toggle Button -->
+        <!-- Live Host Name Field (Defaults to CC) -->
+        <div class="top-input-box">
+          <span style="font-size: 12px; color: var(--yellow); font-weight: 800;">🎙️ HOST:</span>
+          <input type="text" id="hostNameInput" value="CC" style="width: 70px;" onchange="updateHostName()" placeholder="Host Name">
+        </div>
+
         <button class="btn" id="voiceToggleBtn" onclick="toggleCallerVoice()" style="background: #2d3748; color: #fff;">
           🔊 Voice: ON
         </button>
 
-        <div class="pin-box">
-          <span style="font-size: 12px; color: var(--muted); font-weight: 700;">EVENT PIN:</span>
-          <input type="text" id="roomPinInput" value="7722" maxlength="4" onchange="updateRoomPin()">
+        <div class="top-input-box">
+          <span style="font-size: 12px; color: var(--muted); font-weight: 700;">PIN:</span>
+          <input type="text" id="roomPinInput" value="7722" maxlength="4" style="width: 55px; text-align: center;" onchange="updateRoomPin()">
         </div>
-        <button class="btn btn-lock" id="toggleLockBtn" onclick="toggleDoorLock()">Lock Doors (Game On)</button>
-        <button class="btn btn-danger" onclick="lockStation()">Lock</button>
+
+        <button class="btn btn-lock" id="toggleLockBtn" onclick="toggleDoorLock()">Lock Out Late Players</button>
+        <button class="btn btn-danger" onclick="lockStation()">Exit Console</button>
       </div>
     </div>
 
@@ -333,6 +336,7 @@
     let isLobbyLocked = false;
     let isDrawing = false;
     let callerVoiceEnabled = true;
+    let hostName = "CC";
     let paidGuestList = [];
 
     function unlockStation() {
@@ -340,6 +344,16 @@
       if (p === MASTER_PASS) {
         document.getElementById("lockScreen").style.display = "none";
         document.getElementById("mainDashboard").style.display = "block";
+        isLobbyLocked = false;
+        
+        const badge = document.getElementById("lobbyStatusBadge");
+        if (badge) {
+          badge.innerText = "● Lobby Open (Players Joining)";
+          badge.className = "badge";
+        }
+        const lockBtn = document.getElementById("toggleLockBtn");
+        if (lockBtn) lockBtn.innerText = "Lock Out Late Players";
+
         initGrid();
         sync();
       } else {
@@ -355,6 +369,11 @@
       document.getElementById("lockScreen").style.display = "flex";
       document.getElementById("mainDashboard").style.display = "none";
       document.getElementById("passCode").value = "";
+    }
+
+    function updateHostName() {
+      hostName = document.getElementById("hostNameInput").value.trim() || "CC";
+      sync();
     }
 
     function toggleCallerVoice() {
@@ -385,13 +404,13 @@
       const badge = document.getElementById("lobbyStatusBadge");
       const btn = document.getElementById("toggleLockBtn");
       if (isLobbyLocked) {
-        badge.innerText = "● Doors Locked (No Mid-Game Entry)";
+        badge.innerText = "● Doors Locked (No Late Entry)";
         badge.className = "badge badge-locked";
-        btn.innerText = "Unlock Doors";
+        btn.innerText = "Re-Open Lobby Doors";
       } else {
-        badge.innerText = "● Doors Open";
+        badge.innerText = "● Lobby Open (Players Joining)";
         badge.className = "badge";
-        btn.innerText = "Lock Doors (Game On)";
+        btn.innerText = "Lock Out Late Players";
       }
       sync();
     }
@@ -458,7 +477,6 @@
         document.getElementById(`ball_${n}`).classList.add("called");
         document.getElementById("callCounter").innerText = `${calledSet.size} / 75 Drawn`;
 
-        // Only speak if automated voice is ON
         if (callerVoiceEnabled && 'speechSynthesis' in window) {
           const utter = new SpeechSynthesisUtterance(`${getLetter(n)} ${n}`);
           utter.rate = 0.9;
@@ -488,7 +506,6 @@
       sync("RESET");
     }
 
-    // Handle Player Claims & Cross-Check Guest List
     channel.onmessage = (e) => {
       const msg = e.data;
       if (msg && msg.type === "BINGO_CLAIM") {
@@ -520,6 +537,7 @@
 
     function sync(latest = null) {
       const data = {
+        hostName: hostName,
         roomPin: currentPin,
         game: currentGame,
         called: Array.from(calledSet),
