@@ -298,7 +298,6 @@
 
   <div id="loginScreen">
     <div class="login-box">
-      <img src="logo.png" alt="LiveVibe Bingo" style="max-height: 48px; margin-bottom: 12px;" onerror="this.style.display='none'">
       <h1>Live Player Arena</h1>
       <p>Enter your details, $Cashtag & Event PIN</p>
       <form onsubmit="joinLobby(event)">
@@ -332,7 +331,6 @@
       <span class="player-pill" id="playerNameDisplay">Player</span>
       <span class="player-pill" style="border-color: var(--pink); color: var(--pink);" id="playerCashtagDisplay">$Cashtag</span>
       <span class="game-pattern-badge" id="gamePatternDisplay">Game 1: Regular ($25)</span>
-      <!-- Live Host Display Badge Defaulted to CC -->
       <span class="caller-badge" id="hostNameBadge">🎙️ Host: CC</span>
     </div>
     <div style="font-size: 12px; color: var(--muted);" id="connectionStatus">● Connected</div>
@@ -407,7 +405,6 @@
   </div>
 
   <script>
-    const channel = new BroadcastChannel("livevibebingo_online_channel");
     let calledSet = new Set();
     let currentRound = 1;
     let currentRoundName = "Regular Bingo";
@@ -556,12 +553,25 @@
     }
 
     function listenToHost() {
-      channel.onmessage = (e) => handleBroadcast(e.data);
       window.addEventListener("storage", (e) => {
         if (e.key === "livevibebingo_state" && e.newValue) {
-          handleBroadcast(JSON.parse(e.newValue));
+          try {
+            handleBroadcast(JSON.parse(e.newValue));
+          } catch(err) {
+            console.error(err);
+          }
         }
       });
+
+      setInterval(() => {
+        const initial = localStorage.getItem("livevibebingo_state");
+        if (initial) {
+          try {
+            handleBroadcast(JSON.parse(initial));
+          } catch(err) {}
+        }
+      }, 1000);
+
       const initial = localStorage.getItem("livevibebingo_state");
       if (initial) handleBroadcast(JSON.parse(initial));
     }
@@ -655,7 +665,7 @@
         title.style.color = "var(--teal)";
         desc.innerText = `Verified ${currentRoundName} on Card #${winningCardNum}! Your win has been sent to the caller console for Cash App verification!`;
 
-        channel.postMessage({
+        const claimData = {
           type: "BINGO_CLAIM",
           name: playerFullName,
           cashtag: playerCashtag,
@@ -663,7 +673,8 @@
           roundName: currentRoundName,
           prize: currentPrize,
           time: Date.now()
-        });
+        };
+        localStorage.setItem("livevibebingo_claims", JSON.stringify(claimData));
       } else {
         title.innerText = "Keep Playing!";
         title.style.color = "var(--pink)";

@@ -249,7 +249,6 @@
         <span class="badge" id="lobbyStatusBadge">● Lobby Open (Players Joining)</span>
       </div>
       <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-        <!-- Live Host Name Field (Defaults to CC) -->
         <div class="top-input-box">
           <span style="font-size: 12px; color: var(--yellow); font-weight: 800;">🎙️ HOST:</span>
           <input type="text" id="hostNameInput" value="CC" style="width: 70px;" onchange="updateHostName()" placeholder="Host Name">
@@ -329,7 +328,6 @@
 
   <script>
     const MASTER_PASS = "LiveVibe2026";
-    const channel = new BroadcastChannel("livevibebingo_online_channel");
     let calledSet = new Set();
     let currentGame = { round: 1, name: "Regular Bingo", prize: "$25" };
     let currentPin = "7722";
@@ -506,34 +504,53 @@
       sync("RESET");
     }
 
-    channel.onmessage = (e) => {
-      const msg = e.data;
-      if (msg && msg.type === "BINGO_CLAIM") {
-        document.getElementById("claimsSection").style.display = "block";
-        const log = document.getElementById("claimsLog");
-        
-        const cleanName = (msg.name || "").toLowerCase().trim();
-        const cleanTag = (msg.cashtag || "").toLowerCase().trim();
-        const isVerified = paidGuestList.some(guest => cleanName.includes(guest) || cleanTag.includes(guest) || guest.includes(cleanName));
-
-        const item = document.createElement("div");
-        item.className = `claim-item ${isVerified ? 'claim-valid' : 'claim-invalid'}`;
-        item.innerHTML = `
-          <div>
-            <strong style="color: #fff; font-size: 14px;">${msg.name}</strong> 
-            <span style="color: var(--teal); font-size: 13px;">(${msg.cashtag})</span>
-            <span style="color: var(--muted); font-size: 12px; margin-left: 8px;">Claimed Card #${msg.cardNum} (${msg.roundName} - ${msg.prize})</span>
-          </div>
-          <div>
-            ${isVerified ? 
-              '<span style="color: var(--teal); font-weight: 800; font-size: 12px;">✓ PAID TICKET HOLDER</span>' : 
-              '<span style="color: #fc8181; font-weight: 800; font-size: 12px;">⚠️ NOT ON GUEST LIST</span>'
-            }
-          </div>
-        `;
-        log.prepend(item);
+    // Listen for player bingo claims across devices using storage events and polling
+    window.addEventListener("storage", (e) => {
+      if (e.key === "livevibebingo_claims") {
+        processClaim(e.newValue);
       }
-    };
+    });
+
+    setInterval(() => {
+      const claimVal = localStorage.getItem("livevibebingo_claims");
+      if (claimVal && claimVal !== window._lastProcessedClaim) {
+        window._lastProcessedClaim = claimVal;
+        processClaim(claimVal);
+      }
+    }, 1000);
+
+    function processClaim(rawVal) {
+      try {
+        const msg = JSON.parse(rawVal);
+        if (msg && msg.type === "BINGO_CLAIM") {
+          document.getElementById("claimsSection").style.display = "block";
+          const log = document.getElementById("claimsLog");
+          
+          const cleanName = (msg.name || "").toLowerCase().trim();
+          const cleanTag = (msg.cashtag || "").toLowerCase().trim();
+          const isVerified = paidGuestList.some(guest => cleanName.includes(guest) || cleanTag.includes(guest) || guest.includes(cleanName));
+
+          const item = document.createElement("div");
+          item.className = `claim-item ${isVerified ? 'claim-valid' : 'claim-invalid'}`;
+          item.innerHTML = `
+            <div>
+              <strong style="color: #fff; font-size: 14px;">${msg.name}</strong> 
+              <span style="color: var(--teal); font-size: 13px;">(${msg.cashtag})</span>
+              <span style="color: var(--muted); font-size: 12px; margin-left: 8px;">Claimed Card #${msg.cardNum} (${msg.roundName} - ${msg.prize})</span>
+            </div>
+            <div>
+              ${isVerified ? 
+                '<span style="color: var(--teal); font-weight: 800; font-size: 12px;">✓ PAID TICKET HOLDER</span>' : 
+                '<span style="color: #fc8181; font-weight: 800; font-size: 12px;">⚠️ NOT ON GUEST LIST</span>'
+              }
+            </div>
+          `;
+          log.prepend(item);
+        }
+      } catch(err) {
+        console.error(err);
+      }
+    }
 
     function sync(latest = null) {
       const data = {
@@ -545,7 +562,6 @@
         lobbyLocked: isLobbyLocked,
         time: Date.now()
       };
-      channel.postMessage(data);
       localStorage.setItem("livevibebingo_state", JSON.stringify(data));
     }
   </script>
