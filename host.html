@@ -229,6 +229,58 @@
     }
     .grid-num.called { background: var(--teal); color: #060812; border-color: var(--teal); }
   </style>
+
+  <!-- Firebase SDKs -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, onChildAdded } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzcleQMnqsBadKqb8m7CXRo8ek4zpKYxE",
+      authDomain: "livevibebingo.firebaseapp.com",
+      projectId: "livevibebingo",
+      storageBucket: "livevibebingo.firebasestorage.app",
+      messagingSenderId: "924400116859",
+      appId: "1:924400116859:web:954147b0dc23e8887c2ede",
+      measurementId: "G-9WQ981CFBH"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    window.dbRef = ref;
+    window.dbSet = set;
+    window.database = db;
+
+    // Listen for player bingo claims in real time from Firebase
+    onChildAdded(ref(db, 'claims'), (snapshot) => {
+      const msg = snapshot.val();
+      if (msg) {
+        document.getElementById("claimsSection").style.display = "block";
+        const log = document.getElementById("claimsLog");
+        
+        const cleanName = (msg.name || "").toLowerCase().trim();
+        const cleanTag = (msg.cashtag || "").toLowerCase().trim();
+        const isVerified = window.paidGuestList && window.paidGuestList.some(guest => cleanName.includes(guest) || cleanTag.includes(guest) || guest.includes(cleanName));
+
+        const item = document.createElement("div");
+        item.className = `claim-item ${isVerified ? 'claim-valid' : 'claim-invalid'}`;
+        item.innerHTML = `
+          <div>
+            <strong style="color: #fff; font-size: 14px;">${msg.name}</strong> 
+            <span style="color: var(--teal); font-size: 13px;">(${msg.cashtag})</span>
+            <span style="color: var(--muted); font-size: 12px; margin-left: 8px;">Claimed Card #${msg.cardNum} (${msg.roundName} - ${msg.prize})</span>
+          </div>
+          <div>
+            ${isVerified ? 
+              '<span style="color: var(--teal); font-weight: 800; font-size: 12px;">✓ PAID TICKET HOLDER</span>' : 
+              '<span style="color: #fc8181; font-weight: 800; font-size: 12px;">⚠️ NOT ON GUEST LIST</span>'
+            }
+          </div>
+        `;
+        log.prepend(item);
+      }
+    });
+  </script>
 </head>
 <body>
 
@@ -335,7 +387,7 @@
     let isDrawing = false;
     let callerVoiceEnabled = true;
     let hostName = "CC";
-    let paidGuestList = [];
+    window.paidGuestList = [];
 
     function unlockStation() {
       const p = document.getElementById("passCode").value;
@@ -393,8 +445,8 @@
 
     function updateGuestList() {
       const val = document.getElementById("guestListArea").value;
-      paidGuestList = val.split(/[,\n]/).map(s => s.trim().toLowerCase()).filter(Boolean);
-      document.getElementById("rosterCount").innerText = `${paidGuestList.length} Paid Attendees Loaded`;
+      window.paidGuestList = val.split(/[,\n]/).map(s => s.trim().toLowerCase()).filter(Boolean);
+      document.getElementById("rosterCount").innerText = `${window.paidGuestList.length} Paid Attendees Loaded`;
     }
 
     function toggleDoorLock() {
@@ -504,55 +556,8 @@
       sync("RESET");
     }
 
-    // Listen for player bingo claims across devices using storage events and polling
-    window.addEventListener("storage", (e) => {
-      if (e.key === "livevibebingo_claims") {
-        processClaim(e.newValue);
-      }
-    });
-
-    setInterval(() => {
-      const claimVal = localStorage.getItem("livevibebingo_claims");
-      if (claimVal && claimVal !== window._lastProcessedClaim) {
-        window._lastProcessedClaim = claimVal;
-        processClaim(claimVal);
-      }
-    }, 1000);
-
-    function processClaim(rawVal) {
-      try {
-        const msg = JSON.parse(rawVal);
-        if (msg && msg.type === "BINGO_CLAIM") {
-          document.getElementById("claimsSection").style.display = "block";
-          const log = document.getElementById("claimsLog");
-          
-          const cleanName = (msg.name || "").toLowerCase().trim();
-          const cleanTag = (msg.cashtag || "").toLowerCase().trim();
-          const isVerified = paidGuestList.some(guest => cleanName.includes(guest) || cleanTag.includes(guest) || guest.includes(cleanName));
-
-          const item = document.createElement("div");
-          item.className = `claim-item ${isVerified ? 'claim-valid' : 'claim-invalid'}`;
-          item.innerHTML = `
-            <div>
-              <strong style="color: #fff; font-size: 14px;">${msg.name}</strong> 
-              <span style="color: var(--teal); font-size: 13px;">(${msg.cashtag})</span>
-              <span style="color: var(--muted); font-size: 12px; margin-left: 8px;">Claimed Card #${msg.cardNum} (${msg.roundName} - ${msg.prize})</span>
-            </div>
-            <div>
-              ${isVerified ? 
-                '<span style="color: var(--teal); font-weight: 800; font-size: 12px;">✓ PAID TICKET HOLDER</span>' : 
-                '<span style="color: #fc8181; font-weight: 800; font-size: 12px;">⚠️ NOT ON GUEST LIST</span>'
-              }
-            </div>
-          `;
-          log.prepend(item);
-        }
-      } catch(err) {
-        console.error(err);
-      }
-    }
-
     function sync(latest = null) {
+      if (!window.database) return;
       const data = {
         hostName: hostName,
         roomPin: currentPin,
@@ -562,7 +567,7 @@
         lobbyLocked: isLobbyLocked,
         time: Date.now()
       };
-      localStorage.setItem("livevibebingo_state", JSON.stringify(data));
+      window.dbSet(window.dbRef(window.database, 'gameState'), data);
     }
   </script>
 </body>

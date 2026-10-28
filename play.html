@@ -293,6 +293,37 @@
       width: 100%;
     }
   </style>
+
+  <!-- Firebase SDKs & Realtime Listener -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCzcleQMnqsBadKqb8m7CXRo8ek4zpKYxE",
+      authDomain: "livevibebingo.firebaseapp.com",
+      projectId: "livevibebingo",
+      storageBucket: "livevibebingo.firebasestorage.app",
+      messagingSenderId: "924400116859",
+      appId: "1:924400116859:web:954147b0dc23e8887c2ede",
+      measurementId: "G-9WQ981CFBH"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    window.database = db;
+    window.dbRef = ref;
+    window.dbSet = set;
+    window.dbPush = push;
+
+    // Listen to game state changes from Firebase in real time
+    onValue(ref(db, 'gameState'), (snapshot) => {
+      const data = snapshot.val();
+      if (data && window.handleBroadcast) {
+        window.handleBroadcast(data);
+      }
+    });
+  </script>
 </head>
 <body>
 
@@ -415,6 +446,7 @@
     let cards = [[], [], [], []];
     let playerFullName = "";
     let playerCashtag = "";
+    let latestCachedState = null;
 
     function autoPrependDollar(input) {
       if (input.value.length > 0 && !input.value.startsWith('$')) {
@@ -432,16 +464,10 @@
         return;
       }
       
-      const stored = localStorage.getItem("livevibebingo_state");
-      if (stored) {
-        try {
-          const state = JSON.parse(stored);
-          if (state.roomPin) activeSessionPin = state.roomPin;
-          if (state.hostName) currentHostName = state.hostName;
-          isLobbyLocked = state.lobbyLocked === true;
-        } catch(err) {
-          isLobbyLocked = false;
-        }
+      if (latestCachedState) {
+        if (latestCachedState.roomPin) activeSessionPin = latestCachedState.roomPin;
+        if (latestCachedState.hostName) currentHostName = latestCachedState.hostName;
+        isLobbyLocked = latestCachedState.lobbyLocked === true;
       }
 
       if (enteredPin !== activeSessionPin) {
@@ -461,7 +487,7 @@
       document.getElementById("hostNameBadge").innerText = `🎙️ Host: ${currentHostName}`;
       document.getElementById("loginScreen").style.display = "none";
       generateAll4Cards();
-      listenToHost();
+      if (latestCachedState) handleBroadcast(latestCachedState);
     }
 
     function setDabColor(color, el) {
@@ -552,32 +578,9 @@
       tile.classList.toggle("dabbed", m[r][c].dabbed);
     }
 
-    function listenToHost() {
-      window.addEventListener("storage", (e) => {
-        if (e.key === "livevibebingo_state" && e.newValue) {
-          try {
-            handleBroadcast(JSON.parse(e.newValue));
-          } catch(err) {
-            console.error(err);
-          }
-        }
-      });
-
-      setInterval(() => {
-        const initial = localStorage.getItem("livevibebingo_state");
-        if (initial) {
-          try {
-            handleBroadcast(JSON.parse(initial));
-          } catch(err) {}
-        }
-      }, 1000);
-
-      const initial = localStorage.getItem("livevibebingo_state");
-      if (initial) handleBroadcast(JSON.parse(initial));
-    }
-
-    function handleBroadcast(data) {
+    window.handleBroadcast = function(data) {
       if (!data) return;
+      latestCachedState = data;
       document.getElementById("connectionStatus").innerText = "● Host Live";
       document.getElementById("connectionStatus").style.color = "var(--teal)";
 
@@ -665,16 +668,17 @@
         title.style.color = "var(--teal)";
         desc.innerText = `Verified ${currentRoundName} on Card #${winningCardNum}! Your win has been sent to the caller console for Cash App verification!`;
 
-        const claimData = {
-          type: "BINGO_CLAIM",
-          name: playerFullName,
-          cashtag: playerCashtag,
-          cardNum: winningCardNum,
-          roundName: currentRoundName,
-          prize: currentPrize,
-          time: Date.now()
-        };
-        localStorage.setItem("livevibebingo_claims", JSON.stringify(claimData));
+        if (window.database && window.dbPush) {
+          window.dbPush(window.dbRef(window.database, 'claims'), {
+            type: "BINGO_CLAIM",
+            name: playerFullName,
+            cashtag: playerCashtag,
+            cardNum: winningCardNum,
+            roundName: currentRoundName,
+            prize: currentPrize,
+            time: Date.now()
+          });
+        }
       } else {
         title.innerText = "Keep Playing!";
         title.style.color = "var(--pink)";
