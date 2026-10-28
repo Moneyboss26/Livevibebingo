@@ -371,8 +371,7 @@
           <label>4-Digit Event PIN</label>
           <input type="password" id="pPin" required maxlength="4" placeholder="From Confirmation" style="text-align: center; letter-spacing: 4px;">
         </div>
-        <!-- Button tap unlocks mobile audio engine -->
-        <button type="submit" class="btn-enter">🔊 Unlock Audio & Enter Game</button>
+        <button type="submit" class="btn-enter">Enter Game Arena</button>
       </form>
     </div>
   </div>
@@ -384,7 +383,11 @@
       <span class="game-pattern-badge" id="gamePatternDisplay">Game 1: Regular ($25)</span>
       <span class="caller-badge" id="hostNameBadge">🎙️ Host: CC</span>
     </div>
-    <div style="font-size: 12px; color: var(--muted);" id="connectionStatus">● Connected</div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <!-- Persistent Audio Unlock Button -->
+      <button onclick="enableAudioEngine()" style="background: var(--teal); color: #060812; border: none; padding: 6px 12px; border-radius: 14px; font-size: 12px; font-weight: 800; cursor: pointer;">🔊 Turn On Audio</button>
+      <div style="font-size: 12px; color: var(--muted);" id="connectionStatus">● Connected</div>
+    </div>
   </header>
 
   <div class="broadcast-bar">
@@ -479,6 +482,19 @@
       }
     }
 
+    // Explicit function for players to tap and wake up mobile audio
+    function enableAudioEngine() {
+      if ('speechSynthesis' in window) {
+        const utter = new SpeechSynthesisUtterance("Audio enabled. Ready for bingo calls!");
+        utter.rate = 1.0;
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(utter);
+        alert("Audio successfully enabled! You will now hear called balls.");
+      } else {
+        alert("Speech synthesis is not supported on this browser.");
+      }
+    }
+
     function joinLobby(e) {
       e.preventDefault();
       const enteredPin = document.getElementById("pPin").value.trim();
@@ -505,7 +521,7 @@
         return;
       }
 
-      // CRITICAL MOBILE AUDIO UNLOCK: Force an empty utterance click-trigger to wake up iOS / Android speech engine
+      // Automatically prime speech synthesis on login submit
       if ('speechSynthesis' in window) {
         const dummyUtter = new SpeechSynthesisUtterance("");
         window.speechSynthesis.speak(dummyUtter);
@@ -678,12 +694,12 @@
         document.getElementById("activeBall").innerText = data.latest;
         document.getElementById("ballAnnounce").innerText = `CALLED: ${data.latest}`;
 
-        // Speaks the called ball out loud on the player's phone
+        // Speaks the called ball out loud
         if ('speechSynthesis' in window) {
           const cleanText = data.latest.replace("-", " ");
           const utter = new SpeechSynthesisUtterance(cleanText);
           utter.rate = 0.95;
-          window.speechSynthesis.cancel(); // Stop any overlapping speech
+          window.speechSynthesis.cancel();
           window.speechSynthesis.speak(utter);
         }
       }
