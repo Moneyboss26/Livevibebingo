@@ -94,7 +94,7 @@
     }
     @media (min-width: 900px) {
       .main-layout {
-        grid-template-columns: 1fr 340px; /* Side-by-side layout for inspector */
+        grid-template-columns: 1fr 340px;
         align-items: start;
       }
     }
@@ -135,6 +135,26 @@
       font-size: 13px;
       margin-top: 8px;
       resize: vertical;
+    }
+
+    /* Live Joined Players Roster */
+    .joined-players-box {
+      max-height: 150px;
+      overflow-y: auto;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .player-chip {
+      background: #060812;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid rgba(0,210,190,0.2);
     }
 
     .pattern-btn-grid {
@@ -281,7 +301,7 @@
   <!-- Firebase SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onChildAdded, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, onChildAdded, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCzcleQMnqsBadKqb8m7CXRo8ek4zpKYxE",
@@ -298,6 +318,36 @@
     window.dbRef = ref;
     window.dbSet = set;
     window.database = db;
+
+    // Listen for live joining players
+    onValue(ref(db, 'players'), (snapshot) => {
+      const data = snapshot.val();
+      const rosterEl = document.getElementById("joinedPlayersRoster");
+      const countEl = document.getElementById("playerCountBadge");
+      
+      if (!data) {
+        rosterEl.innerHTML = `<span style="color: var(--muted); font-size: 12px; font-style: italic;">No players joined yet...</span>`;
+        countEl.innerText = `0 Players Checked In`;
+        return;
+      }
+
+      const players = Object.values(data);
+      countEl.innerText = `${players.length} Players Checked In`;
+      rosterEl.innerHTML = "";
+
+      players.forEach(p => {
+        const chip = document.createElement("div");
+        chip.className = "player-chip";
+        chip.innerHTML = `
+          <div>
+            <strong style="color: #fff; font-size: 13px;">${p.name}</strong>
+            <span style="color: var(--teal); font-size: 12px; margin-left: 6px;">(${p.cashtag})</span>
+          </div>
+          <span style="font-size: 10px; color: var(--yellow); font-weight: 800;">ACTIVE</span>
+        `;
+        rosterEl.appendChild(chip);
+      });
+    });
 
     onChildAdded(ref(db, 'claims'), (snapshot) => {
       const msg = snapshot.val();
@@ -394,8 +444,19 @@
 
     <!-- Side-by-Side Main Layout -->
     <div class="main-layout">
-      <!-- Left Column: Master Board, Tumbler, Claims -->
+      <!-- Left Column -->
       <div>
+        <!-- Live Joined Players Roster -->
+        <div class="section-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="font-size: 14px; color: var(--teal); text-transform: uppercase;">Joined Players Roster</h3>
+            <span style="font-size: 12px; color: var(--muted); font-weight: 700;" id="playerCountBadge">0 Players Checked In</span>
+          </div>
+          <div class="joined-players-box" id="joinedPlayersRoster">
+            <span style="color: var(--muted); font-size: 12px; font-style: italic;">No players joined yet...</span>
+          </div>
+        </div>
+
         <div class="section-card">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <h3 style="font-size: 14px; color: var(--teal); text-transform: uppercase;">Stripe Paid Ticket Roster</h3>
@@ -423,7 +484,7 @@
           </div>
         </div>
 
-        <!-- Vibrant 3D Rotating Tumbler Cage & Ball Spotlight -->
+        <!-- Tumbler Cage -->
         <div class="section-card tumbler-container">
           <div class="tumbler-cage" id="tumblerCage">
             <div class="tumbler-ball" style="background:#00d2be; top:30px; left:40px;">B</div>
@@ -451,12 +512,12 @@
         </div>
       </div>
 
-      <!-- Right Column: Permanent Side Card Inspector (Never covers board) -->
+      <!-- Right Column: Card Inspector -->
       <div id="sideInspectorPanel">
         <h3 style="color: var(--teal); font-size: 15px; margin-bottom: 4px; text-transform: uppercase;">🔍 Card Inspector</h3>
         <p style="color: var(--muted); font-size: 11px; margin-bottom: 12px;">Inspect winning player cards side-by-side.</p>
         <div id="sideInspectorContent">
-          <p style="color: var(--muted); font-size: 12px; text-align: center; padding: 40px 0;">Click 'Inspect' on any incoming bingo claim above to review their card here.</p>
+          <p style="color: var(--muted); font-size: 12px; text-align: center; padding: 40px 0;">Click 'Inspect' on any incoming bingo claim to review their card here.</p>
         </div>
       </div>
     </div>
@@ -637,12 +698,17 @@
     }
 
     function resetNewSession() {
-      if (!confirm("Start a brand-new session? Issues fresh cards and serial numbers to all players.")) return;
+      if (!confirm("Start a brand-new session? Clears players, claims, and issues fresh cards.")) return;
       calledSet.clear();
       document.getElementById("hostBall").innerText = "-";
       document.getElementById("callCounter").innerText = "0 / 75 Drawn";
       document.querySelectorAll(".grid-num").forEach(n => n.classList.remove("called"));
       if (typeof window.clearAllClaims === 'function') window.clearAllClaims();
+      
+      // Clear connected players in Firebase
+      if (window.database) {
+        set(ref(window.database, 'players'), null);
+      }
       sync("RESET_SESSION");
     }
 
@@ -660,7 +726,6 @@
       window.dbSet(window.dbRef(window.database, 'gameState'), data);
     }
 
-    // Side-by-Side Inspector Render Function
     window.inspectPlayerCardSide = function(storageKey, cardNum) {
       const dataPack = window[storageKey];
       if (!dataPack || !dataPack.cards || !dataPack.cards[cardNum - 1]) {
