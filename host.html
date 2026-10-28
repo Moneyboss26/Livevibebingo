@@ -727,10 +727,16 @@
       document.querySelectorAll(".grid-num").forEach(n => n.classList.remove("called"));
       if (typeof window.clearAllClaims === 'function') window.clearAllClaims();
       
-      // CRITICAL FIX: Explicitly wipe out the players and claims nodes in Firebase
-      if (window.database) {
-        set(ref(window.database, 'players'), null);
-        set(ref(window.database, 'claims'), null);
+      // Instantly clear roster UI on host screen
+      const rosterEl = document.getElementById("joinedPlayersRoster");
+      if (rosterEl) rosterEl.innerHTML = `<span style="color: var(--muted); font-size: 12px; font-style: italic;">No players joined yet...</span>`;
+      const countEl = document.getElementById("playerCountBadge");
+      if (countEl) countEl.innerText = `0 Players Checked In`;
+
+      // Force-wipe the players and claims nodes in Firebase
+      if (window.database && window.dbSet && window.dbRef) {
+        window.dbSet(window.dbRef(window.database, 'players'), null);
+        window.dbSet(window.dbRef(window.database, 'claims'), null);
       }
 
       sync("RESET_SESSION");
