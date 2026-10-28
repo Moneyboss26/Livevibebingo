@@ -405,6 +405,12 @@
         if (lockBtn) lockBtn.innerText = "Lock Out Late Players";
 
         initGrid();
+        
+        // Grab values from inputs on unlock
+        currentPin = document.getElementById("roomPinInput").value.trim() || "7722";
+        hostName = document.getElementById("hostNameInput").value.trim() || "CC";
+        
+        // Force immediate sync to Firebase
         sync();
       } else {
         document.getElementById("lockError").style.display = "block";
@@ -439,7 +445,7 @@
     }
 
     function updateRoomPin() {
-      currentPin = document.getElementById("roomPinInput").value.trim();
+      currentPin = document.getElementById("roomPinInput").value.trim() || "7722";
       sync();
     }
 
@@ -557,7 +563,10 @@
     }
 
     function sync(latest = null) {
-      if (!window.database) return;
+      if (!window.database) {
+        console.error("Firebase database not initialized yet!");
+        return;
+      }
       const data = {
         hostName: hostName,
         roomPin: currentPin,
@@ -567,7 +576,10 @@
         lobbyLocked: isLobbyLocked,
         time: Date.now()
       };
-      window.dbSet(window.dbRef(window.database, 'gameState'), data);
+      
+      window.dbSet(window.dbRef(window.database, 'gameState'), data)
+        .then(() => console.log("Firebase sync successful! PIN:", currentPin))
+        .catch((err) => console.error("Firebase sync failed:", err));
     }
   </script>
 </body>
