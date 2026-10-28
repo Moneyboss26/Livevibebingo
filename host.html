@@ -251,7 +251,6 @@
     window.dbSet = set;
     window.database = db;
 
-    // Listen for player bingo claims in real time from Firebase
     onChildAdded(ref(db, 'claims'), (snapshot) => {
       const msg = snapshot.val();
       if (msg) {
@@ -264,16 +263,21 @@
 
         const item = document.createElement("div");
         item.className = `claim-item ${isVerified ? 'claim-valid' : 'claim-invalid'}`;
+        
+        const claimId = 'claim_' + Math.random().toString(36).substring(2, 9);
+        window[claimId] = msg.cardsSnapshot;
+
         item.innerHTML = `
           <div>
             <strong style="color: #fff; font-size: 14px;">${msg.name}</strong> 
             <span style="color: var(--teal); font-size: 13px;">(${msg.cashtag})</span>
-            <span style="color: var(--muted); font-size: 12px; margin-left: 8px;">Claimed Card #${msg.cardNum} (${msg.roundName} - ${msg.prize})</span>
+            <span style="color: var(--muted); font-size: 12px; margin-left: 8px;">Claimed Card #${msg.cardNum} (${msg.roundName})</span>
+            ${msg.cardsSnapshot ? `<button class="btn btn-teal" style="padding: 4px 10px; font-size: 11px; margin-left: 10px;" onclick="inspectPlayerCard('${claimId}', ${msg.cardNum})">🔍 View Card #${msg.cardNum}</button>` : ''}
           </div>
           <div>
             ${isVerified ? 
-              '<span style="color: var(--teal); font-weight: 800; font-size: 12px;">✓ PAID TICKET HOLDER</span>' : 
-              '<span style="color: #fc8181; font-weight: 800; font-size: 12px;">⚠️ NOT ON GUEST LIST</span>'
+              '<span style="color: var(--teal); font-weight: 800; font-size: 12px;">✓ PAID TICKET</span>' : 
+              '<span style="color: #fc8181; font-weight: 800; font-size: 12px;">⚠️ UNVERIFIED</span>'
             }
           </div>
         `;
@@ -320,25 +324,19 @@
       </div>
     </div>
 
-    <!-- Authorized Guest List Management -->
     <div class="section-card">
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <h3 style="font-size: 14px; color: var(--teal); text-transform: uppercase;">Stripe Paid Ticket Roster</h3>
         <span style="font-size: 12px; color: var(--muted);" id="rosterCount">0 Paid Attendees Loaded</span>
       </div>
-      <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">
-        Paste paid customer names, emails, or $Cashtags directly from Stripe (separated by commas or new lines). Unverified callers will be flagged automatically upon calling Bingo.
-      </p>
       <textarea id="guestListArea" class="guest-list-input" placeholder="e.g. Mary Johnson, David Miller, Sarah Lee, $MaryWins" onchange="updateGuestList()"></textarea>
     </div>
 
-    <!-- Active Claims Log -->
     <div class="section-card" id="claimsSection" style="display: none;">
       <h3 style="font-size: 14px; color: var(--pink); text-transform: uppercase;">Live Bingo Claims Log</h3>
       <div class="claims-log" id="claimsLog"></div>
     </div>
 
-    <!-- Active Game Round & Cash Prizes -->
     <div class="section-card">
       <h3 style="font-size: 15px; color: var(--muted); text-transform: uppercase;">Active Round & Cash Prize</h3>
       <div class="pattern-btn-grid">
@@ -350,7 +348,6 @@
       </div>
     </div>
 
-    <!-- Shaker Cage & Ball Spotlight -->
     <div class="section-card tumbler-container">
       <div class="tumbler-cage" id="tumblerCage">
         <div class="tumbler-ball" style="background:#00d2be; top:30px; left:40px;">B</div>
@@ -368,7 +365,6 @@
       </div>
     </div>
 
-    <!-- Master 75-Ball Board -->
     <div class="section-card">
       <div style="display: flex; justify-content: space-between; align-items: center;">
         <h3 style="font-size: 15px; color: var(--muted); text-transform: uppercase;">Master 75-Ball Board</h3>
@@ -405,12 +401,8 @@
         if (lockBtn) lockBtn.innerText = "Lock Out Late Players";
 
         initGrid();
-        
-        // Grab values from inputs on unlock
         currentPin = document.getElementById("roomPinInput").value.trim() || "7722";
         hostName = document.getElementById("hostNameInput").value.trim() || "CC";
-        
-        // Force immediate sync to Firebase
         sync();
       } else {
         document.getElementById("lockError").style.display = "block";
@@ -563,10 +555,7 @@
     }
 
     function sync(latest = null) {
-      if (!window.database) {
-        console.error("Firebase database not initialized yet!");
-        return;
-      }
+      if (!window.database) return;
       const data = {
         hostName: hostName,
         roomPin: currentPin,
@@ -576,11 +565,66 @@
         lobbyLocked: isLobbyLocked,
         time: Date.now()
       };
-      
-      window.dbSet(window.dbRef(window.database, 'gameState'), data)
-        .then(() => console.log("Firebase sync successful! PIN:", currentPin))
-        .catch((err) => console.error("Firebase sync failed:", err));
+      window.dbSet(window.dbRef(window.database, 'gameState'), data);
     }
+
+    window.inspectPlayerCard = function(storageKey, cardNum) {
+      const cardsData = window[storageKey];
+      if (!cardsData || !cardsData[cardNum - 1]) {
+        alert("Card snapshot not available.");
+        return;
+      }
+      const targetCard = cardsData[cardNum - 1];
+      
+      let modal = document.getElementById("hostInspectorModal");
+      if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "hostInspectorModal";
+        modal.style.cssText = "position:fixed; inset:0; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; z-index:2000; padding:20px;";
+        modal.innerHTML = `
+          <div style="background:var(--card-bg); border:2px solid var(--teal); border-radius:12px; padding:24px; max-width:350px; width:100%; text-align:center;">
+            <h3 id="inspectorTitle" style="color:var(--teal); margin-bottom:12px;">Card Inspection</h3>
+            <div id="inspectorGrid" style="display:grid; grid-template-columns:repeat(5, 1fr); gap:4px; margin-bottom:16px;"></div>
+            <button class="btn btn-teal" onclick="document.getElementById('hostInspectorModal').style.display='none'">Close Inspector</button>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      }
+
+      document.getElementById("inspectorTitle").innerText = `Inspecting Card #${cardNum}`;
+      const gridEl = document.getElementById("inspectorGrid");
+      gridEl.innerHTML = "";
+
+      ['B','I','N','G','O'].forEach(l => {
+        const h = document.createElement("div");
+        h.style.cssText = "background:#060812; color:var(--teal); font-weight:900; font-size:14px; padding:4px 0; border-radius:4px;";
+        h.innerText = l;
+        gridEl.appendChild(h);
+      });
+
+      targetCard.forEach(row => {
+        row.forEach(cell => {
+          const tile = document.createElement("div");
+          tile.style.cssText = "aspect-ratio:1; background:#060812; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:900; border:1px solid rgba(255,255,255,0.06);";
+          if (cell.val === "FREE") {
+            tile.style.background = "rgba(255,46,147,0.2)";
+            tile.style.color = "var(--pink)";
+            tile.innerText = "FREE";
+          } else {
+            tile.innerText = cell.val;
+            if (cell.dabbed) {
+              tile.style.background = "var(--teal)";
+              tile.style.color = "#060812";
+            } else {
+              tile.style.color = "#fff";
+            }
+          }
+          gridEl.appendChild(tile);
+        });
+      });
+
+      modal.style.display = "flex";
+    };
   </script>
 </body>
 </html>

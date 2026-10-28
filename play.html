@@ -177,6 +177,24 @@
     .color-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
     .color-dot.active { border-color: #fff; transform: scale(1.15); }
 
+    /* Status Alert Banner for Need 1 / Bingo Ready */
+    .status-banner {
+      background: #14172a;
+      text-align: center;
+      padding: 10px;
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--muted);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      letter-spacing: 0.5px;
+    }
+    .status-banner.need-one { background: rgba(248,192,40,0.15); color: var(--yellow); border-bottom: 1px solid var(--yellow); }
+    .status-banner.bingo-ready { background: rgba(255,46,147,0.2); color: var(--pink); border-bottom: 2px solid var(--pink); animation: pulseReady 1s infinite alternate; }
+    @keyframes pulseReady {
+      0% { opacity: 0.8; }
+      100% { opacity: 1; }
+    }
+
     .card-tabs-bar {
       display: flex;
       gap: 8px;
@@ -316,7 +334,6 @@
     window.dbSet = set;
     window.dbPush = push;
 
-    // Listen to game state changes from Firebase in real time
     onValue(ref(db, 'gameState'), (snapshot) => {
       const data = snapshot.val();
       if (data && window.handleBroadcast) {
@@ -381,6 +398,11 @@
         <span style="color: var(--muted); font-size: 12px;">No calls yet</span>
       </div>
     </div>
+  </div>
+
+  <!-- Live Status Banner (Need 1 / Bingo Ready Indicator) -->
+  <div class="status-banner" id="statusBanner">
+    Monitoring your 4 cards...
   </div>
 
   <div class="accessibility-bar">
@@ -510,6 +532,7 @@
         cards[i] = createCardMatrix();
         renderCard(`cardGrid${i+1}`, cards[i], i+1);
       }
+      evaluatePlayerStatus();
     }
 
     function createCardMatrix() {
@@ -565,7 +588,10 @@
           } else {
             tile.innerText = item.val;
             if (item.dabbed) tile.classList.add("dabbed");
-            tile.onclick = () => toggleManualDab(cardNum - 1, r, c, tile);
+            tile.onclick = () => {
+              toggleManualDab(cardNum - 1, r, c, tile);
+              evaluatePlayerStatus();
+            };
           }
           el.appendChild(tile);
         }
@@ -648,6 +674,76 @@
           }
         }
       }
+      evaluatePlayerStatus();
+    }
+
+    // Evaluates how close the player is across their 4 cards and updates top banner
+    function evaluatePlayerStatus() {
+      const banner = document.getElementById("statusBanner");
+      let bestCard = null;
+      let minNeeded = 99;
+
+      for (let i = 0; i < 4; i++) {
+        const needed = getCardsNeededCount(cards[i], currentRound);
+        if (needed === 0) {
+          bestCard = i + 1;
+          minNeeded = 0;
+          break;
+        } else if (needed < minNeeded) {
+          minNeeded = needed;
+          bestCard = i + 1;
+        }
+      }
+
+      if (minNeeded === 0) {
+        banner.className = "status-banner bingo-ready";
+        banner.innerText = `🔥 BINGO READY ON CARD #${bestCard}! HIT CALL BINGO! 🔥`;
+      } else if (minNeeded === 1) {
+        banner.className = "status-banner need-one";
+        banner.innerText = `⚠️ NEED 1 NUMBER ON CARD #${bestCard} (${currentRoundName})!`;
+      } else {
+        banner.className = "status-banner";
+        banner.innerText = `Playing ${currentRoundName} — Closest is Card #${bestCard} (${minNeeded} away)`;
+      }
+    }
+
+    // Calculates how many un-dabbed tiles are left to complete the winning requirement for the active game
+    function getCardsNeededCount(matrix, round) {
+      if (round === 1 || round === 2) {
+        // Regular Bingo: Need min un-dabbed in any complete row, col, or diagonal
+        let minMissing = 99;
+        // Rows
+        for (let r = 0; r < 5; r++) {
+          let missing = matrix[r].filter(cell => !cell.dabbed).length;
+          if (missing < minMissing) minMissing = missing;
+        }
+        // Cols
+        for (let c = 0; c < 5; c++) {
+          let missing = 0;
+          for (let r = 0; r < 5; r++) if (!matrix[r][c].dabbed) missing++;
+          if (missing < minMissing) minMissing = missing;
+        }
+        // Diagonals
+        let diag1 = 0; for (let i = 0; i < 5; i++) if (!matrix[i][i].dabbed) diag1++;
+        if (diag1 < minMissing) minMissing = diag1;
+        let diag2 = 0; for (let i = 0; i < 5; i++) if (!matrix[i][4-i].dabbed) diag2++;
+        if (diag2 < minMissing) minMissing = diag2;
+        return minMissing;
+      } else if (round === 3) {
+        // 4 Corners
+        let corners = [matrix[0][0], matrix[0][4], matrix[4][0], matrix[4][4]];
+        return corners.filter(c => !c.dabbed).length;
+      } else if (round === 4) {
+        // Double Bingo (Requires 2 lines)
+        let linesComplete = countLines(matrix);
+        return linesComplete >= 2 ? 0 : (2 - linesComplete);
+      } else if (round === 5) {
+        // Coverall (Full blackout)
+        let totalMissing = 0;
+        matrix.forEach(row => row.forEach(cell => { if (!cell.dabbed) totalMissing++; }));
+        return totalMissing;
+      }
+      return 99;
     }
 
     function claimBingo() {
@@ -676,6 +772,8 @@
             cardNum: winningCardNum,
             roundName: currentRoundName,
             prize: currentPrize,
+            playerPasscode: activeSessionPin,
+            cardsSnapshot: cards,
             time: Date.now()
           });
         }
