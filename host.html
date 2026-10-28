@@ -63,7 +63,7 @@
       transition: transform 0.1s ease;
     }
     .btn:active { transform: scale(0.97); }
-    .btn-teal { background: var(--teal); color: #060812; }
+    .btn-teal { background: var(--teal); color: #06111a; }
     .btn-pink { background: var(--pink); color: #fff; }
     .btn-danger { background: #e53e3e; color: #fff; }
     .btn-lock { background: #3182ce; color: #fff; }
@@ -173,7 +173,7 @@
       cursor: pointer;
       text-align: center;
     }
-    .p-btn.active { background: var(--teal); color: #060812; border-color: var(--teal); }
+    .p-btn.active { background: var(--teal); color: #06111a; border-color: var(--teal); }
 
     .tumbler-container {
       display: flex;
@@ -417,7 +417,7 @@
       <p style="color: var(--muted); font-size: 13px; margin-bottom: 6px;">Enter master password to unlock caller station</p>
       <input type="password" id="passCode" placeholder="••••••••••••" autofocus onkeypress="checkEnter(event)">
       <button class="btn btn-teal" style="width: 100%; padding: 14px;" onclick="unlockStation()">Unlock Host Station</button>
-      <p id="lockError" style="color: #ff4d4d; font-size: 13px; margin-top: 12px; display: none;">Invalid password. Try: LiveVibe2026</p>
+      <p id="lockError" style="color: #ff4d4d; font-size: 13px; margin-top: 12px; display: none;">Invalid master password. Please try again.</p>
     </div>
   </div>
 
@@ -733,7 +733,7 @@
       const countEl = document.getElementById("playerCountBadge");
       if (countEl) countEl.innerText = `0 Players Checked In`;
 
-      // Force-wipe the players and claims nodes in Firebase
+      // Force-wipe the players and claims nodes in Firebase instantly on 1 click
       if (window.database && window.dbSet && window.dbRef) {
         window.dbSet(window.dbRef(window.database, 'players'), null);
         window.dbSet(window.dbRef(window.database, 'claims'), null);
@@ -785,9 +785,9 @@
             html += `<div class="insp-tile free">FREE</div>`;
           } else {
             const isCalled = calledSet.has(cell.val);
-            const dabClass = cell.dabbed ? "insp-tile dabbed" : "insp-tile";
+            const dagClass = cell.dabbed ? "insp-tile dabbed" : "insp-tile";
             const borderStyle = (isCalled && !cell.dabbed) ? "border: 2px solid var(--pink);" : "";
-            html += `<div class="${dabClass}" style="${borderStyle}; color:${cell.dabbed ? '#06111a' : '#fff'}">${cell.val}</div>`;
+            html += `<div class="${dagClass}" style="${borderStyle}; color:${cell.dabbed ? '#06111a' : '#fff'}">${cell.val}</div>`;
           }
         });
       });
