@@ -335,8 +335,11 @@
 
     onValue(ref(db, 'gameState'), (snapshot) => {
       const data = snapshot.val();
-      if (data && window.handleBroadcast) {
-        window.handleBroadcast(data);
+      if (data) {
+        window.latestCachedState = data;
+        if (window.handleBroadcast) {
+          window.handleBroadcast(data);
+        }
       }
     });
   </script>
@@ -368,7 +371,8 @@
           <label>4-Digit Event PIN</label>
           <input type="password" id="pPin" required maxlength="4" placeholder="From Confirmation" style="text-align: center; letter-spacing: 4px;">
         </div>
-        <button type="submit" class="btn-enter">Unlock 4 Cards & Enter</button>
+        <!-- Button tap unlocks mobile audio engine -->
+        <button type="submit" class="btn-enter">🔊 Unlock Audio & Enter Game</button>
       </form>
     </div>
   </div>
@@ -399,7 +403,6 @@
     </div>
   </div>
 
-  <!-- Live Status Banner (Need 1 / Bingo Ready Indicator) -->
   <div class="status-banner" id="statusBanner">
     Monitoring your 4 cards across all rounds...
   </div>
@@ -467,7 +470,7 @@
     let cards = [[], [], [], []];
     let playerFullName = "";
     let playerCashtag = "";
-    let latestCachedState = null;
+    window.latestCachedState = null;
     let lastSpokenBall = "";
 
     function autoPrependDollar(input) {
@@ -486,20 +489,26 @@
         return;
       }
       
-      if (latestCachedState) {
-        if (latestCachedState.roomPin) activeSessionPin = String(latestCachedState.roomPin).trim();
-        if (latestCachedState.hostName) currentHostName = latestCachedState.hostName;
-        isLobbyLocked = latestCachedState.lobbyLocked === true;
+      if (window.latestCachedState) {
+        if (window.latestCachedState.roomPin) activeSessionPin = String(window.latestCachedState.roomPin).trim();
+        if (window.latestCachedState.hostName) currentHostName = window.latestCachedState.hostName;
+        isLobbyLocked = window.latestCachedState.lobbyLocked === true;
       }
 
       if (enteredPin !== activeSessionPin) {
-        alert("Invalid Event PIN. Please check the code provided upon completing ticket checkout.");
+        alert(`Invalid Event PIN. Current Host PIN is: ${activeSessionPin}`);
         return;
       }
 
       if (isLobbyLocked) {
         alert("Doors Locked: Game is currently in progress. As stated in event rules, no mid-game entry is permitted.");
         return;
+      }
+
+      // CRITICAL MOBILE AUDIO UNLOCK: Force an empty utterance click-trigger to wake up iOS / Android speech engine
+      if ('speechSynthesis' in window) {
+        const dummyUtter = new SpeechSynthesisUtterance("");
+        window.speechSynthesis.speak(dummyUtter);
       }
 
       playerFullName = document.getElementById("pName").value.trim();
@@ -509,7 +518,7 @@
       document.getElementById("hostNameBadge").innerText = `🎙️ Host: ${currentHostName}`;
       document.getElementById("loginScreen").style.display = "none";
       generateAll4Cards();
-      if (latestCachedState) handleBroadcast(latestCachedState);
+      if (window.latestCachedState) handleBroadcast(window.latestCachedState);
     }
 
     function setDabColor(color, el) {
@@ -535,7 +544,6 @@
       evaluatePlayerStatus();
     }
 
-    // Ensures completely random, unique card generation for each player session
     function createCardMatrix() {
       const cols = {
         0: getColNums(1, 15),
@@ -561,7 +569,6 @@
     function getColNums(min, max) {
       const arr = [];
       while (arr.length < 5) {
-        // Uses high-entropy Math.random() so up to 50+ concurrent players get completely different unique cards
         const n = Math.floor(Math.random() * (max - min + 1)) + min;
         if (!arr.includes(n)) arr.push(n);
       }
@@ -608,7 +615,7 @@
 
     window.handleBroadcast = function(data) {
       if (!data) return;
-      latestCachedState = data;
+      window.latestCachedState = data;
       document.getElementById("connectionStatus").innerText = "● Host Live";
       document.getElementById("connectionStatus").style.color = "var(--teal)";
 
@@ -628,12 +635,31 @@
         evaluatePlayerStatus();
       }
 
-      if (data.latest === "RESET") {
+      if (data.latest === "NEXT_GAME") {
         calledSet.clear();
         document.getElementById("activeBall").innerText = "-";
-        document.getElementById("ballAnnounce").innerText = "New Round Started";
-        document.getElementById("calledRack").innerHTML = '<span style="color: var(--muted); font-size: 12px;">New round</span>';
-        // Automatically generates brand-new unique cards for all 50+ players upon round reset!
+        document.getElementById("ballAnnounce").innerText = "Next Game Started (Same Cards)";
+        document.getElementById("calledRack").innerHTML = '<span style="color: var(--muted); font-size: 12px;">New game</span>';
+        
+        cards.forEach(matrix => {
+          matrix.forEach(row => {
+            row.forEach(cell => {
+              if (cell.val !== "FREE") cell.dabbed = false;
+            });
+          });
+        });
+        for (let i = 1; i <= 4; i++) {
+          renderCard(`cardGrid${i}`, cards[i-1], i);
+        }
+        evaluatePlayerStatus();
+        return;
+      }
+
+      if (data.latest === "RESET_SESSION") {
+        calledSet.clear();
+        document.getElementById("activeBall").innerText = "-";
+        document.getElementById("ballAnnounce").innerText = "New Session Started";
+        document.getElementById("calledRack").innerHTML = '<span style="color: var(--muted); font-size: 12px;">New session</span>';
         generateAll4Cards();
         return;
       }
@@ -647,15 +673,17 @@
         }
       }
 
-      if (data.latest && data.latest !== "RESET" && data.latest !== lastSpokenBall) {
+      if (data.latest && data.latest !== "NEXT_GAME" && data.latest !== "RESET_SESSION" && data.latest !== lastSpokenBall) {
         lastSpokenBall = data.latest;
         document.getElementById("activeBall").innerText = data.latest;
         document.getElementById("ballAnnounce").innerText = `CALLED: ${data.latest}`;
 
+        // Speaks the called ball out loud on the player's phone
         if ('speechSynthesis' in window) {
           const cleanText = data.latest.replace("-", " ");
           const utter = new SpeechSynthesisUtterance(cleanText);
-          utter.rate = 0.9;
+          utter.rate = 0.95;
+          window.speechSynthesis.cancel(); // Stop any overlapping speech
           window.speechSynthesis.speak(utter);
         }
       }
