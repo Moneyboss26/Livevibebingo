@@ -465,7 +465,7 @@
       }
       
       if (latestCachedState) {
-        if (latestCachedState.roomPin) activeSessionPin = latestCachedState.roomPin;
+        if (latestCachedState.roomPin) activeSessionPin = String(latestCachedState.roomPin).trim();
         if (latestCachedState.hostName) currentHostName = latestCachedState.hostName;
         isLobbyLocked = latestCachedState.lobbyLocked === true;
       }
@@ -589,7 +589,7 @@
         document.getElementById("hostNameBadge").innerText = `🎙️ Host: ${currentHostName}`;
       }
 
-      if (data.roomPin) activeSessionPin = data.roomPin;
+      if (data.roomPin) activeSessionPin = String(data.roomPin).trim();
       if (data.lobbyLocked !== undefined) isLobbyLocked = data.lobbyLocked === true;
 
       if (data.game) {
