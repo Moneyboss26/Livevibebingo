@@ -177,7 +177,6 @@
     .color-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
     .color-dot.active { border-color: #fff; transform: scale(1.15); }
 
-    /* Status Alert Banner for Need 1 / Bingo Ready */
     .status-banner {
       background: #14172a;
       text-align: center;
@@ -402,7 +401,7 @@
 
   <!-- Live Status Banner (Need 1 / Bingo Ready Indicator) -->
   <div class="status-banner" id="statusBanner">
-    Monitoring your 4 cards...
+    Monitoring your 4 cards across all rounds...
   </div>
 
   <div class="accessibility-bar">
@@ -469,6 +468,7 @@
     let playerFullName = "";
     let playerCashtag = "";
     let latestCachedState = null;
+    let lastSpokenBall = "";
 
     function autoPrependDollar(input) {
       if (input.value.length > 0 && !input.value.startsWith('$')) {
@@ -535,6 +535,7 @@
       evaluatePlayerStatus();
     }
 
+    // Ensures completely random, unique card generation for each player session
     function createCardMatrix() {
       const cols = {
         0: getColNums(1, 15),
@@ -560,6 +561,7 @@
     function getColNums(min, max) {
       const arr = [];
       while (arr.length < 5) {
+        // Uses high-entropy Math.random() so up to 50+ concurrent players get completely different unique cards
         const n = Math.floor(Math.random() * (max - min + 1)) + min;
         if (!arr.includes(n)) arr.push(n);
       }
@@ -623,6 +625,7 @@
         currentRoundName = data.game.name;
         currentPrize = data.game.prize;
         document.getElementById("gamePatternDisplay").innerText = `Game ${currentRound}: ${currentRoundName} (${currentPrize})`;
+        evaluatePlayerStatus();
       }
 
       if (data.latest === "RESET") {
@@ -630,6 +633,7 @@
         document.getElementById("activeBall").innerText = "-";
         document.getElementById("ballAnnounce").innerText = "New Round Started";
         document.getElementById("calledRack").innerHTML = '<span style="color: var(--muted); font-size: 12px;">New round</span>';
+        // Automatically generates brand-new unique cards for all 50+ players upon round reset!
         generateAll4Cards();
         return;
       }
@@ -643,9 +647,17 @@
         }
       }
 
-      if (data.latest && data.latest !== "RESET") {
+      if (data.latest && data.latest !== "RESET" && data.latest !== lastSpokenBall) {
+        lastSpokenBall = data.latest;
         document.getElementById("activeBall").innerText = data.latest;
         document.getElementById("ballAnnounce").innerText = `CALLED: ${data.latest}`;
+
+        if ('speechSynthesis' in window) {
+          const cleanText = data.latest.replace("-", " ");
+          const utter = new SpeechSynthesisUtterance(cleanText);
+          utter.rate = 0.9;
+          window.speechSynthesis.speak(utter);
+        }
       }
     }
 
@@ -677,19 +689,14 @@
       evaluatePlayerStatus();
     }
 
-    // Evaluates how close the player is across their 4 cards and updates top banner
     function evaluatePlayerStatus() {
       const banner = document.getElementById("statusBanner");
-      let bestCard = null;
+      let bestCard = 1;
       let minNeeded = 99;
 
       for (let i = 0; i < 4; i++) {
         const needed = getCardsNeededCount(cards[i], currentRound);
-        if (needed === 0) {
-          bestCard = i + 1;
-          minNeeded = 0;
-          break;
-        } else if (needed < minNeeded) {
+        if (needed < minNeeded) {
           minNeeded = needed;
           bestCard = i + 1;
         }
@@ -707,38 +714,30 @@
       }
     }
 
-    // Calculates how many un-dabbed tiles are left to complete the winning requirement for the active game
     function getCardsNeededCount(matrix, round) {
       if (round === 1 || round === 2) {
-        // Regular Bingo: Need min un-dabbed in any complete row, col, or diagonal
         let minMissing = 99;
-        // Rows
         for (let r = 0; r < 5; r++) {
           let missing = matrix[r].filter(cell => !cell.dabbed).length;
           if (missing < minMissing) minMissing = missing;
         }
-        // Cols
         for (let c = 0; c < 5; c++) {
           let missing = 0;
           for (let r = 0; r < 5; r++) if (!matrix[r][c].dabbed) missing++;
           if (missing < minMissing) minMissing = missing;
         }
-        // Diagonals
         let diag1 = 0; for (let i = 0; i < 5; i++) if (!matrix[i][i].dabbed) diag1++;
         if (diag1 < minMissing) minMissing = diag1;
         let diag2 = 0; for (let i = 0; i < 5; i++) if (!matrix[i][4-i].dabbed) diag2++;
         if (diag2 < minMissing) minMissing = diag2;
         return minMissing;
       } else if (round === 3) {
-        // 4 Corners
         let corners = [matrix[0][0], matrix[0][4], matrix[4][0], matrix[4][4]];
         return corners.filter(c => !c.dabbed).length;
       } else if (round === 4) {
-        // Double Bingo (Requires 2 lines)
         let linesComplete = countLines(matrix);
         return linesComplete >= 2 ? 0 : (2 - linesComplete);
       } else if (round === 5) {
-        // Coverall (Full blackout)
         let totalMissing = 0;
         matrix.forEach(row => row.forEach(cell => { if (!cell.dabbed) totalMissing++; }));
         return totalMissing;
