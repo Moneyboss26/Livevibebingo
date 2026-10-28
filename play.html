@@ -233,13 +233,22 @@
       display: flex;
       flex-direction: column;
     }
+    .card-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
     .card-title {
       font-size: 13px;
       font-weight: 800;
       color: var(--teal);
       text-transform: uppercase;
-      margin-bottom: 8px;
-      text-align: center;
+    }
+    .card-serial {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--yellow);
     }
     .b-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; flex: 1; }
     .col-header {
@@ -384,7 +393,6 @@
       <span class="caller-badge" id="hostNameBadge">🎙️ Host: CC</span>
     </div>
     <div style="display: flex; align-items: center; gap: 12px;">
-      <!-- Persistent Audio Unlock Button -->
       <button onclick="enableAudioEngine()" style="background: var(--teal); color: #060812; border: none; padding: 6px 12px; border-radius: 14px; font-size: 12px; font-weight: 800; cursor: pointer;">🔊 Turn On Audio</button>
       <div style="font-size: 12px; color: var(--muted);" id="connectionStatus">● Connected</div>
     </div>
@@ -433,19 +441,19 @@
 
   <div class="cards-container">
     <div class="bingo-card" id="cardWrap1">
-      <div class="card-title">Card 1</div>
+      <div class="card-header-flex"><span class="card-title">Card 1</span><span class="card-serial" id="serial1">LVB-0001</span></div>
       <div class="b-grid" id="cardGrid1"></div>
     </div>
     <div class="bingo-card" id="cardWrap2">
-      <div class="card-title">Card 2</div>
+      <div class="card-header-flex"><span class="card-title">Card 2</span><span class="card-serial" id="serial2">LVB-0002</span></div>
       <div class="b-grid" id="cardGrid2"></div>
     </div>
     <div class="bingo-card" id="cardWrap3">
-      <div class="card-title">Card 3</div>
+      <div class="card-header-flex"><span class="card-title">Card 3</span><span class="card-serial" id="serial3">LVB-0003</span></div>
       <div class="b-grid" id="cardGrid3"></div>
     </div>
     <div class="bingo-card" id="cardWrap4">
-      <div class="card-title">Card 4</div>
+      <div class="card-header-flex"><span class="card-title">Card 4</span><span class="card-serial" id="serial4">LVB-0004</span></div>
       <div class="b-grid" id="cardGrid4"></div>
     </div>
   </div>
@@ -471,6 +479,7 @@
     let isLobbyLocked = false;
     let currentHostName = "CC";
     let cards = [[], [], [], []];
+    let cardSerials = [];
     let playerFullName = "";
     let playerCashtag = "";
     window.latestCachedState = null;
@@ -482,14 +491,13 @@
       }
     }
 
-    // Explicit function for players to tap and wake up mobile audio
     function enableAudioEngine() {
       if ('speechSynthesis' in window) {
         const utter = new SpeechSynthesisUtterance("Audio enabled. Ready for bingo calls!");
         utter.rate = 1.0;
         window.speechSynthesis.cancel();
         window.speechSynthesis.speak(utter);
-        alert("Audio successfully enabled! You will now hear called balls.");
+        alert("Audio successfully enabled!");
       } else {
         alert("Speech synthesis is not supported on this browser.");
       }
@@ -517,11 +525,10 @@
       }
 
       if (isLobbyLocked) {
-        alert("Doors Locked: Game is currently in progress. As stated in event rules, no mid-game entry is permitted.");
+        alert("Doors Locked: Game is currently in progress.");
         return;
       }
 
-      // Automatically prime speech synthesis on login submit
       if ('speechSynthesis' in window) {
         const dummyUtter = new SpeechSynthesisUtterance("");
         window.speechSynthesis.speak(dummyUtter);
@@ -553,8 +560,12 @@
     }
 
     function generateAll4Cards() {
+      cardSerials = [];
       for (let i = 0; i < 4; i++) {
         cards[i] = createCardMatrix();
+        const serial = 'LVB-' + Math.floor(1000 + Math.random() * 9000) + '-C' + (i+1);
+        cardSerials.push(serial);
+        document.getElementById(`serial${i+1}`).innerText = serial;
         renderCard(`cardGrid${i+1}`, cards[i], i+1);
       }
       evaluatePlayerStatus();
@@ -694,7 +705,6 @@
         document.getElementById("activeBall").innerText = data.latest;
         document.getElementById("ballAnnounce").innerText = `CALLED: ${data.latest}`;
 
-        // Speaks the called ball out loud
         if ('speechSynthesis' in window) {
           const cleanText = data.latest.replace("-", " ");
           const utter = new SpeechSynthesisUtterance(cleanText);
@@ -735,26 +745,33 @@
 
     function evaluatePlayerStatus() {
       const banner = document.getElementById("statusBanner");
-      let bestCard = 1;
+      let readyCards = [];
+      let needOneCards = [];
+      let closestCard = 1;
       let minNeeded = 99;
 
       for (let i = 0; i < 4; i++) {
         const needed = getCardsNeededCount(cards[i], currentRound);
         if (needed < minNeeded) {
           minNeeded = needed;
-          bestCard = i + 1;
+          closestCard = i + 1;
+        }
+        if (needed === 0) {
+          readyCards.push(i + 1);
+        } else if (needed === 1) {
+          needOneCards.push(i + 1);
         }
       }
 
-      if (minNeeded === 0) {
+      if (readyCards.length > 0) {
         banner.className = "status-banner bingo-ready";
-        banner.innerText = `🔥 BINGO READY ON CARD #${bestCard}! HIT CALL BINGO! 🔥`;
-      } else if (minNeeded === 1) {
+        banner.innerText = `🔥 BINGO READY ON CARD(S) #${readyCards.join(', #')}! HIT CALL BINGO! 🔥`;
+      } else if (needOneCards.length > 0) {
         banner.className = "status-banner need-one";
-        banner.innerText = `⚠️ NEED 1 NUMBER ON CARD #${bestCard} (${currentRoundName})!`;
+        banner.innerText = `⚠️ NEED 1 NUMBER ON CARD(S) #${needOneCards.join(', #')} (${currentRoundName})!`;
       } else {
         banner.className = "status-banner";
-        banner.innerText = `Playing ${currentRoundName} — Closest is Card #${bestCard} (${minNeeded} away)`;
+        banner.innerText = `Playing ${currentRoundName} — Closest is Card #${closestCard} (${minNeeded} away)`;
       }
     }
 
@@ -805,7 +822,7 @@
       if (winningCardNum) {
         title.innerText = "BINGO CONFIRMED!";
         title.style.color = "var(--teal)";
-        desc.innerText = `Verified ${currentRoundName} on Card #${winningCardNum}! Your win has been sent to the caller console for Cash App verification!`;
+        desc.innerText = `Verified ${currentRoundName} on Card #${winningCardNum} (${cardSerials[winningCardNum-1]})! Sent to host console.`;
 
         if (window.database && window.dbPush) {
           window.dbPush(window.dbRef(window.database, 'claims'), {
@@ -813,17 +830,19 @@
             name: playerFullName,
             cashtag: playerCashtag,
             cardNum: winningCardNum,
+            serialNum: cardSerials[winningCardNum-1],
             roundName: currentRoundName,
             prize: currentPrize,
             playerPasscode: activeSessionPin,
             cardsSnapshot: cards,
+            cardSerials: cardSerials,
             time: Date.now()
           });
         }
       } else {
         title.innerText = "Keep Playing!";
         title.style.color = "var(--pink)";
-        desc.innerText = `You don't have a verified ${currentRoundName} on any card yet. Keep watching the live caller!`;
+        desc.innerText = `You don't have a verified ${currentRoundName} on any card yet.`;
       }
       modal.style.display = "flex";
     }
