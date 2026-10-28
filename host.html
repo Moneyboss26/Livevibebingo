@@ -137,7 +137,6 @@
       resize: vertical;
     }
 
-    /* Live Joined Players Roster */
     .joined-players-box {
       max-height: 150px;
       overflow-y: auto;
@@ -246,9 +245,14 @@
       justify-content: space-between;
       align-items: center;
       gap: 10px;
+      animation: flashAlert 0.8s infinite alternate;
     }
-    .claim-valid { border-color: var(--teal); background: rgba(0,210,190,0.06); }
-    .claim-invalid { border-color: #e53e3e; background: rgba(229,62,62,0.1); }
+    @keyframes flashAlert {
+      0% { border-color: var(--pink); background: rgba(255,46,147,0.15); }
+      100% { border-color: var(--teal); background: rgba(0,210,190,0.15); }
+    }
+    .claim-valid { border-color: var(--teal); background: rgba(0,210,190,0.06); animation: none; }
+    .claim-invalid { border-color: #e53e3e; background: rgba(229,62,62,0.1); animation: none; }
 
     .master-grid {
       display: grid;
@@ -266,9 +270,8 @@
       color: var(--muted);
       border: 1px solid rgba(255,255,255,0.04);
     }
-    .grid-num.called { background: var(--teal); color: #060812; border-color: var(--teal); }
+    .grid-num.called { background: var(--teal); color: #06111a; border-color: var(--teal); }
 
-    /* Side Inspector Panel Styles */
     #sideInspectorPanel {
       background: var(--card-bg);
       border-radius: 12px;
@@ -319,7 +322,7 @@
     window.dbSet = set;
     window.database = db;
 
-    // Listen for live joining players
+    // Listen for live joined players
     onValue(ref(db, 'players'), (snapshot) => {
       const data = snapshot.val();
       const rosterEl = document.getElementById("joinedPlayersRoster");
@@ -340,7 +343,7 @@
         chip.className = "player-chip";
         chip.innerHTML = `
           <div>
-            <strong style="color: #fff; font-size: 13px;">${p.name}</strong>
+            <strong style="color: #fff; font-size: 13px;">${p.name}</strong> 
             <span style="color: var(--teal); font-size: 12px; margin-left: 6px;">(${p.cashtag})</span>
           </div>
           <span style="font-size: 10px; color: var(--yellow); font-weight: 800;">ACTIVE</span>
@@ -355,6 +358,8 @@
         document.getElementById("claimsSection").style.display = "block";
         const log = document.getElementById("claimsLog");
         
+        playHostBingoAlert();
+
         const cleanName = (msg.name || "").toLowerCase().trim();
         const cleanTag = (msg.cashtag || "").toLowerCase().trim();
         const isVerified = window.paidGuestList && window.paidGuestList.some(guest => cleanName.includes(guest) || cleanTag.includes(guest) || guest.includes(cleanName));
@@ -368,7 +373,7 @@
 
         item.innerHTML = `
           <div>
-            <strong style="color: #fff; font-size: 13px;">${msg.name}</strong> 
+            <strong style="color: #fff; font-size: 13px;">🚨 BINGO: ${msg.name}</strong> 
             <span style="color: var(--teal); font-size: 12px;">(${msg.cashtag})</span><br>
             <span style="color: var(--yellow); font-size: 11px;">Card #${msg.cardNum} (${msg.serialNum || 'No Serial'})</span>
           </div>
@@ -398,7 +403,7 @@
       set(ref(db, 'claims'), null).then(() => {
         document.getElementById("claimsLog").innerHTML = "";
         document.getElementById("claimsSection").style.display = "none";
-        document.getElementById("sideInspectorContent").innerHTML = `<p style="color: var(--muted); font-size: 13px; text-align: center;">Click 'Inspect' on any incoming bingo claim to verify numbers here without covering your board.</p>`;
+        document.getElementById("sideInspectorContent").innerHTML = `<p style="color: var(--muted); font-size: 13px; text-align: center;">Click 'Inspect' on any incoming bingo claim to review their card here without covering your board.</p>`;
       });
     };
   </script>
@@ -467,7 +472,7 @@
 
         <div class="section-card" id="claimsSection" style="display: none;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <h3 style="font-size: 14px; color: var(--pink); text-transform: uppercase;">Live Bingo Claims Log</h3>
+            <h3 style="font-size: 14px; color: var(--pink); text-transform: uppercase;">🚨 Live Bingo Claims Log</h3>
             <button class="btn btn-danger" style="padding: 4px 10px; font-size: 11px;" onclick="clearAllClaims()">Clear All Claims</button>
           </div>
           <div class="claims-log" id="claimsLog"></div>
@@ -498,8 +503,8 @@
           
           <div class="action-row">
             <button class="btn btn-teal" id="drawBtn" style="font-size: 16px; padding: 14px 28px;" onclick="shakeAndDraw()">Shake & Draw Ball</button>
-            <button class="btn" style="background: #3182ce; color: #fff;" onclick="nextGame()">Next Game</button>
-            <button class="btn btn-danger" onclick="resetNewSession()">New Session</button>
+            <button class="btn" style="background: #3182ce; color: #fff;" onclick="nextGame()">Next Game (Keep Players)</button>
+            <button class="btn btn-danger" onclick="resetNewSession()">New Session (Wipe Players)</button>
           </div>
         </div>
 
@@ -533,6 +538,23 @@
     let callerVoiceEnabled = true;
     let hostName = "CC";
     window.paidGuestList = [];
+
+    function playHostBingoAlert() {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.6);
+      } catch (e) {}
+    }
 
     function checkEnter(e) {
       if (e.key === "Enter") unlockStation();
@@ -688,7 +710,7 @@
     }
 
     function nextGame() {
-      if (!confirm("Clear called balls for the next game? Players keep their cards.")) return;
+      if (!confirm("Clear called balls for the next game? Players keep their cards and stay in the room.")) return;
       calledSet.clear();
       document.getElementById("hostBall").innerText = "-";
       document.getElementById("callCounter").innerText = "0 / 75 Drawn";
@@ -698,17 +720,19 @@
     }
 
     function resetNewSession() {
-      if (!confirm("Start a brand-new session? Clears players, claims, and issues fresh cards.")) return;
+      if (!confirm("Start a brand-new session? This will wipe connected players, claims, and issue fresh cards.")) return;
       calledSet.clear();
       document.getElementById("hostBall").innerText = "-";
       document.getElementById("callCounter").innerText = "0 / 75 Drawn";
       document.querySelectorAll(".grid-num").forEach(n => n.classList.remove("called"));
       if (typeof window.clearAllClaims === 'function') window.clearAllClaims();
       
-      // Clear connected players in Firebase
+      // CRITICAL FIX: Explicitly wipe out the players and claims nodes in Firebase
       if (window.database) {
         set(ref(window.database, 'players'), null);
+        set(ref(window.database, 'claims'), null);
       }
+
       sync("RESET_SESSION");
     }
 
