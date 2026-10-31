@@ -7,7 +7,7 @@
   <style>
     :root {
       --bg: #090c19;
-      --card-bg: #13172c;
+      --card-bg: rgba(19, 23, 44, 0.92);
       --surface: #1b213e;
       --teal: #00d2be;
       --pink: #ff2e93;
@@ -15,9 +15,21 @@
       --dab: #00d2be;
       --text: #ffffff;
       --muted: #9aa5be;
+      --card-border: #00d2be;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+    body { 
+      background-color: var(--bg); 
+      background-image: var(--body-wallpaper); 
+      background-size: cover; 
+      background-position: center; 
+      background-attachment: fixed; 
+      color: var(--text); 
+      min-height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
+      transition: background 0.5s ease; 
+    }
 
     #loginScreen {
       position: fixed;
@@ -69,7 +81,8 @@
     }
 
     header {
-      background: var(--card-bg);
+      background: rgba(19, 23, 44, 0.95);
+      backdrop-filter: blur(8px);
       padding: 12px 20px;
       display: flex;
       align-items: center;
@@ -107,8 +120,24 @@
       letter-spacing: 0.3px;
     }
 
+    /* Custom Celebration & Welcome Banner Broadcast */
+    .custom-banner {
+      background: linear-gradient(90deg, rgba(255,46,147,0.4), rgba(0,210,190,0.4));
+      border-bottom: 3px solid var(--yellow);
+      text-align: center;
+      padding: 12px;
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--yellow);
+      letter-spacing: 0.5px;
+      display: none;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+      z-index: 100;
+    }
+
     .broadcast-bar {
-      background: #14182f;
+      background: rgba(20, 24, 47, 0.9);
+      backdrop-filter: blur(8px);
       padding: 14px 20px;
       display: flex;
       align-items: center;
@@ -163,7 +192,8 @@
     }
 
     .accessibility-bar {
-      background: #0f1224;
+      background: rgba(15, 18, 36, 0.9);
+      backdrop-filter: blur(8px);
       padding: 8px 20px;
       display: flex;
       align-items: center;
@@ -178,7 +208,8 @@
     .color-dot.active { border-color: #fff; transform: scale(1.15); }
 
     .status-banner {
-      background: #14172a;
+      background: rgba(20, 23, 42, 0.9);
+      backdrop-filter: blur(8px);
       text-align: center;
       padding: 10px;
       font-weight: 800;
@@ -187,8 +218,8 @@
       border-bottom: 1px solid rgba(255,255,255,0.06);
       letter-spacing: 0.5px;
     }
-    .status-banner.need-one { background: rgba(248,192,40,0.15); color: var(--yellow); border-bottom: 1px solid var(--yellow); }
-    .status-banner.bingo-ready { background: rgba(255,46,147,0.2); color: var(--pink); border-bottom: 2px solid var(--pink); animation: pulseReady 1s infinite alternate; }
+    .status-banner.need-one { background: rgba(248,192,40,0.25); color: var(--yellow); border-bottom: 1px solid var(--yellow); }
+    .status-banner.bingo-ready { background: rgba(255,46,147,0.3); color: var(--pink); border-bottom: 2px solid var(--pink); animation: pulseReady 1s infinite alternate; }
     @keyframes pulseReady {
       0% { opacity: 0.8; }
       100% { opacity: 1; }
@@ -198,7 +229,7 @@
       display: flex;
       gap: 8px;
       padding: 8px 20px;
-      background: #080a15;
+      background: rgba(8, 10, 21, 0.9);
       overflow-x: auto;
       border-bottom: 1px solid rgba(255,255,255,0.06);
     }
@@ -217,40 +248,83 @@
 
     .cards-container {
       flex: 1;
-      padding: 14px;
+      padding: 16px;
       max-width: 1400px;
       margin: 0 auto;
       width: 100%;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-      gap: 16px;
+      gap: 18px;
     }
+    
+    /* THEMED BINGO CARDS WITH LOCAL IMAGE BACKDROPS & WATERMARKS */
     .bingo-card {
       background: var(--card-bg);
-      border-radius: 12px;
-      padding: 12px;
-      border: 2px solid rgba(255,255,255,0.1);
+      background-image: var(--card-wallpaper);
+      background-size: cover;
+      background-position: center;
+      border-radius: 16px;
+      padding: 14px;
+      border: 4px solid var(--card-border);
+      box-shadow: 0 15px 45px rgba(0,0,0,0.8);
       display: flex;
       flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
     }
+    
+    .bingo-card::before {
+      content: attr(data-watermark);
+      position: absolute;
+      right: 10px;
+      bottom: 5px;
+      font-size: 160px;
+      opacity: 0.2;
+      pointer-events: none;
+      z-index: 0;
+      line-height: 1;
+      filter: drop-shadow(0 0 12px rgba(255,255,255,0.4));
+    }
+
+    .bingo-card::after {
+      content: attr(data-mosaic);
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 36px;
+      opacity: 0.35;
+      letter-spacing: 12px;
+      pointer-events: none;
+      z-index: 0;
+      line-height: 1.2;
+    }
+
     .card-header-flex {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+      background: rgba(0, 0, 0, 0.75);
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.15);
     }
     .card-title {
       font-size: 13px;
-      font-weight: 800;
-      color: var(--teal);
+      font-weight: 900;
+      color: var(--yellow);
       text-transform: uppercase;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
     .card-serial {
       font-size: 11px;
-      font-weight: 700;
-      color: var(--yellow);
+      font-weight: 800;
+      color: var(--teal);
     }
-    .b-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; flex: 1; }
+    .b-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; flex: 1; position: relative; z-index: 1; }
     .col-header {
       background: #060812;
       color: var(--teal);
@@ -258,11 +332,13 @@
       font-size: 18px;
       text-align: center;
       padding: 6px 0;
-      border-radius: 4px;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.2);
     }
     .tile {
       aspect-ratio: 1;
-      background: #060812;
+      background: rgba(6, 8, 18, 0.88);
+      backdrop-filter: blur(4px);
       border-radius: 6px;
       display: flex;
       align-items: center;
@@ -271,15 +347,16 @@
       font-weight: 900;
       cursor: pointer;
       user-select: none;
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 2px solid rgba(255,255,255,0.15);
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.6);
     }
-    .tile.free { background: rgba(255,46,147,0.15); border-color: var(--pink); color: var(--pink); font-size: 11px; }
-    .tile.dabbed { background: var(--dab) !important; color: #06111a !important; font-weight: 900; }
+    .tile.free { background: rgba(255,46,147,0.4); border-color: var(--pink); color: var(--yellow); font-size: 10px; text-shadow: 0 1px 3px rgba(0,0,0,0.9); }
+    .tile.dabbed { background: var(--dab) !important; color: #06111a !important; font-weight: 900; box-shadow: 0 0 15px var(--dab); border-color: #fff !important; }
 
     .call-bar {
       position: sticky;
       bottom: 0;
-      background: rgba(9, 12, 25, 0.95);
+      background: rgba(9, 12, 25, 0.96);
       backdrop-filter: blur(10px);
       padding: 12px 20px;
       display: flex;
@@ -399,6 +476,9 @@
     </div>
   </header>
 
+  <!-- Custom Celebration Message Banner -->
+  <div class="custom-banner" id="customBanner">🎉 <span id="customBannerText"></span> 🎉</div>
+
   <div class="broadcast-bar">
     <div class="current-ball-container">
       <div class="big-ball" id="activeBall">-</div>
@@ -441,20 +521,20 @@
   </div>
 
   <div class="cards-container">
-    <div class="bingo-card" id="cardWrap1">
-      <div class="card-header-flex"><span class="card-title">Card 1</span><span class="card-serial" id="serial1">LVB-0001</span></div>
+    <div class="bingo-card" id="cardWrap1" data-watermark="⚡" data-mosaic="⚡ ⚡ ⚡">
+      <div class="card-header-flex"><span class="card-title" id="cardTitle1">Card 1</span><span class="card-serial" id="serial1">LVB-0001</span></div>
       <div class="b-grid" id="cardGrid1"></div>
     </div>
-    <div class="bingo-card" id="cardWrap2">
-      <div class="card-header-flex"><span class="card-title">Card 2</span><span class="card-serial" id="serial2">LVB-0002</span></div>
+    <div class="bingo-card" id="cardWrap2" data-watermark="⚡" data-mosaic="⚡ ⚡ ⚡">
+      <div class="card-header-flex"><span class="card-title" id="cardTitle2">Card 2</span><span class="card-serial" id="serial2">LVB-0002</span></div>
       <div class="b-grid" id="cardGrid2"></div>
     </div>
-    <div class="bingo-card" id="cardWrap3">
-      <div class="card-header-flex"><span class="card-title">Card 3</span><span class="card-serial" id="serial3">LVB-0003</span></div>
+    <div class="bingo-card" id="cardWrap3" data-watermark="⚡" data-mosaic="⚡ ⚡ ⚡">
+      <div class="card-header-flex"><span class="card-title" id="cardTitle3">Card 3</span><span class="card-serial" id="serial3">LVB-0003</span></div>
       <div class="b-grid" id="cardGrid3"></div>
     </div>
-    <div class="bingo-card" id="cardWrap4">
-      <div class="card-header-flex"><span class="card-title">Card 4</span><span class="card-serial" id="serial4">LVB-0004</span></div>
+    <div class="bingo-card" id="cardWrap4" data-watermark="⚡" data-mosaic="⚡ ⚡ ⚡">
+      <div class="card-header-flex"><span class="card-title" id="cardTitle4">Card 4</span><span class="card-serial" id="serial4">LVB-0004</span></div>
       <div class="b-grid" id="cardGrid4"></div>
     </div>
   </div>
@@ -472,6 +552,24 @@
   </div>
 
   <script>
+    // Theme Engine mapped directly to your local image files
+    const themes = {
+      classic: { name: "Electric Teal", short: "⚡ Electric Teal", icon: "⚡", mosaic: "⚡ ⚡ ⚡", wallpaper: "url('electrical teal.jpg')", border: "#00d2be", teal: "#00d2be", pink: "#ff2e93", dab: "#00d2be" },
+      christmas: { name: "Christmas", short: "🎄 Christmas", icon: "🎄", mosaic: "🎄 ⭐ 🎁", wallpaper: "url('christmas.jpg')", border: "#2ec4b6", teal: "#2ec4b6", pink: "#e71d36", dab: "#ff9f1c" },
+      thanksgiving: { name: "Thanksgiving", short: "🦃 Thanksgiving", icon: "🦃", mosaic: "🦃 🍂 🥧", wallpaper: "url('thanksgiving.jpg')", border: "#f4a261", teal: "#f4a261", pink: "#e76f51", dab: "#e9c46a" },
+      birthday: { name: "Birthday", short: "🎂 Birthday Party", icon: "🎂", mosaic: "🎂 🎈 🎁", wallpaper: "url('birthday.jpg')", border: "#ff70a6", teal: "#ff70a6", pink: "#ff9770", dab: "#ffd166" },
+      valentine: { name: "Valentine’s", short: "💖 Valentine's", icon: "💖", mosaic: "💖 🌹 ✨", wallpaper: "url('valentine.jpg')", border: "#ff758f", teal: "#ff758f", pink: "#ff3366", dab: "#ffccd5" },
+      stpatricks: { name: "St. Patrick’s", short: "🍀 St. Patrick's", icon: "🍀", mosaic: "🍀 🪙 ☘️", wallpaper: "url('st.patrick.jpg')", border: "#52b788", teal: "#52b788", pink: "#ffd166", dab: "#95d5b2" },
+      spring: { name: "Spring", short: "🌷 Spring Blossom", icon: "🌷", mosaic: "🌷 🐝 🌸", wallpaper: "url('spring.jpg')", border: "#48cae4", teal: "#48cae4", pink: "#ffb703", dab: "#90e0ef" },
+      summer: { name: "Summer", short: "☀️ Summer Luau", icon: "🌴", mosaic: "🌴 ☀️ 🍍", wallpaper: "url('summer.jpg')", border: "#64ffda", teal: "#64ffda", pink: "#ff007f", dab: "#f72585" },
+      autumn: { name: "Autumn", short: "🍂 Autumn Leaves", icon: "🍂", mosaic: "🍂 ☕ 🍁", wallpaper: "url('autumn.jpg')", border: "#d4a373", teal: "#d4a373", pink: "#bc6c25", dab: "#faedcd" },
+      cozyfall: { name: "Cozy Fall", short: "🍁 Cozy Fall", icon: "☕", mosaic: "🍁 ☕ 🍂", wallpaper: "url('cozy fall.jpg')", border: "#d4a373", teal: "#d4a373", pink: "#bc6c25", dab: "#faedcd" },
+      winter: { name: "Arctic Ice", short: "❄️ Winter Wonderland", icon: "❄️", mosaic: "❄️ ⛄ 🧊", wallpaper: "url('arctic ice.jpg')", border: "#00b4d8", teal: "#00b4d8", pink: "#90e0ef", dab: "#caf0f8" },
+      halloween: { name: "Halloween", short: "🎃 Halloween Theme", icon: "🎃", mosaic: "🎃 👻 🦇", wallpaper: "url('halloween.jpg')", border: "#ff7b00", teal: "#ff7b00", pink: "#b5179e", dab: "#f77f00" },
+      patriotic: { name: "Patriotic", short: "🇺🇸 Patriotic", icon: "⭐", mosaic: "🇺🇸 ⭐ 🎆", wallpaper: "url('patriotic.jpg')", border: "#38bdf8", teal: "#38bdf8", pink: "#fb7185", dab: "#facc15" },
+      happiness: { name: "Happiness", short: "✨ Happiness", icon: "✨", mosaic: "✨ 💖 🌻", wallpaper: "url('happiness.jpg')", border: "#ffd166", teal: "#ffd166", pink: "#ff007f", dab: "#00d2be" }
+    };
+
     let calledSet = new Set();
     let currentRound = 1;
     let currentRoundName = "Regular Bingo";
@@ -550,7 +648,6 @@
       document.getElementById("loginScreen").style.display = "none";
       generateAll4Cards();
 
-      // Push player check-in to Firebase so host sees them immediately
       if (window.database && window.dbPush) {
         window.dbPush(window.dbRef(window.database, 'players'), {
           name: playerFullName,
@@ -566,6 +663,35 @@
       document.documentElement.style.setProperty('--dab', color);
       document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
       el.classList.add('active');
+    }
+
+    function applyTheme(themeKey, customBannerText = "") {
+      const t = themes[themeKey] || themes.classic;
+      const root = document.documentElement;
+      root.style.setProperty('--body-wallpaper', t.wallpaper);
+      root.style.setProperty('--card-border', t.border);
+      root.style.setProperty('--teal', t.teal);
+      root.style.setProperty('--pink', t.pink);
+      root.style.setProperty('--dab', t.dab);
+
+      for (let i = 1; i <= 4; i++) {
+        const cardWrap = document.getElementById(`cardWrap${i}`);
+        cardWrap.style.backgroundImage = t.wallpaper;
+        cardWrap.style.backgroundSize = "cover";
+        cardWrap.style.backgroundPosition = "center";
+        cardWrap.setAttribute("data-watermark", t.icon);
+        cardWrap.setAttribute("data-mosaic", t.mosaic);
+        document.getElementById(`cardTitle${i}`).innerText = `${t.short} • Card ${i}`;
+      }
+
+      const banner = document.getElementById("customBanner");
+      const bannerText = document.getElementById("customBannerText");
+      if (customBannerText && customBannerText.trim() !== "") {
+        bannerText.innerText = customBannerText;
+        banner.style.display = "block";
+      } else {
+        banner.style.display = "none";
+      }
     }
 
     function filterCardView(view, btn) {
@@ -638,7 +764,7 @@
           tile.id = `c${cardNum}_${r}_${c}`;
           if (item.val === "FREE") {
             tile.classList.add("free", "dabbed");
-            tile.innerText = "FREE";
+            tile.innerText = "★ SPACE ★";
           } else {
             tile.innerText = item.val;
             if (item.dabbed) tile.classList.add("dabbed");
@@ -671,6 +797,13 @@
 
       if (data.roomPin) activeSessionPin = String(data.roomPin).trim();
       if (data.lobbyLocked !== undefined) isLobbyLocked = data.lobbyLocked === true;
+
+      // Handle Theme and Custom Banner updates from host
+      if (data.theme) {
+        applyTheme(data.theme, data.customBanner || "");
+      } else if (data.customBanner !== undefined) {
+        applyTheme('classic', data.customBanner);
+      }
 
       if (data.game) {
         currentRound = data.game.round;
@@ -822,7 +955,6 @@
     }
 
     function claimBingo() {
-      // STRICT SAFEGUARD: Prevent false bingo claims before any balls have been called
       if (calledSet.size === 0) {
         alert("The game has not started yet! Wait for the host to draw numbers.");
         return;
@@ -869,10 +1001,8 @@
     }
 
     function checkWin(matrix, round) {
-      // STRICT SAFEGUARD: Zero called balls means no win is ever valid
       if (calledSet.size === 0) return false;
 
-      // STRICT SAFEGUARD: Ensure every single dabbed tile (except FREE) exists in calledSet
       for (let r = 0; r < 5; r++) {
         for (let c = 0; c < 5; c++) {
           const tile = matrix[r][c];
