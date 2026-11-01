@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -127,14 +126,14 @@
 
     .guest-list-input {
       width: 100%;
-      height: 50px;
+      height: 70px;
       background: #060812;
       border: 1px solid rgba(255,255,255,0.15);
       border-radius: 8px;
       color: #fff;
-      padding: 8px;
-      font-size: 12px;
-      margin-top: 6px;
+      padding: 10px;
+      font-size: 13px;
+      margin-top: 8px;
       resize: vertical;
     }
 
@@ -157,14 +156,25 @@
       border: 1px solid rgba(0,210,190,0.2);
     }
 
-    /* Bold White Banners & Counters */
-    .bold-white-banner {
-      color: #ffffff !important;
-      font-weight: 900 !important;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    .pattern-btn-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
     }
+    .p-btn {
+      background: #060812;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #fff;
+      padding: 10px 8px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      text-align: center;
+    }
+    .p-btn.active { background: var(--teal); color: #06111a; border-color: var(--teal); }
 
-    /* 3D Animated & Vibrating Tumbler Machine */
     .tumbler-container {
       display: flex;
       flex-direction: column;
@@ -176,44 +186,44 @@
       width: 200px;
       height: 200px;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, rgba(20, 30, 60, 0.95), rgba(5, 8, 20, 0.99));
-      border: 5px solid var(--teal);
-      box-shadow: inset 0 0 35px rgba(0, 210, 190, 0.5), 0 0 30px rgba(0, 210, 190, 0.4), 0 10px 20px rgba(0,0,0,0.5);
+      background: radial-gradient(circle at 30% 30%, rgba(20, 30, 60, 0.9), rgba(5, 8, 20, 0.98));
+      border: 4px solid var(--teal);
+      box-shadow: inset 0 0 30px rgba(0, 210, 190, 0.4), 0 0 25px rgba(0, 210, 190, 0.3);
       position: relative;
       overflow: hidden;
       margin-bottom: 16px;
       transform-style: preserve-3d;
-      perspective: 600px;
+      perspective: 800px;
     }
-    .tumbler-cage.spinning-3d {
-      animation: spin3D 0.35s infinite linear, vibrateMachine 0.12s infinite ease-in-out;
+    .tumbler-cage.spinning {
+      animation: spinCage 0.2s infinite linear, vibrateCage 0.08s infinite ease-in-out;
       border-color: var(--pink);
     }
-    @keyframes spin3D {
+    @keyframes spinCage {
       0% { transform: rotate(0deg) rotateX(0deg); }
       50% { transform: rotate(180deg) rotateX(15deg); }
       100% { transform: rotate(360deg) rotateX(0deg); }
     }
-    @keyframes vibrateMachine {
-      0% { transform: translate(0, 0) rotate(0deg); }
-      20% { transform: translate(-3px, 2px) rotate(-1deg); }
-      40% { transform: translate(3px, -2px) rotate(1deg); }
-      60% { transform: translate(-2px, -2px) rotate(0deg); }
-      80% { transform: translate(2px, 3px) rotate(1deg); }
-      100% { transform: translate(0, 0) rotate(0deg); }
+    @keyframes vibrateCage {
+      0% { transform: translate(0, 0); }
+      20% { transform: translate(-3px, 2px); }
+      40% { transform: translate(3px, -2px); }
+      60% { transform: translate(-2px, -3px); }
+      80% { transform: translate(2px, 3px); }
+      100% { transform: translate(0, 0); }
     }
     .tumbler-ball {
       position: absolute;
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 13px;
+      font-size: 12px;
       color: #060812;
-      box-shadow: inset -3px -3px 8px rgba(0,0,0,0.4), 0 4px 6px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
 
     .ball-spotlight {
@@ -226,41 +236,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      text-shadow: 0 0 15px rgba(255, 46, 147, 0.4);
     }
 
     .action-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 
-    /* Floating Side Popup for Winners */
-    #winnerPopupContainer {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-width: 340px;
-      width: 100%;
-    }
-    .winner-popup-card {
-      background: rgba(19, 23, 44, 0.95);
-      border: 2px solid var(--pink);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(255, 46, 147, 0.4);
-      border-radius: 12px;
-      padding: 16px;
-      animation: slideInRight 0.3s ease-out forwards;
-      backdrop-filter: blur(8px);
-    }
-    @keyframes slideInRight {
-      from { transform: translateX(120%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-
     .claims-log {
-      max-height: 220px;
+      max-height: 180px;
       overflow-y: auto;
-      margin-top: 8px;
+      margin-top: 10px;
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -274,9 +257,14 @@
       justify-content: space-between;
       align-items: center;
       gap: 10px;
+      animation: flashAlert 0.8s infinite alternate;
     }
-    .claim-valid { border-color: var(--teal); background: rgba(0,210,190,0.1); }
-    .claim-invalid { border-color: #e53e3e; background: rgba(229,62,62,0.15); }
+    @keyframes flashAlert {
+      0% { border-color: var(--pink); background: rgba(255,46,147,0.15); }
+      100% { border-color: var(--teal); background: rgba(0,210,190,0.15); }
+    }
+    .claim-valid { border-color: var(--teal); background: rgba(0,210,190,0.06); animation: none; }
+    .claim-invalid { border-color: #e53e3e; background: rgba(229,62,62,0.1); animation: none; }
 
     .master-grid {
       display: grid;
@@ -294,22 +282,15 @@
       color: var(--muted);
       border: 1px solid rgba(255,255,255,0.04);
     }
-    .grid-num.called { background: var(--teal); color: #06111a; border-color: var(--teal); font-weight: 900; }
+    .grid-num.called { background: var(--teal); color: #06111a; border-color: var(--teal); }
 
-    /* Right Sidebar Stack Container */
-    .right-sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      position: sticky;
-      top: 20px;
-    }
-
-    .inspector-panel {
+    #sideInspectorPanel {
       background: var(--card-bg);
       border-radius: 12px;
       padding: 20px;
       border: 2px solid var(--teal);
+      position: sticky;
+      top: 20px;
     }
     .inspector-grid {
       display: grid;
@@ -328,8 +309,15 @@
       font-weight: 900;
       border: 1px solid rgba(255,255,255,0.06);
     }
-    .insp-tile.free { background: rgba(255,46,147,0.25); color: var(--pink); font-size: 10px; }
+    .insp-tile.free { background: rgba(255,46,147,0.2); color: var(--pink); font-size: 10px; }
     .insp-tile.dabbed { background: var(--teal); color: #06111a; }
+
+    /* Bold white numbers away banner styling */
+    .numbers-away-banner {
+      color: #ffffff !important;
+      font-weight: bold !important;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    }
   </style>
 
   <!-- Firebase SDKs -->
@@ -394,9 +382,6 @@
         const cleanTag = (msg.cashtag || "").toLowerCase().trim();
         const isVerified = window.paidGuestList && window.paidGuestList.some(guest => cleanName.includes(guest) || cleanTag.includes(guest) || guest.includes(cleanName));
 
-        // Show floating winner popup on the side
-        showWinnerPopup(msg.name, msg.cardNum, msg.serialNum, isVerified);
-
         const item = document.createElement("div");
         item.className = `claim-item ${isVerified ? 'claim-valid' : 'claim-invalid'}`;
         item.id = snapshot.key;
@@ -406,15 +391,15 @@
 
         item.innerHTML = `
           <div>
-            <strong class="bold-white-banner" style="font-size: 13px;">🚨 BINGO: ${msg.name}</strong> 
-            <span style="color: var(--teal); font-size: 12px;">(${msg.cashtag})</span><br>
-            <span class="bold-white-banner" style="font-size: 11px; color: var(--yellow);">Card #${msg.cardNum} (${msg.serialNum || 'No Serial'})</span>
+            <strong style="color: #fff; font-size: 12px;">🚨 ${msg.name}</strong> 
+            <span style="color: var(--teal); font-size: 11px;">(${msg.cashtag})</span><br>
+            <span style="color: var(--yellow); font-size: 11px;">Card #${msg.cardNum} (${msg.serialNum || 'N/A'})</span>
           </div>
           <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-end;">
-            ${isVerified ? '<span style="color: var(--teal); font-weight: 800; font-size: 11px;">✓ PAID</span>' : '<span style="color: #fc8181; font-weight: 800; font-size: 11px;">⚠️ UNVERIFIED</span>'}
+            ${isVerified ? '<span style="color: var(--teal); font-weight: 800; font-size: 10px;">✓ PAID</span>' : '<span style="color: #fc8181; font-weight: 800; font-size: 10px;">⚠️ UNVERIFIED</span>'}
             <div style="display:flex; gap:6px;">
-              <button class="btn btn-teal" style="padding: 4px 8px; font-size: 11px;" onclick="inspectPlayerCardSide('${claimId}', ${msg.cardNum})">🔍 Inspect</button>
-              <button class="btn btn-danger" style="padding: 4px 6px; font-size: 11px;" onclick="clearSingleClaim('${snapshot.key}')">✕</button>
+              <button class="btn btn-teal" style="padding: 2px 6px; font-size: 10px;" onclick="inspectPlayerCardSide('${claimId}', ${msg.cardNum})">🔍 Inspect</button>
+              <button class="btn btn-danger" style="padding: 2px 4px; font-size: 10px;" onclick="clearSingleClaim('${snapshot.key}')">✕</button>
             </div>
           </div>
         `;
@@ -436,15 +421,12 @@
       set(ref(db, 'claims'), null).then(() => {
         document.getElementById("claimsLog").innerHTML = "";
         document.getElementById("claimsSection").style.display = "none";
-        document.getElementById("sideInspectorContent").innerHTML = `<p style="color: var(--muted); font-size: 13px; text-align: center;">Click 'Inspect' on any incoming bingo claim to review their card here.</p>`;
+        document.getElementById("sideInspectorContent").innerHTML = `<p style="color: var(--muted); font-size: 12px; text-align: center;">Click 'Inspect' on any incoming bingo claim to review their card here.</p>`;
       });
     };
   </script>
 </head>
 <body>
-
-  <!-- Floating Side Popup Container for Winners -->
-  <div id="winnerPopupContainer"></div>
 
   <!-- Secure PIN Lock Screen Overlay -->
   <div id="lockScreen">
@@ -460,8 +442,8 @@
   <div class="container" id="mainDashboard" style="display: none;">
     <div class="top-bar">
       <div>
-        <h1 style="font-size: 24px; color: var(--teal);" class="bold-white-banner">LiveVibe Caller Station</h1>
-        <span class="badge bold-white-banner" id="lobbyStatusBadge">● Lobby Open (Players Joining)</span>
+        <h1 style="font-size: 24px; color: var(--teal);">LiveVibe Caller Station</h1>
+        <span class="badge" id="lobbyStatusBadge">● Lobby Open (Players Joining)</span>
       </div>
       <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
         <div class="top-input-box">
@@ -487,31 +469,19 @@
     <div class="main-layout">
       <!-- Left Column -->
       <div>
-        <!-- Live Joined Players Roster -->
+        <!-- Stripe Paid Roster (Moved Above Banner for Privacy Screen Sharing) -->
         <div class="section-card">
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="font-size: 14px; color: var(--teal); text-transform: uppercase;">Joined Players Roster</h3>
-            <span class="bold-white-banner" style="font-size: 12px; color: var(--muted);" id="playerCountBadge">0 Players Checked In</span>
+            <h3 style="font-size: 14px; color: var(--teal); text-transform: uppercase;">Stripe Paid Ticket Roster</h3>
+            <span style="font-size: 12px; color: var(--muted);" id="rosterCount">0 Paid Attendees Loaded</span>
           </div>
-          <div class="joined-players-box" id="joinedPlayersRoster">
-            <span style="color: var(--muted); font-size: 12px; font-style: italic;">No players joined yet...</span>
-          </div>
-        </div>
-
-        <!-- Stripe Paid Roster (Placed Above Banner Control Card) -->
-        <div class="section-card">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <h3 style="font-size: 14px; color: var(--teal); text-transform: uppercase;">Stripe Paid Roster</h3>
-            <span class="bold-white-banner" style="font-size: 11px; color: var(--muted);" id="rosterCount">0 Loaded</span>
-          </div>
-          <p class="bold-white-banner" style="font-size: 11px; color: var(--muted); margin-bottom: 6px;">Paste attendee names or tags here to verify paid players privately.</p>
-          <textarea id="guestListArea" class="guest-list-input" placeholder="e.g. Mary Johnson, $MaryWins" onchange="updateGuestList()" style="height: 50px;"></textarea>
+          <textarea id="guestListArea" class="guest-list-input" placeholder="e.g. Mary Johnson, David Miller, Sarah Lee, $MaryWins" onchange="updateGuestList()"></textarea>
         </div>
 
         <!-- Custom Banner Broadcast Control Card -->
         <div class="section-card">
           <h3 style="font-size: 14px; color: var(--yellow); text-transform: uppercase; margin-bottom: 8px;">🎉 Custom Banner Broadcast</h3>
-          <p class="bold-white-banner" style="font-size: 12px; margin-bottom: 10px;">Type a custom message (e.g., "Happy Birthday Mary!") to display in bold white across all player screens.</p>
+          <p style="color: var(--muted); font-size: 12px; margin-bottom: 10px;">Type a custom message (e.g., "Happy Birthday Mary!") to display across all player screens.</p>
           <div style="display: flex; gap: 8px;">
             <input type="text" id="customBannerInput" placeholder="e.g. Happy Birthday Mary!" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: #060812; color: #fff; font-size: 14px; outline: none;">
             <button class="btn btn-pink" style="padding: 10px 16px;" onclick="sync()">Push Banner</button>
@@ -519,51 +489,11 @@
           </div>
         </div>
 
+        <!-- Theme Selector Dropdown & Quick Buttons -->
         <div class="section-card">
-          <h3 style="font-size: 15px; color: var(--muted); text-transform: uppercase;">Active Round & Cash Prize</h3>
-          <div class="pattern-btn-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 12px;">
-            <button class="btn btn-teal" onclick="setGame(1, 'Regular Bingo', '$25', this)" id="gameBtn1">Game 1: Regular ($25)</button>
-            <button class="btn" style="background:#060812; color:#fff;" onclick="setGame(2, 'Regular Bingo', '$25', this)" id="gameBtn2">Game 2: Regular ($25)</button>
-            <button class="btn" style="background:#060812; color:#fff;" onclick="setGame(3, '4 Corners', '$25', this)" id="gameBtn3">Game 3: 4 Corners ($25)</button>
-            <button class="btn" style="background:#060812; color:#fff;" onclick="setGame(4, 'Double Bingo', '$50', this)" id="gameBtn4">Game 4: Double ($50)</button>
-            <button class="btn" style="background:#060812; color:#fff;" onclick="setGame(5, 'Coverall', '$150', this)" id="gameBtn5">Game 5: Coverall ($150)</button>
-          </div>
-        </div>
-
-        <!-- 3D Animated & Vibrating Tumbler Cage -->
-        <div class="section-card tumbler-container">
-          <div class="tumbler-cage" id="tumblerCage">
-            <div class="tumbler-ball" style="background:#00d2be; top:35px; left:45px;">B</div>
-            <div class="tumbler-ball" style="background:#ff2e93; top:75px; left:120px;">I</div>
-            <div class="tumbler-ball" style="background:#f8c028; top:120px; left:35px;">N</div>
-            <div class="tumbler-ball" style="background:#9d4edd; top:130px; left:130px;">G</div>
-            <div class="tumbler-ball" style="background:#ff7a00; top:55px; left:85px;">O</div>
-          </div>
-
-          <div class="ball-spotlight" id="hostBall">-</div>
-          
-          <div class="action-row">
-            <button class="btn btn-teal" id="drawBtn" style="font-size: 16px; padding: 14px 28px;" onclick="shakeAndDraw()">Shake & Draw Ball</button>
-            <button class="btn" style="background: #3182ce; color: #fff;" onclick="nextGame()">Next Game (Keep Players)</button>
-            <button class="btn btn-danger" onclick="resetNewSession()">New Session (Wipe Players)</button>
-          </div>
-        </div>
-
-        <div class="section-card">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="font-size: 15px; color: var(--muted); text-transform: uppercase;">Master 75-Ball Board</h3>
-            <span id="callCounter" class="bold-white-banner" style="font-size: 14px; color: var(--teal);">0 / 75 Drawn</span>
-          </div>
-          <div class="master-grid" id="masterGrid"></div>
-        </div>
-      </div>
-
-      <!-- Right Column: Reordered Sidebar Stack -->
-      <div class="right-sidebar">
-        <!-- Event Theme Selector Dropdown Menu -->
-        <div class="section-card" style="margin-bottom: 0;">
           <h3 style="font-size: 14px; color: var(--teal); text-transform: uppercase; margin-bottom: 8px;">🎨 Active Event Theme</h3>
-          <select id="themeDropdown" onchange="changeThemeFromDropdown(this.value)" style="width: 100%; padding: 10px; border-radius: 8px; background: #060812; color: var(--teal); font-weight: 900; font-size: 14px; border: 1px solid rgba(0,210,190,0.3); outline: none; cursor: pointer;">
+          <p style="color: var(--muted); font-size: 12px; margin-bottom: 10px;">Select theme via dropdown or quick buttons:</p>
+          <select id="themeDropdown" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: #060812; color: #fff; font-size: 14px; font-weight: 700; margin-bottom: 12px; outline: none;" onchange="setThemeDropdown(this.value)">
             <option value="classic">⚡ Electric Teal</option>
             <option value="christmas">🎄 Christmas</option>
             <option value="thanksgiving">🦃 Thanksgiving</option>
@@ -579,24 +509,90 @@
             <option value="patriotic">🇺🇸 Patriotic</option>
             <option value="happiness">✨ Happiness</option>
           </select>
-        </div>
 
-        <!-- Card Inspector Panel -->
-        <div class="inspector-panel" id="sideInspectorPanel">
-          <h3 style="color: var(--teal); font-size: 14px; margin-bottom: 4px; text-transform: uppercase;" class="bold-white-banner">🔍 Card Inspector</h3>
-          <p style="color: var(--muted); font-size: 11px; margin-bottom: 10px;">Inspect winning player cards side-by-side.</p>
-          <div id="sideInspectorContent">
-            <p style="color: var(--muted); font-size: 12px; text-align: center; padding: 25px 0;">Click 'Inspect' on any incoming bingo claim.</p>
+          <div class="pattern-btn-grid" id="themeSelectorGrid">
+            <button class="p-btn active" onclick="setTheme('classic', this)">⚡ Electric Teal</button>
+            <button class="p-btn" onclick="setTheme('christmas', this)">🎄 Christmas</button>
+            <button class="p-btn" onclick="setTheme('thanksgiving', this)">🦃 Thanksgiving</button>
+            <button class="p-btn" onclick="setTheme('birthday', this)">🎂 Birthday</button>
+            <button class="p-btn" onclick="setTheme('valentine', this)">💖 Valentine’s</button>
+            <button class="p-btn" onclick="setTheme('stpatricks', this)">🍀 St. Patrick’s</button>
+            <button class="p-btn" onclick="setTheme('spring', this)">🌷 Spring</button>
+            <button class="p-btn" onclick="setTheme('summer', this)">☀️ Summer</button>
+            <button class="p-btn" onclick="setTheme('autumn', this)">🍂 Autumn</button>
+            <button class="p-btn" onclick="setTheme('cozyfall', this)">🍁 Cozy Fall</button>
+            <button class="p-btn" onclick="setTheme('winter', this)">❄️ Arctic Ice</button>
+            <button class="p-btn" onclick="setTheme('halloween', this)">🎃 Halloween</button>
+            <button class="p-btn" onclick="setTheme('patriotic', this)">🇺🇸 Patriotic</button>
+            <button class="p-btn" onclick="setTheme('happiness', this)">✨ Happiness</button>
           </div>
         </div>
 
-        <!-- Live Bingo Claims Log (Placed Below Card Inspector) -->
-        <div class="section-card" id="claimsSection" style="display: none; margin-bottom: 0;">
+        <!-- Live Joined Players Roster -->
+        <div class="section-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="font-size: 14px; color: var(--teal); text-transform: uppercase;">Joined Players Roster</h3>
+            <span style="font-size: 12px; color: var(--muted); font-weight: 700;" id="playerCountBadge">0 Players Checked In</span>
+          </div>
+          <div class="joined-players-box" id="joinedPlayersRoster">
+            <span style="color: var(--muted); font-size: 12px; font-style: italic;">No players joined yet...</span>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <h3 style="font-size: 15px; color: var(--muted); text-transform: uppercase;">Active Round & Cash Prize</h3>
+          <div class="pattern-btn-grid">
+            <button class="p-btn active" onclick="setGame(1, 'Regular Bingo', '$25', this)">Game 1: Regular ($25)</button>
+            <button class="p-btn" onclick="setGame(2, 'Regular Bingo', '$25', this)">Game 2: Regular ($25)</button>
+            <button class="p-btn" onclick="setGame(3, '4 Corners', '$25', this)">Game 3: 4 Corners ($25)</button>
+            <button class="p-btn" onclick="setGame(4, 'Double Bingo', '$50', this)">Game 4: Double ($50)</button>
+            <button class="p-btn" onclick="setGame(5, 'Coverall', '$150', this)">Game 5: Coverall ($150)</button>
+          </div>
+        </div>
+
+        <!-- Tumbler Cage -->
+        <div class="section-card tumbler-container">
+          <div class="tumbler-cage" id="tumblerCage">
+            <div class="tumbler-ball" style="background:#00d2be; top:30px; left:40px;">B</div>
+            <div class="tumbler-ball" style="background:#ff2e93; top:70px; left:110px;">I</div>
+            <div class="tumbler-ball" style="background:#f8c028; top:110px; left:30px;">N</div>
+            <div class="tumbler-ball" style="background:#9d4edd; top:120px; left:120px;">G</div>
+            <div class="tumbler-ball" style="background:#ff7a00; top:50px; left:80px;">O</div>
+          </div>
+
+          <div class="ball-spotlight" id="hostBall">-</div>
+          
+          <div class="action-row">
+            <button class="btn btn-teal" id="drawBtn" style="font-size: 16px; padding: 14px 28px;" onclick="shakeAndDraw()">Shake & Draw Ball</button>
+            <button class="btn" style="background: #3182ce; color: #fff;" onclick="nextGame()">Next Game (Keep Players)</button>
+            <button class="btn btn-danger" onclick="resetNewSession()">New Session (Wipe Players)</button>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="font-size: 15px; color: var(--muted); text-transform: uppercase;">Master 75-Ball Board</h3>
+            <span id="callCounter" class="numbers-away-banner" style="font-size: 14px;">0 / 75 Drawn</span>
+          </div>
+          <div class="master-grid" id="masterGrid"></div>
+        </div>
+      </div>
+
+      <!-- Right Column: Card Inspector & Bingo Claims Popup Below -->
+      <div id="sideInspectorPanel">
+        <h3 style="color: var(--teal); font-size: 15px; margin-bottom: 4px; text-transform: uppercase;">🔍 Card Inspector</h3>
+        <p style="color: var(--muted); font-size: 11px; margin-bottom: 12px;">Inspect winning player cards side-by-side.</p>
+        <div id="sideInspectorContent">
+          <p style="color: var(--muted); font-size: 12px; text-align: center; padding: 40px 0;">Click 'Inspect' on any incoming bingo claim to review their card here.</p>
+        </div>
+
+        <!-- Bingo Claims Section located below Card Inspector in the right sidebar -->
+        <div class="section-card" id="claimsSection" style="display: none; margin-top: 20px; margin-bottom: 0;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <h3 style="font-size: 14px; color: var(--pink); text-transform: uppercase;" class="bold-white-banner">🚨 Bingo Claims Log</h3>
-            <button class="btn btn-danger" style="padding: 3px 8px; font-size: 10px;" onclick="clearAllClaims()">Clear All</button>
+            <h3 style="font-size: 13px; color: var(--pink); text-transform: uppercase;">🚨 Bingo Claims</h3>
+            <button class="btn btn-danger" style="padding: 2px 6px; font-size: 10px;" onclick="clearAllClaims()">Clear</button>
           </div>
-          <div class="claims-log" id="claimsLog"></div>
+          <div class="claims-log" id="claimsLog" style="max-height: 220px;"></div>
         </div>
       </div>
     </div>
@@ -662,19 +658,17 @@
       sync();
     }
 
-    // Toggle Caller Voice & Live Audio Mute/Unmute Logic
     function toggleCallerVoice() {
       callerVoiceEnabled = !callerVoiceEnabled;
       const btn = document.getElementById("voiceToggleBtn");
       if (callerVoiceEnabled) {
         btn.innerText = "🔊 Voice: ON";
         btn.style.background = "#2d3748";
+        if ('speechSynthesis' in window) window.speechSynthesis.resume();
       } else {
         btn.innerText = "🔇 Voice: MUTED";
         btn.style.background = "#e53e3e";
-        if ('speechSynthesis' in window) {
-          window.speechSynthesis.cancel();
-        }
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       }
     }
 
@@ -686,7 +680,7 @@
     function updateGuestList() {
       const val = document.getElementById("guestListArea").value;
       window.paidGuestList = val.split(/[,\n]/).map(s => s.trim().toLowerCase()).filter(Boolean);
-      document.getElementById("rosterCount").innerText = `${window.paidGuestList.length} Loaded`;
+      document.getElementById("rosterCount").innerText = `${window.paidGuestList.length} Paid Roster Loaded`;
     }
 
     function toggleDoorLock() {
@@ -695,18 +689,34 @@
       const btn = document.getElementById("toggleLockBtn");
       if (isLobbyLocked) {
         badge.innerText = "● Doors Locked";
-        badge.className = "badge badge-locked bold-white-banner";
+        badge.className = "badge badge-locked";
         btn.innerText = "Re-Open Doors";
       } else {
         badge.innerText = "● Lobby Open";
-        badge.className = "badge bold-white-banner";
+        badge.className = "badge";
         btn.innerText = "Lock Out Late Players";
       }
       sync();
     }
 
-    function changeThemeFromDropdown(themeKey) {
+    function setTheme(themeKey, btn) {
+      document.querySelectorAll("#themeSelectorGrid .p-btn").forEach(b => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
       currentTheme = themeKey;
+      const dropdown = document.getElementById("themeDropdown");
+      if (dropdown) dropdown.value = themeKey;
+      sync();
+    }
+
+    function setThemeDropdown(themeKey) {
+      currentTheme = themeKey;
+      document.querySelectorAll("#themeSelectorGrid .p-btn").forEach(b => {
+        if (b.getAttribute("onclick") && b.getAttribute("onclick").includes(`'${themeKey}'`)) {
+          b.classList.add("active");
+        } else {
+          b.classList.remove("active");
+        }
+      });
       sync();
     }
 
@@ -714,6 +724,7 @@
       const input = document.getElementById("customBannerInput");
       if (input) input.value = "";
       sync();
+      alert("Banner cleared from player screens.");
     }
 
     function initGrid() {
@@ -751,21 +762,21 @@
 
       drawBtn.disabled = true;
       drawBtn.style.opacity = "0.6";
-      cage.classList.add("spinning-3d");
+      cage.classList.add("spinning");
       spotlight.innerText = "Shaking...";
       spotlight.style.color = "var(--teal)";
 
       const balls = document.querySelectorAll(".tumbler-ball");
       const shakeInterval = setInterval(() => {
         balls.forEach(b => {
-          b.style.top = `${Math.floor(Math.random() * 130) + 15}px`;
-          b.style.left = `${Math.floor(Math.random() * 130) + 15}px`;
+          b.style.top = `${Math.floor(Math.random() * 120) + 20}px`;
+          b.style.left = `${Math.floor(Math.random() * 120) + 20}px`;
         });
-      }, 50);
+      }, 70);
 
       setTimeout(() => {
         clearInterval(shakeInterval);
-        cage.classList.remove("spinning-3d");
+        cage.classList.remove("spinning");
         
         let n;
         do {
@@ -789,19 +800,16 @@
         isDrawing = false;
         drawBtn.disabled = false;
         drawBtn.style.opacity = "1";
-      }, 1500);
+      }, 1400);
     }
 
     function setGame(round, name, prize, btn) {
-      for(let i=1; i<=5; i++) {
-        const b = document.getElementById(`gameBtn${i}`);
-        if(b) {
-          b.style.background = "#060812";
-          b.classList.remove("btn-teal");
+      document.querySelectorAll(".section-card .p-btn").forEach(b => {
+        if (b.getAttribute("onclick") && b.getAttribute("onclick").includes("setGame")) {
+          b.classList.remove("active");
         }
-      }
-      btn.style.background = "";
-      btn.classList.add("btn-teal");
+      });
+      btn.classList.add("active");
       currentGame = { round, name, prize };
       sync();
     }
@@ -835,26 +843,6 @@
       }
 
       sync("RESET_SESSION");
-    }
-
-    // Floating side popup notifications for winners
-    function showWinnerPopup(playerName, cardNum, serialNum, isVerified) {
-      const container = document.getElementById("winnerPopupContainer");
-      const card = document.createElement("div");
-      card.className = "winner-popup-card";
-      card.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:6px;">
-          <span style="color:var(--pink); font-weight:900; font-size:12px; text-transform:uppercase;">🚨 BINGO CLAIMED!</span>
-          <button onclick="this.parentElement.parentElement.remove()" style="background:none; border:none; color:#fff; font-size:14px; cursor:pointer;">&times;</button>
-        </div>
-        <p class="bold-white-banner" style="font-size:14px; margin-bottom:4px;">${playerName}</p>
-        <p class="bold-white-banner" style="font-size:12px; color:var(--yellow);">Card #${cardNum} (${serialNum || 'No Serial'})</p>
-        <p style="margin-top:6px; font-size:11px; font-weight:800; color:${isVerified ? 'var(--teal)' : '#fc8181'}">${isVerified ? '✓ PAID ATTENDEE' : '⚠️ UNVERIFIED ATTENDEE'}</p>
-      `;
-      container.appendChild(card);
-      setTimeout(() => {
-        if(card.parentElement) card.remove();
-      }, 7000);
     }
 
     function sync(latest = null) {

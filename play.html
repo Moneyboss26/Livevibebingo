@@ -212,15 +212,15 @@
       backdrop-filter: blur(8px);
       text-align: center;
       padding: 10px;
-      font-weight: 900;
+      font-weight: bold;
       font-size: 15px;
-      color: #ffffff;
+      color: #ffffff !important;
       border-bottom: 1px solid rgba(255,255,255,0.06);
       letter-spacing: 0.5px;
       text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
-    .status-banner.need-one { background: rgba(248,192,40,0.3); color: #ffffff; border-bottom: 1px solid var(--yellow); }
-    .status-banner.bingo-ready { background: rgba(255,46,147,0.4); color: #ffffff; border-bottom: 2px solid var(--pink); animation: pulseReady 1s infinite alternate; }
+    .status-banner.need-one { background: rgba(248,192,40,0.3); color: #ffffff !important; border-bottom: 1px solid var(--yellow); }
+    .status-banner.bingo-ready { background: rgba(255,46,147,0.4); color: #ffffff !important; border-bottom: 2px solid var(--pink); animation: pulseReady 1s infinite alternate; }
     @keyframes pulseReady {
       0% { opacity: 0.85; }
       100% { opacity: 1; }
@@ -817,6 +817,13 @@
         document.getElementById("activeBall").innerText = "-";
         document.getElementById("ballAnnounce").innerText = "Next Game Started (Same Cards)";
         document.getElementById("calledRack").innerHTML = '<span style="color: var(--muted); font-size: 12px;">New game</span>';
+        
+        if (data.game) {
+          currentRound = data.game.round;
+          currentRoundName = data.game.name;
+          currentPrize = data.game.prize;
+          document.getElementById("gamePatternDisplay").innerText = `Game ${currentRound}: ${currentRoundName} (${currentPrize})`;
+        }
         
         cards.forEach(matrix => {
           matrix.forEach(row => {
