@@ -212,16 +212,17 @@
       backdrop-filter: blur(8px);
       text-align: center;
       padding: 10px;
-      font-weight: 800;
-      font-size: 14px;
-      color: var(--muted);
+      font-weight: 900;
+      font-size: 15px;
+      color: #ffffff;
       border-bottom: 1px solid rgba(255,255,255,0.06);
       letter-spacing: 0.5px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
     }
-    .status-banner.need-one { background: rgba(248,192,40,0.25); color: var(--yellow); border-bottom: 1px solid var(--yellow); }
-    .status-banner.bingo-ready { background: rgba(255,46,147,0.3); color: var(--pink); border-bottom: 2px solid var(--pink); animation: pulseReady 1s infinite alternate; }
+    .status-banner.need-one { background: rgba(248,192,40,0.3); color: #ffffff; border-bottom: 1px solid var(--yellow); }
+    .status-banner.bingo-ready { background: rgba(255,46,147,0.4); color: #ffffff; border-bottom: 2px solid var(--pink); animation: pulseReady 1s infinite alternate; }
     @keyframes pulseReady {
-      0% { opacity: 0.8; }
+      0% { opacity: 0.85; }
       100% { opacity: 1; }
     }
 
@@ -257,7 +258,6 @@
       gap: 18px;
     }
     
-    /* THEMED BINGO CARDS WITH LOCAL IMAGE BACKDROPS & WATERMARKS */
     .bingo-card {
       background: var(--card-bg);
       background-image: var(--card-wallpaper);
@@ -798,7 +798,6 @@
       if (data.roomPin) activeSessionPin = String(data.roomPin).trim();
       if (data.lobbyLocked !== undefined) isLobbyLocked = data.lobbyLocked === true;
 
-      // Handle Theme and Custom Banner updates from host
       if (data.theme) {
         applyTheme(data.theme, data.customBanner || "");
       } else if (data.customBanner !== undefined) {
@@ -960,11 +959,10 @@
         return;
       }
 
-      let winningCardNum = null;
+      let winningCardNumbers = [];
       for (let i = 0; i < 4; i++) {
         if (checkWin(cards[i], currentRound)) {
-          winningCardNum = i + 1;
-          break;
+          winningCardNumbers.push(i + 1);
         }
       }
 
@@ -972,26 +970,28 @@
       const title = document.getElementById("modalTitle");
       const desc = document.getElementById("modalDesc");
 
-      if (winningCardNum) {
+      if (winningCardNumbers.length > 0) {
         title.innerText = "BINGO CONFIRMED!";
         title.style.color = "var(--teal)";
-        desc.innerText = `Verified ${currentRoundName} on Card #${winningCardNum} (${cardSerials[winningCardNum-1]})! Sent to host console.`;
+        desc.innerText = `Verified ${currentRoundName} on Card(s) #${winningCardNumbers.join(', #')}! Sent to host console.`;
 
-        if (window.database && window.dbPush) {
-          window.dbPush(window.dbRef(window.database, 'claims'), {
-            type: "BINGO_CLAIM",
-            name: playerFullName,
-            cashtag: playerCashtag,
-            cardNum: winningCardNum,
-            serialNum: cardSerials[winningCardNum-1],
-            roundName: currentRoundName,
-            prize: currentPrize,
-            playerPasscode: activeSessionPin,
-            cardsSnapshot: cards,
-            cardSerials: cardSerials,
-            time: Date.now()
-          });
-        }
+        winningCardNumbers.forEach(cardNum => {
+          if (window.database && window.dbPush) {
+            window.dbPush(window.dbRef(window.database, 'claims'), {
+              type: "BINGO_CLAIM",
+              name: playerFullName,
+              cashtag: playerCashtag,
+              cardNum: cardNum,
+              serialNum: cardSerials[cardNum-1],
+              roundName: currentRoundName,
+              prize: currentPrize,
+              playerPasscode: activeSessionPin,
+              cardsSnapshot: cards,
+              cardSerials: cardSerials,
+              time: Date.now() + Math.random()
+            });
+          }
+        });
       } else {
         title.innerText = "Keep Playing!";
         title.style.color = "var(--pink)";
