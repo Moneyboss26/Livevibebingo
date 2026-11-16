@@ -191,13 +191,13 @@
       border: 1px solid var(--teal);
     }
 
-    /* VDO.Ninja Live Video Lounge (Host Stream + Optional Player Lounge) */
+    /* VDO.Ninja Live Video Lounge (Host Screen Share + Optional Player Lounge) */
     .video-lounge-bar {
       background: rgba(11, 15, 32, 0.96);
       backdrop-filter: blur(8px);
       padding: 12px 20px;
       border-bottom: 2px solid var(--pink);
-      display: none; /* Auto-shows when Host turns on LiveVibeHost cam */
+      display: none;
     }
     .video-lounge-inner {
       max-width: 1400px;
@@ -208,14 +208,20 @@
       flex-wrap: wrap;
     }
     .host-cam-box {
-      width: 256px;
-      height: 144px;
+      width: 380px;
+      max-width: 100%;
+      height: 214px;
       background: #060812;
       border: 2px solid var(--pink);
       border-radius: 10px;
       position: relative;
       overflow: hidden;
       flex-shrink: 0;
+      transition: all 0.25s ease;
+    }
+    .host-cam-box.expanded {
+      width: 100%;
+      height: 460px;
     }
     .host-cam-box iframe {
       width: 100%;
@@ -254,7 +260,7 @@
       flex-direction: column;
       justify-content: center;
       gap: 8px;
-      min-width: 210px;
+      min-width: 215px;
     }
     .cam-toggle-btn {
       padding: 9px 14px;
@@ -278,11 +284,11 @@
       gap: 10px;
       flex: 1;
       min-width: 260px;
-      height: 144px;
+      height: 214px;
     }
     .my-self-cam-box {
-      width: 160px;
-      height: 144px;
+      width: 180px;
+      height: 214px;
       background: #060812;
       border: 2px solid var(--teal);
       border-radius: 10px;
@@ -298,7 +304,7 @@
     }
     .players-scene-box {
       flex: 1;
-      height: 144px;
+      height: 214px;
       background: #060812;
       border: 1px solid rgba(0, 210, 190, 0.35);
       border-radius: 10px;
@@ -599,11 +605,11 @@
   <!-- Custom Celebration Message Banner -->
   <div class="custom-banner" id="customBanner">🎉 <span id="customBannerText"></span> 🎉</div>
 
-  <!-- VDO.Ninja Live Video Lounge (Host Camera + Optional Player Cameras) -->
+  <!-- VDO.Ninja Live Video Lounge (Host Screen Share + Optional Player Cameras) -->
   <div class="video-lounge-bar" id="videoLoungeBar">
     <div class="video-lounge-inner">
       <!-- Host Live Stream Feed (View Only) -->
-      <div class="host-cam-box">
+      <div class="host-cam-box" id="hostStreamContainer">
         <span class="live-dot-badge">● HOST LIVE</span>
         <iframe id="hostStreamIframe" allow="autoplay;fullscreen"></iframe>
         <span class="cam-label-tag" id="hostCamNameTag">🎙️ Host: CC</span>
@@ -611,6 +617,7 @@
 
       <!-- Player Opt-In Camera Controls -->
       <div class="video-lounge-controls">
+        <button class="cam-toggle-btn" id="expandHostBtn" onclick="toggleExpandHostScreen()">🔍 Expand Host Screen</button>
         <button class="cam-toggle-btn" id="toggleMyCamBtn" onclick="togglePlayerCam()">📹 Share My Cam: OFF</button>
         <button class="cam-toggle-btn active" id="togglePeersBtn" onclick="toggleSeeOtherPlayers()">👥 See Other Players: ON</button>
         <span style="font-size: 11px; color: var(--muted);">Your cam stays private until you turn it on.</span>
@@ -620,7 +627,7 @@
       <div class="players-lounge-wrap" id="playersLoungeWrap">
         <div class="my-self-cam-box" id="mySelfCamBox">
           <iframe id="mySelfCamIframe" allow="camera;microphone;autoplay"></iframe>
-          <span class="cam-label-tag">You (Live)</span>
+          <span class="cam-label-tag">You (Blurred BG)</span>
         </div>
         <div class="players-scene-box" id="playersSceneBox">
           <iframe id="playersSceneIframe" allow="autoplay;fullscreen"></iframe>
@@ -723,6 +730,7 @@
 
     const VDO_HOST_STREAM_ID = "LiveVibeHost";
     const VDO_LOUNGE_ROOM = "LiveVibeLounge";
+    const BRAND_BACKDROP_URL = "https://www.livevibebingo.com/backdrop.png";
 
     let calledSet = new Set();
     let currentRound = 1;
@@ -755,7 +763,7 @@
           hostFrame.src = "about:blank";
           sceneFrame.src = "about:blank";
           if (myCamSharing) {
-            togglePlayerCam(); // Automatically turn off player cam if host ends stream
+            togglePlayerCam();
           }
           videoLoungeActive = false;
         }
@@ -776,6 +784,14 @@
       }
     }
 
+    function toggleExpandHostScreen() {
+      const box = document.getElementById("hostStreamContainer");
+      const btn = document.getElementById("expandHostBtn");
+      const isExpanded = box.classList.toggle("expanded");
+      btn.innerText = isExpanded ? "🗗 Shrink Host Screen" : "🔍 Expand Host Screen";
+      btn.classList.toggle("active", isExpanded);
+    }
+
     function togglePlayerCam() {
       myCamSharing = !myCamSharing;
       const btn = document.getElementById("toggleMyCamBtn");
@@ -784,7 +800,8 @@
 
       if (myCamSharing) {
         const cleanLabel = encodeURIComponent(playerFullName || "Player");
-        selfFrame.src = `https://vdo.ninja/?room=${VDO_LOUNGE_ROOM}&push&label=${cleanLabel}&webcam&autostart&cleanoutput&noaudioout&mic=0`;
+        const encodedBg = encodeURIComponent(BRAND_BACKDROP_URL);
+        selfFrame.src = `https://vdo.ninja/?room=${VDO_LOUNGE_ROOM}&push&label=${cleanLabel}&webcam&bgimage=${encodedBg}&autostart&cleanoutput&noaudioout&mic=0`;
         selfBox.style.display = "block";
         btn.innerText = "📹 Share My Cam: ON";
         btn.classList.add("active");
@@ -1032,7 +1049,7 @@
       if (data.roomPin) activeSessionPin = String(data.roomPin).trim();
       if (data.lobbyLocked !== undefined) isLobbyLocked = data.lobbyLocked === true;
 
-      // Sync VDO.Ninja Host Stream & Optional Player Lounge once player logs in
+      // Sync VDO.Ninja Host Screen Share & Optional Player Lounge once player logs in
       if (hasJoinedArena) {
         syncPlayerVideoRoom(
           data.hostVideoLive === true,
@@ -1105,12 +1122,15 @@
         document.getElementById("activeBall").innerText = data.latest;
         document.getElementById("ballAnnounce").innerText = `CALLED: ${data.latest}`;
 
-        if ('speechSynthesis' in window) {
+        // Only speak automated voice if Host has Auto-Voice turned ON
+        if (data.autoVoice !== false && 'speechSynthesis' in window) {
           const cleanText = data.latest.replace("-", " ");
           const utter = new SpeechSynthesisUtterance(cleanText);
           utter.rate = 0.95;
           window.speechSynthesis.cancel();
           window.speechSynthesis.speak(utter);
+        } else if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
         }
       }
     }
