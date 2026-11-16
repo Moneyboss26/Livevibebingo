@@ -284,13 +284,71 @@
     }
     .grid-num.called { background: var(--teal); color: #06111a; border-color: var(--teal); }
 
+    /* Right Sidebar Sticky Wrapper */
+    .right-sidebar {
+      position: sticky;
+      top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Host Live Cam Box (VDO.Ninja Push-Only Self-Preview) */
+    .host-video-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      border: 2px solid var(--pink);
+    }
+    .host-preview-frame {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #060812;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 10px 0;
+    }
+    .host-preview-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .live-pill {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: #e53e3e;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      display: none;
+      z-index: 5;
+      pointer-events: none;
+    }
+    .video-controls-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .video-controls-row .btn {
+      flex: 1;
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+
     #sideInspectorPanel {
       background: var(--card-bg);
       border-radius: 12px;
       padding: 20px;
       border: 2px solid var(--teal);
-      position: sticky;
-      top: 20px;
     }
     .inspector-grid {
       display: grid;
@@ -469,7 +527,7 @@
     <div class="main-layout">
       <!-- Left Column -->
       <div>
-        <!-- Stripe Paid Roster (Moved Above Banner for Privacy Screen Sharing) -->
+        <!-- Stripe Paid Roster -->
         <div class="section-card">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <h3 style="font-size: 14px; color: var(--teal); text-transform: uppercase;">Stripe Paid Ticket Roster</h3>
@@ -578,21 +636,47 @@
         </div>
       </div>
 
-      <!-- Right Column: Card Inspector & Bingo Claims Popup Below -->
-      <div id="sideInspectorPanel">
-        <h3 style="color: var(--teal); font-size: 15px; margin-bottom: 4px; text-transform: uppercase;">🔍 Card Inspector</h3>
-        <p style="color: var(--muted); font-size: 11px; margin-bottom: 12px;">Inspect winning player cards side-by-side.</p>
-        <div id="sideInspectorContent">
-          <p style="color: var(--muted); font-size: 12px; text-align: center; padding: 40px 0;">Click 'Inspect' on any incoming bingo claim to review their card here.</p>
+      <!-- Right Column: Host Live Video Broadcast + Card Inspector + Bingo Claims -->
+      <div class="right-sidebar">
+        <!-- VDO.Ninja Host Live Camera (One-Way Push Only — Zero Player Feeds Shown Here) -->
+        <div class="host-video-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="color: var(--pink); font-size: 14px; text-transform: uppercase;">📹 Host Live Camera</h3>
+            <span style="font-size: 10px; color: var(--teal); font-weight: 800;">STREAM: LiveVibeHost</span>
+          </div>
+          <p style="color: var(--muted); font-size: 11px; margin-top: 4px;">100% free one-way cam. Players see you; player cams never appear on your screen.</p>
+
+          <div class="host-preview-frame" id="hostPreviewBox">
+            <span class="live-pill" id="hostLiveBadge">● ON AIR</span>
+            <span id="hostCamPlaceholder" style="color: var(--muted); font-size: 12px; text-align: center; padding: 0 12px;">Camera offline. Click <strong>Go Live on Cam</strong> when ready.</span>
+            <iframe id="hostVdoIframe" allow="camera;microphone;autoplay;fullscreen;display-capture" style="display: none;"></iframe>
+          </div>
+
+          <div class="video-controls-row" id="startCamRow">
+            <button class="btn btn-pink" onclick="startHostBroadcast()">Go Live on Cam</button>
+          </div>
+
+          <div class="video-controls-row" id="activeCamControls" style="display: none;">
+            <button class="btn btn-danger" onclick="stopHostBroadcast()">End Live Cam</button>
+          </div>
         </div>
 
-        <!-- Bingo Claims Section located below Card Inspector in the right sidebar -->
-        <div class="section-card" id="claimsSection" style="display: none; margin-top: 20px; margin-bottom: 0;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <h3 style="font-size: 13px; color: var(--pink); text-transform: uppercase;">🚨 Bingo Claims</h3>
-            <button class="btn btn-danger" style="padding: 2px 6px; font-size: 10px;" onclick="clearAllClaims()">Clear</button>
+        <!-- Card Inspector -->
+        <div id="sideInspectorPanel">
+          <h3 style="color: var(--teal); font-size: 15px; margin-bottom: 4px; text-transform: uppercase;">🔍 Card Inspector</h3>
+          <p style="color: var(--muted); font-size: 11px; margin-bottom: 12px;">Inspect winning player cards side-by-side.</p>
+          <div id="sideInspectorContent">
+            <p style="color: var(--muted); font-size: 12px; text-align: center; padding: 40px 0;">Click 'Inspect' on any incoming bingo claim to review their card here.</p>
           </div>
-          <div class="claims-log" id="claimsLog" style="max-height: 220px;"></div>
+
+          <!-- Bingo Claims Section located below Card Inspector in the right sidebar -->
+          <div class="section-card" id="claimsSection" style="display: none; margin-top: 20px; margin-bottom: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <h3 style="font-size: 13px; color: var(--pink); text-transform: uppercase;">🚨 Bingo Claims</h3>
+              <button class="btn btn-danger" style="padding: 2px 6px; font-size: 10px;" onclick="clearAllClaims()">Clear</button>
+            </div>
+            <div class="claims-log" id="claimsLog" style="max-height: 220px;"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -600,6 +684,7 @@
 
   <script>
     const MASTER_PASS = "LiveVibe2026";
+    const VDO_HOST_STREAM_ID = "LiveVibeHost";
     let calledSet = new Set();
     let currentGame = { round: 1, name: "Regular Bingo", prize: "$25" };
     let currentTheme = "classic";
@@ -608,7 +693,32 @@
     let isDrawing = false;
     let callerVoiceEnabled = true;
     let hostName = "CC";
+    let isHostLive = false;
     window.paidGuestList = [];
+
+    function startHostBroadcast() {
+      const iframe = document.getElementById("hostVdoIframe");
+      iframe.src = `https://vdo.ninja/?push=${VDO_HOST_STREAM_ID}&webcam&autostart&cleanoutput&noaudioout`;
+      iframe.style.display = "block";
+      document.getElementById("hostCamPlaceholder").style.display = "none";
+      document.getElementById("hostLiveBadge").style.display = "block";
+      document.getElementById("startCamRow").style.display = "none";
+      document.getElementById("activeCamControls").style.display = "flex";
+      isHostLive = true;
+      sync();
+    }
+
+    function stopHostBroadcast() {
+      const iframe = document.getElementById("hostVdoIframe");
+      iframe.src = "about:blank";
+      iframe.style.display = "none";
+      document.getElementById("hostCamPlaceholder").style.display = "block";
+      document.getElementById("hostLiveBadge").style.display = "none";
+      document.getElementById("activeCamControls").style.display = "none";
+      document.getElementById("startCamRow").style.display = "flex";
+      isHostLive = false;
+      sync();
+    }
 
     function playHostBingoAlert() {
       try {
@@ -856,6 +966,9 @@
         game: currentGame,
         theme: currentTheme,
         customBanner: bannerText,
+        hostVideoLive: isHostLive,
+        vdoHostStream: VDO_HOST_STREAM_ID,
+        vdoLoungeRoom: "LiveVibeLounge",
         called: Array.from(calledSet),
         latest: latest,
         lobbyLocked: isLobbyLocked,
