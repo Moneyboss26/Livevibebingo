@@ -191,7 +191,7 @@
       border: 1px solid var(--teal);
     }
 
-    /* VDO.Ninja Live Video Lounge (Host Screen Share + Optional Player Lounge) */
+    /* VDO.Ninja Dual Host Live Video Lounge (Host Face Cam + Host Screen Share + Optional Player Lounge) */
     .video-lounge-bar {
       background: rgba(11, 15, 32, 0.96);
       backdrop-filter: blur(8px);
@@ -605,19 +605,26 @@
   <!-- Custom Celebration Message Banner -->
   <div class="custom-banner" id="customBanner">🎉 <span id="customBannerText"></span> 🎉</div>
 
-  <!-- VDO.Ninja Live Video Lounge (Host Screen Share + Optional Player Cameras) -->
+  <!-- VDO.Ninja Dual Host Video Lounge (Host Face Cam + Host Screen Share + Optional Player Cams) -->
   <div class="video-lounge-bar" id="videoLoungeBar">
     <div class="video-lounge-inner">
-      <!-- Host Live Stream Feed (View Only) -->
-      <div class="host-cam-box" id="hostStreamContainer">
-        <span class="live-dot-badge">● HOST LIVE</span>
-        <iframe id="hostStreamIframe" allow="autoplay;fullscreen"></iframe>
+      <!-- Box 1: Host Face Cam -->
+      <div class="host-cam-box" style="width: 220px; height: 214px;">
+        <span class="live-dot-badge">● HOST CAM</span>
+        <iframe id="hostCamViewIframe" allow="autoplay;fullscreen"></iframe>
         <span class="cam-label-tag" id="hostCamNameTag">🎙️ Host: CC</span>
+      </div>
+
+      <!-- Box 2: Host Shared Screen (Shaker + Card Inspector) -->
+      <div class="host-cam-box" id="hostStreamContainer">
+        <span class="live-dot-badge" style="background: var(--teal); color: #06111a;">● HOST BOARD</span>
+        <iframe id="hostStreamIframe" allow="autoplay;fullscreen"></iframe>
+        <span class="cam-label-tag">Shaker &amp; Card Verification</span>
       </div>
 
       <!-- Player Opt-In Camera Controls -->
       <div class="video-lounge-controls">
-        <button class="cam-toggle-btn" id="expandHostBtn" onclick="toggleExpandHostScreen()">🔍 Expand Host Screen</button>
+        <button class="cam-toggle-btn" id="expandHostBtn" onclick="toggleExpandHostScreen()">🔍 Expand Host Board</button>
         <button class="cam-toggle-btn" id="toggleMyCamBtn" onclick="togglePlayerCam()">📹 Share My Cam: OFF</button>
         <button class="cam-toggle-btn active" id="togglePeersBtn" onclick="toggleSeeOtherPlayers()">👥 See Other Players: ON</button>
         <span style="font-size: 11px; color: var(--muted);">Your cam stays private until you turn it on.</span>
@@ -728,9 +735,9 @@
       happiness: { name: "Happiness", short: "✨ Happiness", icon: "✨", mosaic: "✨ 💖 🌻", wallpaper: "url('happiness.jpg')", border: "#ffd166", teal: "#ffd166", pink: "#ff007f", dab: "#00d2be" }
     };
 
-    const VDO_HOST_STREAM_ID = "LiveVibeHost";
+    const VDO_HOST_CAM_ID = "LiveVibeHostCam";
+    const VDO_HOST_SCREEN_ID = "LiveVibeHostScreen";
     const VDO_LOUNGE_ROOM = "LiveVibeLounge";
-    const BRAND_BACKDROP_URL = "https://www.livevibebingo.com/backdrop.png";
 
     let calledSet = new Set();
     let currentRound = 1;
@@ -752,15 +759,17 @@
     let myCamSharing = false;
     let seeOtherPlayers = true;
 
-    function syncPlayerVideoRoom(hostIsLive, hostStreamId, loungeRoomId) {
+    function syncPlayerVideoRoom(hostIsLive, hostCamId, hostScreenId, loungeRoomId) {
       const loungeBar = document.getElementById("videoLoungeBar");
-      const hostFrame = document.getElementById("hostStreamIframe");
+      const camFrame = document.getElementById("hostCamViewIframe");
+      const screenFrame = document.getElementById("hostStreamIframe");
       const sceneFrame = document.getElementById("playersSceneIframe");
 
       if (!hostIsLive) {
         if (videoLoungeActive) {
           loungeBar.style.display = "none";
-          hostFrame.src = "about:blank";
+          camFrame.src = "about:blank";
+          screenFrame.src = "about:blank";
           sceneFrame.src = "about:blank";
           if (myCamSharing) {
             togglePlayerCam();
@@ -774,9 +783,13 @@
 
       if (!videoLoungeActive) {
         loungeBar.style.display = "block";
-        const streamName = hostStreamId || VDO_HOST_STREAM_ID;
+        const camStream = hostCamId || VDO_HOST_CAM_ID;
+        const screenStream = hostScreenId || VDO_HOST_SCREEN_ID;
         const roomName = loungeRoomId || VDO_LOUNGE_ROOM;
-        hostFrame.src = `https://vdo.ninja/?view=${encodeURIComponent(streamName)}&solo&cleanoutput&autoplay`;
+
+        camFrame.src = `https://vdo.ninja/?view=${encodeURIComponent(camStream)}&solo&cleanoutput&autoplay`;
+        screenFrame.src = `https://vdo.ninja/?view=${encodeURIComponent(screenStream)}&solo&cleanoutput&noaudio&autoplay`;
+
         if (seeOtherPlayers) {
           sceneFrame.src = `https://vdo.ninja/?room=${encodeURIComponent(roomName)}&scene&cleanoutput&noaudio`;
         }
@@ -788,7 +801,7 @@
       const box = document.getElementById("hostStreamContainer");
       const btn = document.getElementById("expandHostBtn");
       const isExpanded = box.classList.toggle("expanded");
-      btn.innerText = isExpanded ? "🗗 Shrink Host Screen" : "🔍 Expand Host Screen";
+      btn.innerText = isExpanded ? "🗗 Shrink Host Board" : "🔍 Expand Host Board";
       btn.classList.toggle("active", isExpanded);
     }
 
@@ -800,8 +813,7 @@
 
       if (myCamSharing) {
         const cleanLabel = encodeURIComponent(playerFullName || "Player");
-        const encodedBg = encodeURIComponent(BRAND_BACKDROP_URL);
-        selfFrame.src = `https://vdo.ninja/?room=${VDO_LOUNGE_ROOM}&push&label=${cleanLabel}&webcam&bgimage=${encodedBg}&autostart&cleanoutput&noaudioout&mic=0`;
+        selfFrame.src = `https://vdo.ninja/?room=${VDO_LOUNGE_ROOM}&push&label=${cleanLabel}&webcam&blur&autostart&cleanoutput&noaudioout&mic=0`;
         selfBox.style.display = "block";
         btn.innerText = "📹 Share My Cam: ON";
         btn.classList.add("active");
@@ -1049,11 +1061,12 @@
       if (data.roomPin) activeSessionPin = String(data.roomPin).trim();
       if (data.lobbyLocked !== undefined) isLobbyLocked = data.lobbyLocked === true;
 
-      // Sync VDO.Ninja Host Screen Share & Optional Player Lounge once player logs in
+      // Sync VDO.Ninja Dual Host Streams (Face Cam + Screen Share) & Optional Player Lounge
       if (hasJoinedArena) {
         syncPlayerVideoRoom(
           data.hostVideoLive === true,
-          data.vdoHostStream || VDO_HOST_STREAM_ID,
+          data.vdoHostCamStream || VDO_HOST_CAM_ID,
+          data.vdoHostScreenStream || VDO_HOST_SCREEN_ID,
           data.vdoLoungeRoom || VDO_LOUNGE_ROOM
         );
       }

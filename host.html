@@ -293,7 +293,7 @@
       gap: 18px;
     }
 
-    /* Host Live Screen Share + PiP Cam Box */
+    /* Host Dual Broadcast Box (Face Cam + Screen Share) */
     .host-video-card {
       background: var(--card-bg);
       border-radius: 12px;
@@ -636,35 +636,36 @@
         </div>
       </div>
 
-      <!-- Right Column: Host Live Screen Share + Branded Backdrop + Card Inspector -->
+      <!-- Right Column: Dual Host Broadcast (Face Cam + Screen Share) + Card Inspector -->
       <div class="right-sidebar">
-        <!-- VDO.Ninja Host Live Screen Share + PiP Camera with Live Vibe Bingo Backdrop -->
+        <!-- VDO.Ninja Dual Host Broadcast: Face Cam + Screen Share -->
         <div class="host-video-card">
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="color: var(--pink); font-size: 14px; text-transform: uppercase;">🖥️ Host Live Screen + Cam</h3>
-            <span style="font-size: 10px; color: var(--teal); font-weight: 800;">STREAM: LiveVibeHost</span>
+            <h3 style="color: var(--pink); font-size: 14px; text-transform: uppercase;">📹 Host Cam + Screen Share</h3>
+            <span style="font-size: 10px; color: var(--teal); font-weight: 800;">DUAL LIVE FEED</span>
           </div>
-          <p style="color: var(--muted); font-size: 11px; margin-top: 4px;">Shares your Caller Station tab + PiP face cam with your repeating <strong>LIVE VIBE BINGO</strong> brand backdrop.</p>
+          <p style="color: var(--muted); font-size: 11px; margin-top: 4px;">Players see <strong>your face</strong> (with blurred background) AND <strong>your screen</strong> (shaker + card inspector) side-by-side.</p>
 
-          <div class="host-preview-frame" id="hostPreviewBox">
-            <span class="live-pill" id="hostLiveBadge">● SCREEN LIVE</span>
-            <span id="hostCamPlaceholder" style="color: var(--muted); font-size: 12px; text-align: center; padding: 0 12px;">Broadcast offline. Click <strong>Share Screen + Cam</strong> and pick this browser tab.</span>
-            <iframe id="hostVdoIframe" allow="camera;microphone;autoplay;fullscreen;display-capture" style="display: none;"></iframe>
+          <!-- Face Cam Preview -->
+          <div class="host-preview-frame" style="margin-bottom: 8px;">
+            <span class="live-pill" id="hostCamBadge">● FACE CAM ON</span>
+            <span id="hostCamPlaceholder" style="color: var(--muted); font-size: 11px; text-align: center; padding: 0 10px;">Face Cam Offline</span>
+            <iframe id="hostCamIframe" allow="camera;microphone;autoplay" style="display: none;"></iframe>
+          </div>
+
+          <!-- Screen Share Preview -->
+          <div class="host-preview-frame">
+            <span class="live-pill" id="hostScreenBadge" style="background: var(--teal); color: #06111a;">● SCREEN ON</span>
+            <span id="hostScreenPlaceholder" style="color: var(--muted); font-size: 11px; text-align: center; padding: 0 10px;">Screen Share Offline</span>
+            <iframe id="hostScreenIframe" allow="display-capture;autoplay" style="display: none;"></iframe>
           </div>
 
           <div class="video-controls-row" id="startCamRow">
-            <button class="btn btn-pink" onclick="startHostBroadcast()">Share Screen + Cam</button>
+            <button class="btn btn-pink" onclick="startHostBroadcast()">Go Live (Cam + Screen)</button>
           </div>
 
           <div class="video-controls-row" id="activeCamControls" style="display: none;">
             <button class="btn btn-danger" onclick="stopHostBroadcast()">End Broadcast</button>
-          </div>
-
-          <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.08); text-align: center;">
-            <button type="button" onclick="downloadBrandBackdrop()" style="background: transparent; border: 1px solid var(--teal); color: var(--teal); padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; width: 100%;">
-              ⬇️ Download Brand Backdrop (backdrop.png)
-            </button>
-            <span style="display: block; font-size: 10px; color: var(--muted); margin-top: 4px;">Upload <code>backdrop.png</code> to your GitHub folder once for automatic camera branding.</span>
           </div>
         </div>
 
@@ -691,8 +692,8 @@
 
   <script>
     const MASTER_PASS = "LiveVibe2026";
-    const VDO_HOST_STREAM_ID = "LiveVibeHost";
-    const BRAND_BACKDROP_URL = "https://www.livevibebingo.com/backdrop.png";
+    const VDO_HOST_CAM_ID = "LiveVibeHostCam";
+    const VDO_HOST_SCREEN_ID = "LiveVibeHostScreen";
     let calledSet = new Set();
     let currentGame = { round: 1, name: "Regular Bingo", prize: "$25" };
     let currentTheme = "classic";
@@ -705,13 +706,21 @@
     window.paidGuestList = [];
 
     function startHostBroadcast() {
-      const iframe = document.getElementById("hostVdoIframe");
-      const encodedBg = encodeURIComponent(BRAND_BACKDROP_URL);
-      // &screenshare shares Caller Station tab + &pip enables corner face cam with repeating Live Vibe Bingo backdrop
-      iframe.src = `https://vdo.ninja/?push=${VDO_HOST_STREAM_ID}&screenshare&pip&bgimage=${encodedBg}&autostart&cleanoutput&noaudioout`;
-      iframe.style.display = "block";
+      const camFrame = document.getElementById("hostCamIframe");
+      const screenFrame = document.getElementById("hostScreenIframe");
+
+      // Stream 1: Dedicated Host Webcam with built-in browser background blur
+      camFrame.src = `https://vdo.ninja/?push=${VDO_HOST_CAM_ID}&webcam&blur&autostart&cleanoutput&noaudioout`;
+      camFrame.style.display = "block";
       document.getElementById("hostCamPlaceholder").style.display = "none";
-      document.getElementById("hostLiveBadge").style.display = "block";
+      document.getElementById("hostCamBadge").style.display = "block";
+
+      // Stream 2: Dedicated Host Screen Share (Shaker + Card Inspector, mic muted here so audio doesn't echo)
+      screenFrame.src = `https://vdo.ninja/?push=${VDO_HOST_SCREEN_ID}&screenshare&mic=0&autostart&cleanoutput&noaudioout`;
+      screenFrame.style.display = "block";
+      document.getElementById("hostScreenPlaceholder").style.display = "none";
+      document.getElementById("hostScreenBadge").style.display = "block";
+
       document.getElementById("startCamRow").style.display = "none";
       document.getElementById("activeCamControls").style.display = "flex";
       isHostLive = true;
@@ -719,58 +728,22 @@
     }
 
     function stopHostBroadcast() {
-      const iframe = document.getElementById("hostVdoIframe");
-      iframe.src = "about:blank";
-      iframe.style.display = "none";
+      const camFrame = document.getElementById("hostCamIframe");
+      const screenFrame = document.getElementById("hostScreenIframe");
+
+      camFrame.src = "about:blank";
+      camFrame.style.display = "none";
+      screenFrame.src = "about:blank";
+      screenFrame.style.display = "none";
+
       document.getElementById("hostCamPlaceholder").style.display = "block";
-      document.getElementById("hostLiveBadge").style.display = "none";
+      document.getElementById("hostScreenPlaceholder").style.display = "block";
+      document.getElementById("hostCamBadge").style.display = "none";
+      document.getElementById("hostScreenBadge").style.display = "none";
       document.getElementById("activeCamControls").style.display = "none";
       document.getElementById("startCamRow").style.display = "flex";
       isHostLive = false;
       sync();
-    }
-
-    // Generates a 1280x720 step-and-repeat "LIVE VIBE BINGO" branded backdrop PNG for GitHub hosting
-    function downloadBrandBackdrop() {
-      const canvas = document.createElement("canvas");
-      canvas.width = 1280;
-      canvas.height = 720;
-      const ctx = canvas.getContext("2d");
-
-      // Rich deep navy/purple gradient background
-      const grad = ctx.createLinearGradient(0, 0, 1280, 720);
-      grad.addColorStop(0, "#090c19");
-      grad.addColorStop(0.5, "#161130");
-      grad.addColorStop(1, "#090c19");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 1280, 720);
-
-      // Step-and-repeat diagonal "LIVE VIBE BINGO" brand pattern
-      ctx.save();
-      ctx.translate(640, 360);
-      ctx.rotate((-24 * Math.PI) / 180);
-      ctx.translate(-900, -600);
-
-      ctx.font = "900 32px system-ui, -apple-system, sans-serif";
-      const rowHeight = 95;
-      const colWidth = 360;
-
-      for (let row = 0; row < 16; row++) {
-        const offsetX = (row % 2) * (colWidth / 2);
-        for (let col = 0; col < 7; col++) {
-          const x = col * colWidth + offsetX;
-          const y = row * rowHeight;
-
-          ctx.fillStyle = (row + col) % 2 === 0 ? "rgba(0, 210, 190, 0.28)" : "rgba(255, 46, 147, 0.28)";
-          ctx.fillText("★ LIVE VIBE BINGO", x, y);
-        }
-      }
-      ctx.restore();
-
-      const link = document.createElement("a");
-      link.download = "backdrop.png";
-      link.href = canvas.toDataURL("image/png");
-      link.click();
     }
 
     function playHostBingoAlert() {
@@ -1022,7 +995,8 @@
         customBanner: bannerText,
         hostVideoLive: isHostLive,
         autoVoice: callerVoiceEnabled,
-        vdoHostStream: VDO_HOST_STREAM_ID,
+        vdoHostCamStream: VDO_HOST_CAM_ID,
+        vdoHostScreenStream: VDO_HOST_SCREEN_ID,
         vdoLoungeRoom: "LiveVibeLounge",
         called: Array.from(calledSet),
         latest: latest,
