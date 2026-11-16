@@ -124,21 +124,8 @@
       outline: none;
     }
 
-    .guest-list-input {
-      width: 100%;
-      height: 70px;
-      background: #060812;
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 8px;
-      color: #fff;
-      padding: 10px;
-      font-size: 13px;
-      margin-top: 8px;
-      resize: vertical;
-    }
-
     .joined-players-box {
-      max-height: 150px;
+      max-height: 180px;
       overflow-y: auto;
       margin-top: 8px;
       display: flex;
@@ -252,7 +239,7 @@
       padding: 10px 14px;
       border-radius: 6px;
       background: #060812;
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid var(--teal);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -263,8 +250,6 @@
       0% { border-color: var(--pink); background: rgba(255,46,147,0.15); }
       100% { border-color: var(--teal); background: rgba(0,210,190,0.15); }
     }
-    .claim-valid { border-color: var(--teal); background: rgba(0,210,190,0.06); animation: none; }
-    .claim-invalid { border-color: #e53e3e; background: rgba(229,62,62,0.1); animation: none; }
 
     .master-grid {
       display: grid;
@@ -445,23 +430,32 @@
         return;
       }
 
-      const players = Object.values(data);
-      countEl.innerText = `${players.length} Players Checked In`;
+      const entries = Object.entries(data);
+      countEl.innerText = `${entries.length} Players Checked In`;
       rosterEl.innerHTML = "";
 
-      players.forEach(p => {
+      entries.forEach(([key, p]) => {
         const chip = document.createElement("div");
         chip.className = "player-chip";
+        const safeName = (p.name || "Player").replace(/'/g, "\\'");
         chip.innerHTML = `
           <div>
             <strong style="color: #fff; font-size: 13px;">${p.name}</strong> 
             <span style="color: var(--teal); font-size: 12px; margin-left: 6px;">(${p.cashtag})</span>
           </div>
-          <span style="font-size: 10px; color: var(--yellow); font-weight: 800;">ACTIVE</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 10px; color: var(--yellow); font-weight: 800;">ACTIVE</span>
+            <button class="btn btn-danger" style="padding: 3px 8px; font-size: 11px;" onclick="removePlayer('${key}', '${safeName}')">✕ Kick</button>
+          </div>
         `;
         rosterEl.appendChild(chip);
       });
     });
+
+    window.removePlayer = function(playerKey, playerName) {
+      if (!confirm(`Remove ${playerName} from the game room? They will be disconnected immediately.`)) return;
+      remove(ref(db, `players/${playerKey}`));
+    };
 
     onChildAdded(ref(db, 'claims'), (snapshot) => {
       const msg = snapshot.val();
@@ -471,12 +465,8 @@
         
         playHostBingoAlert();
 
-        const cleanName = (msg.name || "").toLowerCase().trim();
-        const cleanTag = (msg.cashtag || "").toLowerCase().trim();
-        const isVerified = window.paidGuestList && window.paidGuestList.some(guest => cleanName.includes(guest) || cleanTag.includes(guest) || guest.includes(cleanName));
-
         const item = document.createElement("div");
-        item.className = `claim-item ${isVerified ? 'claim-valid' : 'claim-invalid'}`;
+        item.className = "claim-item";
         item.id = snapshot.key;
         
         const claimId = 'claim_' + Math.random().toString(36).substring(2, 9);
@@ -488,12 +478,9 @@
             <span style="color: var(--teal); font-size: 11px;">(${msg.cashtag})</span><br>
             <span style="color: var(--yellow); font-size: 11px;">Card #${msg.cardNum} (${msg.serialNum || 'N/A'})</span>
           </div>
-          <div style="display:flex; flex-direction:column; gap:4px; align-items:flex-end;">
-            ${isVerified ? '<span style="color: var(--teal); font-weight: 800; font-size: 10px;">✓ PAID</span>' : '<span style="color: #fc8181; font-weight: 800; font-size: 10px;">⚠️ UNVERIFIED</span>'}
-            <div style="display:flex; gap:6px;">
-              <button class="btn btn-teal" style="padding: 2px 6px; font-size: 10px;" onclick="inspectPlayerCardSide('${claimId}', ${msg.cardNum})">🔍 Inspect</button>
-              <button class="btn btn-danger" style="padding: 2px 4px; font-size: 10px;" onclick="clearSingleClaim('${snapshot.key}')">✕</button>
-            </div>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <button class="btn btn-teal" style="padding: 4px 8px; font-size: 11px;" onclick="inspectPlayerCardSide('${claimId}', ${msg.cardNum})">🔍 Inspect</button>
+            <button class="btn btn-danger" style="padding: 4px 6px; font-size: 11px;" onclick="clearSingleClaim('${snapshot.key}')">✕</button>
           </div>
         `;
         log.prepend(item);
@@ -562,13 +549,15 @@
     <div class="main-layout">
       <!-- Left Column -->
       <div>
-        <!-- Stripe Paid Roster -->
+        <!-- Live Joined Players Roster (Verify & Kick Unpaid Players) -->
         <div class="section-card">
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="font-size: 14px; color: var(--teal); text-transform: uppercase;">Stripe Paid Ticket Roster</h3>
-            <span style="font-size: 12px; color: var(--muted);" id="rosterCount">0 Paid Attendees Loaded</span>
+            <h3 style="font-size: 14px; color: var(--teal); text-transform: uppercase;">Joined Players Roster</h3>
+            <span style="font-size: 12px; color: var(--muted); font-weight: 700;" id="playerCountBadge">0 Players Checked In</span>
           </div>
-          <textarea id="guestListArea" class="guest-list-input" placeholder="e.g. Mary Johnson, David Miller, Sarah Lee, $MaryWins" onchange="updateGuestList()"></textarea>
+          <div class="joined-players-box" id="joinedPlayersRoster">
+            <span style="color: var(--muted); font-size: 12px; font-style: italic;">No players joined yet...</span>
+          </div>
         </div>
 
         <!-- Custom Banner Broadcast Control Card -->
@@ -604,17 +593,6 @@
             <option value="patriotic">🇺🇸 Patriotic</option>
             <option value="happiness">✨ Happiness</option>
           </select>
-        </div>
-
-        <!-- Live Joined Players Roster -->
-        <div class="section-card">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="font-size: 14px; color: var(--teal); text-transform: uppercase;">Joined Players Roster</h3>
-            <span style="font-size: 12px; color: var(--muted); font-weight: 700;" id="playerCountBadge">0 Players Checked In</span>
-          </div>
-          <div class="joined-players-box" id="joinedPlayersRoster">
-            <span style="color: var(--muted); font-size: 12px; font-style: italic;">No players joined yet...</span>
-          </div>
         </div>
 
         <div class="section-card">
@@ -722,17 +700,14 @@
     let callerVoiceEnabled = true;
     let hostName = "CC";
     let isHostLive = false;
-    window.paidGuestList = [];
 
     function startHostBroadcast() {
       const camFrame = document.getElementById("hostCamIframe");
       const screenFrame = document.getElementById("hostScreenIframe");
 
-      // Stream 1: Host Webcam rendered inside the top-left PiP bubble
       camFrame.src = `https://vdo.ninja/?push=${VDO_HOST_CAM_ID}&webcam&blur&autostart&cleanoutput&noaudioout`;
       document.getElementById("hostPipBubble").style.display = "block";
 
-      // Stream 2: Host Screen Share (Shaker + Card Inspector) as main broadcast background
       screenFrame.src = `https://vdo.ninja/?push=${VDO_HOST_SCREEN_ID}&screenshare&mic=0&autostart&cleanoutput&noaudioout`;
       screenFrame.style.display = "block";
 
@@ -828,12 +803,6 @@
     function updateRoomPin() {
       currentPin = document.getElementById("roomPinInput").value.trim() || "7722";
       sync();
-    }
-
-    function updateGuestList() {
-      const val = document.getElementById("guestListArea").value;
-      window.paidGuestList = val.split(/[,\n]/).map(s => s.trim().toLowerCase()).filter(Boolean);
-      document.getElementById("rosterCount").innerText = `${window.paidGuestList.length} Paid Roster Loaded`;
     }
 
     function toggleDoorLock() {
