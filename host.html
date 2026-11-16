@@ -124,23 +124,27 @@
       outline: none;
     }
 
+    /* Side-by-side wrapping pill layout so 50 players stay compact */
     .joined-players-box {
-      max-height: 180px;
+      max-height: 145px;
       overflow-y: auto;
-      margin-top: 8px;
+      margin-top: 10px;
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: flex-start;
       gap: 6px;
     }
     .player-chip {
       background: #060812;
-      padding: 8px 12px;
+      padding: 5px 8px;
       border-radius: 6px;
-      font-size: 13px;
-      display: flex;
-      justify-content: space-between;
+      font-size: 12px;
+      display: inline-flex;
       align-items: center;
-      border: 1px solid rgba(0,210,190,0.2);
+      gap: 6px;
+      border: 1px solid rgba(0,210,190,0.25);
+      max-width: 100%;
     }
 
     .pattern-btn-grid {
@@ -439,14 +443,9 @@
         chip.className = "player-chip";
         const safeName = (p.name || "Player").replace(/'/g, "\\'");
         chip.innerHTML = `
-          <div>
-            <strong style="color: #fff; font-size: 13px;">${p.name}</strong> 
-            <span style="color: var(--teal); font-size: 12px; margin-left: 6px;">(${p.cashtag})</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 10px; color: var(--yellow); font-weight: 800;">ACTIVE</span>
-            <button class="btn btn-danger" style="padding: 3px 8px; font-size: 11px;" onclick="removePlayer('${key}', '${safeName}')">✕ Kick</button>
-          </div>
+          <strong style="color: #fff; font-size: 12px;">${p.name}</strong>
+          <span style="color: var(--teal); font-size: 11px;">${p.cashtag}</span>
+          <button class="btn btn-danger" style="padding: 2px 6px; font-size: 10px; line-height: 1.2;" title="Kick Player" onclick="removePlayer('${key}', '${safeName}')">✕</button>
         `;
         rosterEl.appendChild(chip);
       });
@@ -454,6 +453,8 @@
 
     window.removePlayer = function(playerKey, playerName) {
       if (!confirm(`Remove ${playerName} from the game room? They will be disconnected immediately.`)) return;
+      // Write explicit kick flag AND remove from players list so player client disconnects reliably
+      set(ref(db, `kicked/${playerKey}`), Date.now());
       remove(ref(db, `players/${playerKey}`));
     };
 
@@ -549,7 +550,7 @@
     <div class="main-layout">
       <!-- Left Column -->
       <div>
-        <!-- Live Joined Players Roster (Verify & Kick Unpaid Players) -->
+        <!-- Live Joined Players Roster (Side-by-Side Pills + Instant Kick) -->
         <div class="section-card">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <h3 style="font-size: 14px; color: var(--teal); text-transform: uppercase;">Joined Players Roster</h3>
@@ -946,6 +947,7 @@
       if (window.database && window.dbSet && window.dbRef) {
         window.dbSet(window.dbRef(window.database, 'players'), null);
         window.dbSet(window.dbRef(window.database, 'claims'), null);
+        window.dbSet(window.dbRef(window.database, 'kicked'), null);
       }
 
       sync("RESET_SESSION");
