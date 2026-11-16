@@ -734,7 +734,6 @@
       for (let i = 0; i < 24; i++) {
         const p = palette[i % palette.length];
         const num = (i % 5) * 15 + ((i * 3) % 15) + 1;
-        // Distribute inside a 3D sphere of radius ~135
         const theta = Math.random() * Math.PI * 2;
         const phi = Math.acos(2 * Math.random() - 1);
         const r = Math.random() * 110;
@@ -770,7 +769,6 @@
 
       ctx.clearRect(0, 0, W, H);
 
-      // 1. Dark glass sphere interior gradient
       const bgGrad = ctx.createRadialGradient(cx - 50, cy - 50, 20, cx, cy, sphereRadius);
       bgGrad.addColorStop(0, "rgba(32, 44, 88, 0.95)");
       bgGrad.addColorStop(0.7, "rgba(10, 14, 32, 0.98)");
@@ -780,7 +778,6 @@
       ctx.fillStyle = bgGrad;
       ctx.fill();
 
-      // 2. Back wire cage meridian rings
       cageAngle += isDrawing ? 0.09 : 0.012;
       ctx.save();
       ctx.beginPath();
@@ -797,13 +794,11 @@
         ctx.stroke();
       }
 
-      // 3. Update 3D physics for each ball
       const gravity = isDrawing ? 0.25 : 0.42;
       const bounce = isDrawing ? 0.94 : 0.72;
       const maxPosR = sphereRadius - 26;
 
       tumblerBalls.forEach(b => {
-        // Air blower jet from bottom center when shaking
         if (isDrawing) {
           const distFromBottom = Math.hypot(b.x, b.y - 110, b.z);
           if (distFromBottom < 120) {
@@ -811,11 +806,9 @@
             b.vx += (Math.random() - 0.5) * 4.5;
             b.vz += (Math.random() - 0.5) * 4.5;
           }
-          // Swirl vortex
           b.vx += -b.z * 0.008;
           b.vz += b.x * 0.008;
         } else {
-          // Gentle idle swirl
           b.vx += -b.z * 0.0015;
           b.vz += b.x * 0.0015;
         }
@@ -825,12 +818,10 @@
         b.y += b.vy;
         b.z += b.vz;
 
-        // Air drag
         b.vx *= 0.985;
         b.vy *= 0.985;
         b.vz *= 0.985;
 
-        // Spherical cage wall collision
         const dist = Math.hypot(b.x, b.y, b.z);
         if (dist > maxPosR) {
           const nx = b.x / dist;
@@ -849,7 +840,6 @@
         }
       });
 
-      // 4. Sort back-to-front by Z depth for true 3D occlusion
       const sorted = [...tumblerBalls].sort((a, b) => b.z - a.z);
 
       sorted.forEach(b => {
@@ -858,13 +848,11 @@
         const sy = cy + b.y * scale;
         const sr = b.radius * scale;
 
-        // Drop shadow
         ctx.beginPath();
         ctx.arc(sx + 3 * scale, sy + 5 * scale, sr, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
         ctx.fill();
 
-        // 3D glossy sphere shading
         const ballGrad = ctx.createRadialGradient(
           sx - sr * 0.35,
           sy - sr * 0.35,
@@ -882,13 +870,11 @@
         ctx.fillStyle = ballGrad;
         ctx.fill();
 
-        // White center label circle on ball
         ctx.beginPath();
         ctx.arc(sx, sy, sr * 0.56, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(255, 255, 255, 0.92)";
         ctx.fill();
 
-        // Ball letter + number text
         ctx.fillStyle = "#090c19";
         ctx.font = `900 ${Math.max(9, Math.round(sr * 0.52))}px system-ui, sans-serif`;
         ctx.textAlign = "center";
@@ -896,7 +882,6 @@
         ctx.fillText(`${b.letter}${b.num}`, sx, sy + 0.5);
       });
 
-      // 5. Glass rim & specular dome reflection
       const glassRim = ctx.createLinearGradient(0, cy - sphereRadius, 0, cy + sphereRadius);
       glassRim.addColorStop(0, "rgba(255, 255, 255, 0.22)");
       glassRim.addColorStop(0.3, "rgba(255, 255, 255, 0.02)");
@@ -908,7 +893,6 @@
 
       ctx.restore();
 
-      // Outer metallic/neon ring
       ctx.beginPath();
       ctx.arc(cx, cy, sphereRadius - 2, 0, Math.PI * 2);
       ctx.lineWidth = 6;
@@ -1088,11 +1072,10 @@
       drawBtn.style.opacity = "0.6";
       canvas.classList.add("shaking-glow");
       spotlight.classList.remove("pop-in");
-      spotlight.innerText = "Mixing...";
+      spotlight.innerText = "Shaking...";
       spotlight.style.fontSize = "44px";
       spotlight.style.color = "var(--teal)";
 
-      // Give all 3D balls an initial upward hop impulse
       tumblerBalls.forEach(b => {
         b.vy -= (6 + Math.random() * 6);
         b.vx += (Math.random() - 0.5) * 8;
@@ -1112,7 +1095,7 @@
         spotlight.style.fontSize = "64px";
         spotlight.innerText = str;
         spotlight.style.color = "var(--pink)";
-        void spotlight.offsetWidth; // trigger reflow for pop animation
+        void spotlight.offsetWidth;
         spotlight.classList.add("pop-in");
 
         document.getElementById(`ball_${n}`).classList.add("called");
