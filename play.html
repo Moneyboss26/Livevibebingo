@@ -207,7 +207,6 @@
       gap: 16px;
       flex-wrap: wrap;
     }
-    /* Unified Stage: Main Screen Share + Top-Left PiP Face Bubble */
     .unified-broadcast-stage {
       width: 420px;
       max-width: 100%;
@@ -230,7 +229,6 @@
       height: 100%;
       border: none;
     }
-    /* Top-Left Host PiP Webcam Bubble so right-side Card Inspector is 100% clear */
     .host-pip-bubble {
       position: absolute;
       top: 34px;
@@ -760,7 +758,6 @@
   </div>
 
   <script>
-    // Theme Engine mapped directly to your local image files
     const themes = {
       classic: { name: "Electric Teal", short: "⚡ Electric Teal", icon: "⚡", mosaic: "⚡ ⚡ ⚡", wallpaper: "url('electrical teal.jpg')", border: "#00d2be", teal: "#00d2be", pink: "#ff2e93", dab: "#00d2be" },
       christmas: { name: "Christmas", short: "🎄 Christmas", icon: "🎄", mosaic: "🎄 ⭐ 🎁", wallpaper: "url('christmas.jpg')", border: "#2ec4b6", teal: "#2ec4b6", pink: "#e71d36", dab: "#ff9f1c" },
@@ -794,6 +791,7 @@
     let playerFullName = "";
     let playerCashtag = "";
     let hasJoinedArena = false;
+    let myPlayerKey = null;
     window.latestCachedState = null;
     let lastSpokenBall = "";
 
@@ -802,6 +800,19 @@
     let hostPipVisible = true;
     let myCamSharing = false;
     let seeOtherPlayers = true;
+
+    function forceDisconnectPlayer(reason) {
+      if (!hasJoinedArena) return;
+      hasJoinedArena = false;
+      try {
+        document.getElementById("hostCamViewIframe").src = "about:blank";
+        document.getElementById("hostStreamIframe").src = "about:blank";
+        document.getElementById("mySelfCamIframe").src = "about:blank";
+        document.getElementById("playersSceneIframe").src = "about:blank";
+      } catch (e) {}
+      alert(reason);
+      window.location.reload();
+    }
 
     function syncPlayerVideoRoom(hostIsLive, hostCamId, hostScreenId, loungeRoomId) {
       const loungeBar = document.getElementById("videoLoungeBar");
@@ -964,8 +975,10 @@
       document.getElementById("loginScreen").style.display = "none";
       generateAll4Cards();
 
-      if (window.database && window.dbPush) {
-        window.dbPush(window.dbRef(window.database, 'players'), {
+      if (window.database && window.dbPush && window.dbSet) {
+        const newPlayerRef = window.dbPush(window.dbRef(window.database, 'players'));
+        myPlayerKey = newPlayerRef.key;
+        window.dbSet(newPlayerRef, {
           name: playerFullName,
           cashtag: playerCashtag,
           time: Date.now()
@@ -1103,6 +1116,13 @@
     window.handleBroadcast = function(data) {
       if (!data) return;
       window.latestCachedState = data;
+
+      // Instant Kick-Out Check via synced gameState
+      if (hasJoinedArena && myPlayerKey && Array.isArray(data.kickedIds) && data.kickedIds.includes(myPlayerKey)) {
+        forceDisconnectPlayer("You have been removed from the game room by the host.");
+        return;
+      }
+
       document.getElementById("connectionStatus").innerText = "● Host Live";
       document.getElementById("connectionStatus").style.color = "var(--teal)";
 
@@ -1114,7 +1134,6 @@
       if (data.roomPin) activeSessionPin = String(data.roomPin).trim();
       if (data.lobbyLocked !== undefined) isLobbyLocked = data.lobbyLocked === true;
 
-      // Sync Unified PiP Host Broadcast & Optional Player Lounge
       if (hasJoinedArena) {
         syncPlayerVideoRoom(
           data.hostVideoLive === true,
@@ -1188,7 +1207,6 @@
         document.getElementById("activeBall").innerText = data.latest;
         document.getElementById("ballAnnounce").innerText = `CALLED: ${data.latest}`;
 
-        // Only speak automated voice if Host has Auto-Voice turned ON
         if (data.autoVoice !== false && 'speechSynthesis' in window) {
           const cleanText = data.latest.replace("-", " ");
           const utter = new SpeechSynthesisUtterance(cleanText);
