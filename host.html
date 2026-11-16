@@ -293,6 +293,32 @@
       gap: 18px;
     }
 
+    #sideInspectorPanel {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      border: 2px solid var(--teal);
+    }
+    .inspector-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+      margin: 12px 0;
+    }
+    .insp-tile {
+      aspect-ratio: 1;
+      background: #060812;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 900;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .insp-tile.free { background: rgba(255,46,147,0.2); color: var(--pink); font-size: 10px; }
+    .insp-tile.dabbed { background: var(--teal); color: #06111a; }
+
     /* Unified Picture-in-Picture Host Broadcast Preview */
     .host-video-card {
       background: var(--card-bg);
@@ -321,10 +347,10 @@
     }
     .pip-face-bubble {
       position: absolute;
-      bottom: 8px;
-      right: 8px;
-      width: 96px;
-      height: 72px;
+      top: 30px;
+      left: 8px;
+      width: 90px;
+      height: 68px;
       border-radius: 10px;
       overflow: hidden;
       border: 2px solid var(--pink);
@@ -378,32 +404,6 @@
       padding: 10px 12px;
       font-size: 13px;
     }
-
-    #sideInspectorPanel {
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 20px;
-      border: 2px solid var(--teal);
-    }
-    .inspector-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 4px;
-      margin: 12px 0;
-    }
-    .insp-tile {
-      aspect-ratio: 1;
-      background: #060812;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-weight: 900;
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-    .insp-tile.free { background: rgba(255,46,147,0.2); color: var(--pink); font-size: 10px; }
-    .insp-tile.dabbed { background: var(--teal); color: #06111a; }
 
     /* Bold white numbers away banner styling */
     .numbers-away-banner {
@@ -514,7 +514,7 @@
       set(ref(db, 'claims'), null).then(() => {
         document.getElementById("claimsLog").innerHTML = "";
         document.getElementById("claimsSection").style.display = "none";
-        document.getElementById("sideInspectorContent").innerHTML = `<p style="color: var(--muted); font-size: 12px; text-align: center;">Click 'Inspect' on any incoming bingo claim to review their card here.</p>`;
+        document.getElementById("sideInspectorContent").innerHTML = `<p style="color: var(--muted); font-size: 12px; text-align: center; padding: 24px 0;">Click 'Inspect' on any incoming bingo claim to review their card here.</p>`;
       });
     };
   </script>
@@ -671,24 +671,42 @@
         </div>
       </div>
 
-      <!-- Right Column: Unified PiP Broadcast Preview + Card Inspector + Bingo Claims -->
+      <!-- Right Column: Card Inspector at TOP + Unified PiP Broadcast Below -->
       <div class="right-sidebar">
+        <!-- Card Inspector (Pinned to Top-Right for Instant Visibility on Screen Share) -->
+        <div id="sideInspectorPanel">
+          <h3 style="color: var(--teal); font-size: 15px; margin-bottom: 4px; text-transform: uppercase;">🔍 Card Inspector</h3>
+          <p style="color: var(--muted); font-size: 11px; margin-bottom: 12px;">Inspect winning player cards side-by-side.</p>
+          <div id="sideInspectorContent">
+            <p style="color: var(--muted); font-size: 12px; text-align: center; padding: 24px 0;">Click 'Inspect' on any incoming bingo claim to review their card here.</p>
+          </div>
+
+          <!-- Bingo Claims Section located directly inside Card Inspector -->
+          <div class="section-card" id="claimsSection" style="display: none; margin-top: 14px; margin-bottom: 0; padding: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+              <h3 style="font-size: 13px; color: var(--pink); text-transform: uppercase;">🚨 Bingo Claims</h3>
+              <button class="btn btn-danger" style="padding: 2px 6px; font-size: 10px;" onclick="clearAllClaims()">Clear</button>
+            </div>
+            <div class="claims-log" id="claimsLog" style="max-height: 180px;"></div>
+          </div>
+        </div>
+
         <!-- Unified Picture-in-Picture Host Broadcast -->
         <div class="host-video-card">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <h3 style="color: var(--pink); font-size: 14px; text-transform: uppercase;">🎥 Unified PiP Broadcast</h3>
-            <span style="font-size: 10px; color: var(--teal); font-weight: 800;">SCREEN + CORNER CAM</span>
+            <span style="font-size: 10px; color: var(--teal); font-weight: 800;">SCREEN + TOP-LEFT CAM</span>
           </div>
-          <p style="color: var(--muted); font-size: 11px; margin-top: 4px;">Players see one combined window: your shaker &amp; card board with your face bubble in the bottom-right corner.</p>
+          <p style="color: var(--muted); font-size: 11px; margin-top: 4px;">Players see your shaker &amp; top-right card inspector with your face bubble in the top-left corner.</p>
 
-          <!-- Combined Screen Share + Corner PiP Bubble Preview -->
+          <!-- Combined Screen Share + Top-Left PiP Bubble Preview -->
           <div class="unified-pip-stage">
             <span class="live-pill" id="hostLivePill">● ON AIR</span>
             <span class="brand-corner-tag">★ LIVE VIBE BINGO</span>
             <span id="hostStagePlaceholder" style="color: var(--muted); font-size: 11px; text-align: center; padding: 0 14px;">Broadcast Offline. Click <strong>Go Live (Screen + PiP Cam)</strong> below.</span>
             <iframe id="hostScreenIframe" class="screen-layer" allow="display-capture;autoplay" style="display: none;"></iframe>
 
-            <!-- Corner Face Cam Bubble -->
+            <!-- Top-Left Face Cam Bubble -->
             <div class="pip-face-bubble" id="hostPipBubble">
               <iframe id="hostCamIframe" allow="camera;microphone;autoplay"></iframe>
             </div>
@@ -700,24 +718,6 @@
 
           <div class="video-controls-row" id="activeCamControls" style="display: none;">
             <button class="btn btn-danger" onclick="stopHostBroadcast()">End Broadcast</button>
-          </div>
-        </div>
-
-        <!-- Card Inspector -->
-        <div id="sideInspectorPanel">
-          <h3 style="color: var(--teal); font-size: 15px; margin-bottom: 4px; text-transform: uppercase;">🔍 Card Inspector</h3>
-          <p style="color: var(--muted); font-size: 11px; margin-bottom: 12px;">Inspect winning player cards side-by-side.</p>
-          <div id="sideInspectorContent">
-            <p style="color: var(--muted); font-size: 12px; text-align: center; padding: 40px 0;">Click 'Inspect' on any incoming bingo claim to review their card here.</p>
-          </div>
-
-          <!-- Bingo Claims Section located below Card Inspector in the right sidebar -->
-          <div class="section-card" id="claimsSection" style="display: none; margin-top: 20px; margin-bottom: 0;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <h3 style="font-size: 13px; color: var(--pink); text-transform: uppercase;">🚨 Bingo Claims</h3>
-              <button class="btn btn-danger" style="padding: 2px 6px; font-size: 10px;" onclick="clearAllClaims()">Clear</button>
-            </div>
-            <div class="claims-log" id="claimsLog" style="max-height: 220px;"></div>
           </div>
         </div>
       </div>
@@ -743,7 +743,7 @@
       const camFrame = document.getElementById("hostCamIframe");
       const screenFrame = document.getElementById("hostScreenIframe");
 
-      // Stream 1: Host Webcam rendered inside the bottom-right PiP bubble
+      // Stream 1: Host Webcam rendered inside the top-left PiP bubble
       camFrame.src = `https://vdo.ninja/?push=${VDO_HOST_CAM_ID}&webcam&blur&autostart&cleanoutput&noaudioout`;
       document.getElementById("hostPipBubble").style.display = "block";
 

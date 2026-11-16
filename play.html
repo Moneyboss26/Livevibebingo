@@ -207,7 +207,7 @@
       gap: 16px;
       flex-wrap: wrap;
     }
-    /* Unified Stage: Main Screen Share + Corner PiP Face Bubble */
+    /* Unified Stage: Main Screen Share + Top-Left PiP Face Bubble */
     .unified-broadcast-stage {
       width: 420px;
       max-width: 100%;
@@ -230,24 +230,24 @@
       height: 100%;
       border: none;
     }
-    /* Bottom-Right Host PiP Webcam Bubble */
+    /* Top-Left Host PiP Webcam Bubble so right-side Card Inspector is 100% clear */
     .host-pip-bubble {
       position: absolute;
-      bottom: 10px;
-      right: 10px;
-      width: 124px;
-      height: 94px;
-      border-radius: 12px;
+      top: 34px;
+      left: 10px;
+      width: 104px;
+      height: 78px;
+      border-radius: 10px;
       overflow: hidden;
-      border: 2.5px solid var(--teal);
+      border: 2px solid var(--teal);
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85), 0 0 12px rgba(0, 210, 190, 0.4);
       background: #060812;
       z-index: 6;
       transition: all 0.25s ease;
     }
     .unified-broadcast-stage.expanded .host-pip-bubble {
-      width: 176px;
-      height: 132px;
+      width: 148px;
+      height: 112px;
     }
     .host-pip-bubble iframe {
       width: 100%;
@@ -652,13 +652,13 @@
   <!-- Unified Picture-in-Picture Live Video Lounge -->
   <div class="video-lounge-bar" id="videoLoungeBar">
     <div class="video-lounge-inner">
-      <!-- Single Unified Stage: Host Screen Share + Corner Host Face Cam Bubble -->
+      <!-- Single Unified Stage: Host Screen Share + Top-Left Host Face Cam Bubble -->
       <div class="unified-broadcast-stage" id="hostStreamContainer">
         <span class="live-dot-badge">● LIVE VIBE BINGO</span>
         <iframe id="hostStreamIframe" class="screen-feed" allow="autoplay;fullscreen"></iframe>
         <span class="cam-label-tag">Shaker &amp; Card Verification</span>
 
-        <!-- Corner PiP Host Cam Bubble -->
+        <!-- Top-Left PiP Host Cam Bubble -->
         <div class="host-pip-bubble" id="hostPipBubblePlayer">
           <iframe id="hostCamViewIframe" allow="autoplay;fullscreen"></iframe>
           <span class="pip-host-tag" id="hostCamNameTag">🎙️ CC</span>
