@@ -582,11 +582,13 @@
           </div>
         </div>
 
-        <!-- Theme Selector Dropdown & Quick Buttons -->
-        <div class="section-card">
-          <h3 style="font-size: 14px; color: var(--teal); text-transform: uppercase; margin-bottom: 8px;">🎨 Active Event Theme</h3>
-          <p style="color: var(--muted); font-size: 12px; margin-bottom: 10px;">Select theme via dropdown or quick buttons:</p>
-          <select id="themeDropdown" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: #060812; color: #fff; font-size: 14px; font-weight: 700; margin-bottom: 12px; outline: none;" onchange="setThemeDropdown(this.value)">
+        <!-- Compact Theme Selector Dropdown -->
+        <div class="section-card" style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div>
+            <h3 style="font-size: 14px; color: var(--teal); text-transform: uppercase;">🎨 Active Event Theme</h3>
+            <p style="color: var(--muted); font-size: 12px; margin-top: 2px;">Updates player cards &amp; wallpaper live.</p>
+          </div>
+          <select id="themeDropdown" style="min-width: 220px; flex: 1; max-width: 320px; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: #060812; color: #fff; font-size: 14px; font-weight: 700; outline: none; cursor: pointer;" onchange="setThemeDropdown(this.value)">
             <option value="classic">⚡ Electric Teal</option>
             <option value="christmas">🎄 Christmas</option>
             <option value="thanksgiving">🦃 Thanksgiving</option>
@@ -602,23 +604,6 @@
             <option value="patriotic">🇺🇸 Patriotic</option>
             <option value="happiness">✨ Happiness</option>
           </select>
-
-          <div class="pattern-btn-grid" id="themeSelectorGrid">
-            <button class="p-btn active" onclick="setTheme('classic', this)">⚡ Electric Teal</button>
-            <button class="p-btn" onclick="setTheme('christmas', this)">🎄 Christmas</button>
-            <button class="p-btn" onclick="setTheme('thanksgiving', this)">🦃 Thanksgiving</button>
-            <button class="p-btn" onclick="setTheme('birthday', this)">🎂 Birthday</button>
-            <button class="p-btn" onclick="setTheme('valentine', this)">💖 Valentine’s</button>
-            <button class="p-btn" onclick="setTheme('stpatricks', this)">🍀 St. Patrick’s</button>
-            <button class="p-btn" onclick="setTheme('spring', this)">🌷 Spring</button>
-            <button class="p-btn" onclick="setTheme('summer', this)">☀️ Summer</button>
-            <button class="p-btn" onclick="setTheme('autumn', this)">🍂 Autumn</button>
-            <button class="p-btn" onclick="setTheme('cozyfall', this)">🍁 Cozy Fall</button>
-            <button class="p-btn" onclick="setTheme('winter', this)">❄️ Arctic Ice</button>
-            <button class="p-btn" onclick="setTheme('halloween', this)">🎃 Halloween</button>
-            <button class="p-btn" onclick="setTheme('patriotic', this)">🇺🇸 Patriotic</button>
-            <button class="p-btn" onclick="setTheme('happiness', this)">✨ Happiness</button>
-          </div>
         </div>
 
         <!-- Live Joined Players Roster -->
@@ -867,24 +852,8 @@
       sync();
     }
 
-    function setTheme(themeKey, btn) {
-      document.querySelectorAll("#themeSelectorGrid .p-btn").forEach(b => b.classList.remove("active"));
-      if (btn) btn.classList.add("active");
-      currentTheme = themeKey;
-      const dropdown = document.getElementById("themeDropdown");
-      if (dropdown) dropdown.value = themeKey;
-      sync();
-    }
-
     function setThemeDropdown(themeKey) {
       currentTheme = themeKey;
-      document.querySelectorAll("#themeSelectorGrid .p-btn").forEach(b => {
-        if (b.getAttribute("onclick") && b.getAttribute("onclick").includes(`'${themeKey}'`)) {
-          b.classList.add("active");
-        } else {
-          b.classList.remove("active");
-        }
-      });
       sync();
     }
 
