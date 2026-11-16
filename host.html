@@ -293,27 +293,47 @@
       gap: 18px;
     }
 
-    /* Host Dual Broadcast Box (Face Cam + Screen Share) */
+    /* Unified Picture-in-Picture Host Broadcast Preview */
     .host-video-card {
       background: var(--card-bg);
       border-radius: 12px;
       padding: 16px;
       border: 2px solid var(--pink);
+      box-shadow: 0 8px 25px rgba(255, 46, 147, 0.15);
     }
-    .host-preview-frame {
+    .unified-pip-stage {
       width: 100%;
       aspect-ratio: 16 / 9;
-      background: #060812;
-      border-radius: 8px;
+      background: linear-gradient(135deg, #060812 0%, #120d26 100%);
+      border-radius: 10px;
       overflow: hidden;
       position: relative;
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 2px solid var(--teal);
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 10px 0;
     }
-    .host-preview-frame iframe {
+    .unified-pip-stage iframe.screen-layer {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .pip-face-bubble {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      width: 96px;
+      height: 72px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid var(--pink);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.85);
+      background: #060812;
+      z-index: 6;
+      display: none;
+    }
+    .pip-face-bubble iframe {
       width: 100%;
       height: 100%;
       border: none;
@@ -330,7 +350,22 @@
       border-radius: 4px;
       letter-spacing: 0.5px;
       display: none;
-      z-index: 5;
+      z-index: 7;
+      pointer-events: none;
+    }
+    .brand-corner-tag {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      background: rgba(9, 12, 25, 0.88);
+      color: var(--teal);
+      border: 1px solid rgba(0, 210, 190, 0.4);
+      font-size: 9px;
+      font-weight: 900;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      z-index: 7;
       pointer-events: none;
     }
     .video-controls-row {
@@ -636,32 +671,31 @@
         </div>
       </div>
 
-      <!-- Right Column: Dual Host Broadcast (Face Cam + Screen Share) + Card Inspector -->
+      <!-- Right Column: Unified PiP Broadcast Preview + Card Inspector + Bingo Claims -->
       <div class="right-sidebar">
-        <!-- VDO.Ninja Dual Host Broadcast: Face Cam + Screen Share -->
+        <!-- Unified Picture-in-Picture Host Broadcast -->
         <div class="host-video-card">
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="color: var(--pink); font-size: 14px; text-transform: uppercase;">📹 Host Cam + Screen Share</h3>
-            <span style="font-size: 10px; color: var(--teal); font-weight: 800;">DUAL LIVE FEED</span>
+            <h3 style="color: var(--pink); font-size: 14px; text-transform: uppercase;">🎥 Unified PiP Broadcast</h3>
+            <span style="font-size: 10px; color: var(--teal); font-weight: 800;">SCREEN + CORNER CAM</span>
           </div>
-          <p style="color: var(--muted); font-size: 11px; margin-top: 4px;">Players see <strong>your face</strong> (with blurred background) AND <strong>your screen</strong> (shaker + card inspector) side-by-side.</p>
+          <p style="color: var(--muted); font-size: 11px; margin-top: 4px;">Players see one combined window: your shaker &amp; card board with your face bubble in the bottom-right corner.</p>
 
-          <!-- Face Cam Preview -->
-          <div class="host-preview-frame" style="margin-bottom: 8px;">
-            <span class="live-pill" id="hostCamBadge">● FACE CAM ON</span>
-            <span id="hostCamPlaceholder" style="color: var(--muted); font-size: 11px; text-align: center; padding: 0 10px;">Face Cam Offline</span>
-            <iframe id="hostCamIframe" allow="camera;microphone;autoplay" style="display: none;"></iframe>
-          </div>
+          <!-- Combined Screen Share + Corner PiP Bubble Preview -->
+          <div class="unified-pip-stage">
+            <span class="live-pill" id="hostLivePill">● ON AIR</span>
+            <span class="brand-corner-tag">★ LIVE VIBE BINGO</span>
+            <span id="hostStagePlaceholder" style="color: var(--muted); font-size: 11px; text-align: center; padding: 0 14px;">Broadcast Offline. Click <strong>Go Live (Screen + PiP Cam)</strong> below.</span>
+            <iframe id="hostScreenIframe" class="screen-layer" allow="display-capture;autoplay" style="display: none;"></iframe>
 
-          <!-- Screen Share Preview -->
-          <div class="host-preview-frame">
-            <span class="live-pill" id="hostScreenBadge" style="background: var(--teal); color: #06111a;">● SCREEN ON</span>
-            <span id="hostScreenPlaceholder" style="color: var(--muted); font-size: 11px; text-align: center; padding: 0 10px;">Screen Share Offline</span>
-            <iframe id="hostScreenIframe" allow="display-capture;autoplay" style="display: none;"></iframe>
+            <!-- Corner Face Cam Bubble -->
+            <div class="pip-face-bubble" id="hostPipBubble">
+              <iframe id="hostCamIframe" allow="camera;microphone;autoplay"></iframe>
+            </div>
           </div>
 
           <div class="video-controls-row" id="startCamRow">
-            <button class="btn btn-pink" onclick="startHostBroadcast()">Go Live (Cam + Screen)</button>
+            <button class="btn btn-pink" onclick="startHostBroadcast()">Go Live (Screen + PiP Cam)</button>
           </div>
 
           <div class="video-controls-row" id="activeCamControls" style="display: none;">
@@ -709,18 +743,16 @@
       const camFrame = document.getElementById("hostCamIframe");
       const screenFrame = document.getElementById("hostScreenIframe");
 
-      // Stream 1: Dedicated Host Webcam with built-in browser background blur
+      // Stream 1: Host Webcam rendered inside the bottom-right PiP bubble
       camFrame.src = `https://vdo.ninja/?push=${VDO_HOST_CAM_ID}&webcam&blur&autostart&cleanoutput&noaudioout`;
-      camFrame.style.display = "block";
-      document.getElementById("hostCamPlaceholder").style.display = "none";
-      document.getElementById("hostCamBadge").style.display = "block";
+      document.getElementById("hostPipBubble").style.display = "block";
 
-      // Stream 2: Dedicated Host Screen Share (Shaker + Card Inspector, mic muted here so audio doesn't echo)
+      // Stream 2: Host Screen Share (Shaker + Card Inspector) as main broadcast background
       screenFrame.src = `https://vdo.ninja/?push=${VDO_HOST_SCREEN_ID}&screenshare&mic=0&autostart&cleanoutput&noaudioout`;
       screenFrame.style.display = "block";
-      document.getElementById("hostScreenPlaceholder").style.display = "none";
-      document.getElementById("hostScreenBadge").style.display = "block";
 
+      document.getElementById("hostStagePlaceholder").style.display = "none";
+      document.getElementById("hostLivePill").style.display = "block";
       document.getElementById("startCamRow").style.display = "none";
       document.getElementById("activeCamControls").style.display = "flex";
       isHostLive = true;
@@ -732,14 +764,13 @@
       const screenFrame = document.getElementById("hostScreenIframe");
 
       camFrame.src = "about:blank";
-      camFrame.style.display = "none";
+      document.getElementById("hostPipBubble").style.display = "none";
+
       screenFrame.src = "about:blank";
       screenFrame.style.display = "none";
 
-      document.getElementById("hostCamPlaceholder").style.display = "block";
-      document.getElementById("hostScreenPlaceholder").style.display = "block";
-      document.getElementById("hostCamBadge").style.display = "none";
-      document.getElementById("hostScreenBadge").style.display = "none";
+      document.getElementById("hostStagePlaceholder").style.display = "block";
+      document.getElementById("hostLivePill").style.display = "none";
       document.getElementById("activeCamControls").style.display = "none";
       document.getElementById("startCamRow").style.display = "flex";
       isHostLive = false;

@@ -191,7 +191,7 @@
       border: 1px solid var(--teal);
     }
 
-    /* VDO.Ninja Dual Host Live Video Lounge (Host Face Cam + Host Screen Share + Optional Player Lounge) */
+    /* Unified Picture-in-Picture Live Video Lounge */
     .video-lounge-bar {
       background: rgba(11, 15, 32, 0.96);
       backdrop-filter: blur(8px);
@@ -204,55 +204,99 @@
       margin: 0 auto;
       display: flex;
       align-items: stretch;
-      gap: 14px;
+      gap: 16px;
       flex-wrap: wrap;
     }
-    .host-cam-box {
-      width: 380px;
+    /* Unified Stage: Main Screen Share + Corner PiP Face Bubble */
+    .unified-broadcast-stage {
+      width: 420px;
       max-width: 100%;
-      height: 214px;
-      background: #060812;
+      height: 236px;
+      background: linear-gradient(135deg, #060812 0%, #140e29 100%);
       border: 2px solid var(--pink);
-      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255, 46, 147, 0.25);
+      border-radius: 12px;
       position: relative;
       overflow: hidden;
       flex-shrink: 0;
       transition: all 0.25s ease;
     }
-    .host-cam-box.expanded {
+    .unified-broadcast-stage.expanded {
       width: 100%;
-      height: 460px;
+      height: 480px;
     }
-    .host-cam-box iframe {
+    .unified-broadcast-stage iframe.screen-feed {
       width: 100%;
       height: 100%;
       border: none;
     }
+    /* Bottom-Right Host PiP Webcam Bubble */
+    .host-pip-bubble {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      width: 124px;
+      height: 94px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2.5px solid var(--teal);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85), 0 0 12px rgba(0, 210, 190, 0.4);
+      background: #060812;
+      z-index: 6;
+      transition: all 0.25s ease;
+    }
+    .unified-broadcast-stage.expanded .host-pip-bubble {
+      width: 176px;
+      height: 132px;
+    }
+    .host-pip-bubble iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .pip-host-tag {
+      position: absolute;
+      bottom: 3px;
+      left: 4px;
+      right: 4px;
+      background: rgba(6, 8, 18, 0.82);
+      color: var(--teal);
+      font-size: 9px;
+      font-weight: 900;
+      text-align: center;
+      padding: 1px 4px;
+      border-radius: 4px;
+      pointer-events: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
     .cam-label-tag {
       position: absolute;
-      bottom: 6px;
-      left: 6px;
-      background: rgba(6, 8, 18, 0.85);
+      bottom: 8px;
+      left: 8px;
+      background: rgba(6, 8, 18, 0.88);
       color: #fff;
       font-size: 11px;
       font-weight: 800;
-      padding: 2px 8px;
-      border-radius: 4px;
-      border: 1px solid rgba(255,255,255,0.15);
-      z-index: 4;
+      padding: 3px 8px;
+      border-radius: 5px;
+      border: 1px solid rgba(0, 210, 190, 0.35);
+      z-index: 5;
       pointer-events: none;
     }
     .live-dot-badge {
       position: absolute;
-      top: 6px;
-      left: 6px;
-      background: #e53e3e;
+      top: 8px;
+      left: 8px;
+      background: linear-gradient(90deg, #e53e3e, var(--pink));
       color: #fff;
       font-size: 10px;
       font-weight: 900;
-      padding: 2px 7px;
-      border-radius: 4px;
-      z-index: 4;
+      padding: 3px 8px;
+      border-radius: 5px;
+      letter-spacing: 0.4px;
+      z-index: 5;
       pointer-events: none;
     }
     .video-lounge-controls {
@@ -284,11 +328,11 @@
       gap: 10px;
       flex: 1;
       min-width: 260px;
-      height: 214px;
+      height: 236px;
     }
     .my-self-cam-box {
       width: 180px;
-      height: 214px;
+      height: 236px;
       background: #060812;
       border: 2px solid var(--teal);
       border-radius: 10px;
@@ -304,7 +348,7 @@
     }
     .players-scene-box {
       flex: 1;
-      height: 214px;
+      height: 236px;
       background: #060812;
       border: 1px solid rgba(0, 210, 190, 0.35);
       border-radius: 10px;
@@ -605,36 +649,35 @@
   <!-- Custom Celebration Message Banner -->
   <div class="custom-banner" id="customBanner">🎉 <span id="customBannerText"></span> 🎉</div>
 
-  <!-- VDO.Ninja Dual Host Video Lounge (Host Face Cam + Host Screen Share + Optional Player Cams) -->
+  <!-- Unified Picture-in-Picture Live Video Lounge -->
   <div class="video-lounge-bar" id="videoLoungeBar">
     <div class="video-lounge-inner">
-      <!-- Box 1: Host Face Cam -->
-      <div class="host-cam-box" style="width: 220px; height: 214px;">
-        <span class="live-dot-badge">● HOST CAM</span>
-        <iframe id="hostCamViewIframe" allow="autoplay;fullscreen"></iframe>
-        <span class="cam-label-tag" id="hostCamNameTag">🎙️ Host: CC</span>
-      </div>
-
-      <!-- Box 2: Host Shared Screen (Shaker + Card Inspector) -->
-      <div class="host-cam-box" id="hostStreamContainer">
-        <span class="live-dot-badge" style="background: var(--teal); color: #06111a;">● HOST BOARD</span>
-        <iframe id="hostStreamIframe" allow="autoplay;fullscreen"></iframe>
+      <!-- Single Unified Stage: Host Screen Share + Corner Host Face Cam Bubble -->
+      <div class="unified-broadcast-stage" id="hostStreamContainer">
+        <span class="live-dot-badge">● LIVE VIBE BINGO</span>
+        <iframe id="hostStreamIframe" class="screen-feed" allow="autoplay;fullscreen"></iframe>
         <span class="cam-label-tag">Shaker &amp; Card Verification</span>
+
+        <!-- Corner PiP Host Cam Bubble -->
+        <div class="host-pip-bubble" id="hostPipBubblePlayer">
+          <iframe id="hostCamViewIframe" allow="autoplay;fullscreen"></iframe>
+          <span class="pip-host-tag" id="hostCamNameTag">🎙️ CC</span>
+        </div>
       </div>
 
-      <!-- Player Opt-In Camera Controls -->
+      <!-- Player Broadcast & Opt-In Camera Controls -->
       <div class="video-lounge-controls">
-        <button class="cam-toggle-btn" id="expandHostBtn" onclick="toggleExpandHostScreen()">🔍 Expand Host Board</button>
+        <button class="cam-toggle-btn" id="expandHostBtn" onclick="toggleExpandHostScreen()">🔍 Expand Broadcast</button>
+        <button class="cam-toggle-btn active" id="toggleHostPipBtn" onclick="toggleHostPipBubble()">🖼️ Host Cam Bubble: ON</button>
         <button class="cam-toggle-btn" id="toggleMyCamBtn" onclick="togglePlayerCam()">📹 Share My Cam: OFF</button>
         <button class="cam-toggle-btn active" id="togglePeersBtn" onclick="toggleSeeOtherPlayers()">👥 See Other Players: ON</button>
-        <span style="font-size: 11px; color: var(--muted);">Your cam stays private until you turn it on.</span>
       </div>
 
       <!-- Optional Player-to-Player Camera Lounge -->
       <div class="players-lounge-wrap" id="playersLoungeWrap">
         <div class="my-self-cam-box" id="mySelfCamBox">
           <iframe id="mySelfCamIframe" allow="camera;microphone;autoplay"></iframe>
-          <span class="cam-label-tag">You (Blurred BG)</span>
+          <span class="cam-label-tag">You (Live)</span>
         </div>
         <div class="players-scene-box" id="playersSceneBox">
           <iframe id="playersSceneIframe" allow="autoplay;fullscreen"></iframe>
@@ -756,6 +799,7 @@
 
     // VDO.Ninja Video State
     let videoLoungeActive = false;
+    let hostPipVisible = true;
     let myCamSharing = false;
     let seeOtherPlayers = true;
 
@@ -779,7 +823,7 @@
         return;
       }
 
-      document.getElementById("hostCamNameTag").innerText = `🎙️ Host: ${currentHostName}`;
+      document.getElementById("hostCamNameTag").innerText = `🎙️ ${currentHostName}`;
 
       if (!videoLoungeActive) {
         loungeBar.style.display = "block";
@@ -801,8 +845,17 @@
       const box = document.getElementById("hostStreamContainer");
       const btn = document.getElementById("expandHostBtn");
       const isExpanded = box.classList.toggle("expanded");
-      btn.innerText = isExpanded ? "🗗 Shrink Host Board" : "🔍 Expand Host Board";
+      btn.innerText = isExpanded ? "🗗 Shrink Broadcast" : "🔍 Expand Broadcast";
       btn.classList.toggle("active", isExpanded);
+    }
+
+    function toggleHostPipBubble() {
+      hostPipVisible = !hostPipVisible;
+      const bubble = document.getElementById("hostPipBubblePlayer");
+      const btn = document.getElementById("toggleHostPipBtn");
+      bubble.style.display = hostPipVisible ? "block" : "none";
+      btn.innerText = hostPipVisible ? "🖼️ Host Cam Bubble: ON" : "🖼️ Host Cam Bubble: OFF";
+      btn.classList.toggle("active", hostPipVisible);
     }
 
     function togglePlayerCam() {
@@ -1061,7 +1114,7 @@
       if (data.roomPin) activeSessionPin = String(data.roomPin).trim();
       if (data.lobbyLocked !== undefined) isLobbyLocked = data.lobbyLocked === true;
 
-      // Sync VDO.Ninja Dual Host Streams (Face Cam + Screen Share) & Optional Player Lounge
+      // Sync Unified PiP Host Broadcast & Optional Player Lounge
       if (hasJoinedArena) {
         syncPlayerVideoRoom(
           data.hostVideoLive === true,
