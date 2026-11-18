@@ -15,8 +15,8 @@
       --muted: #9aa5be;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background: var(--bg); color: var(--text); min-height: 100vh; padding: 20px; }
-    .container { max-width: 1200px; margin: 0 auto; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; padding: 18px; }
+    .container { max-width: 1240px; margin: 0 auto; }
 
     #lockScreen {
       position: fixed;
@@ -54,12 +54,12 @@
     .lock-box input:focus { border-color: var(--teal); }
 
     .btn {
-      padding: 12px 20px;
+      padding: 10px 16px;
       border-radius: 8px;
       font-weight: 800;
       cursor: pointer;
       border: none;
-      font-size: 14px;
+      font-size: 13px;
       transition: transform 0.1s ease;
     }
     .btn:active { transform: scale(0.97); }
@@ -72,25 +72,55 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
     }
     .badge {
       display: inline-block;
       padding: 4px 12px;
       border-radius: 20px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       background: rgba(0,210,190,0.15);
       color: var(--teal);
     }
     .badge-locked { background: rgba(229,62,62,0.15); color: #fc8181; }
 
+    /* Built-in 5-Tune Soft Background Lounge Music Bar */
+    .music-bar {
+      background: linear-gradient(90deg, rgba(0,210,190,0.12), rgba(255,46,147,0.12));
+      border: 1px solid rgba(0,210,190,0.35);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .music-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .music-select {
+      background: #060812;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      outline: none;
+    }
+
     .main-layout {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 18px;
+      gap: 16px;
     }
     @media (min-width: 900px) {
       .main-layout {
@@ -102,8 +132,8 @@
     .section-card {
       background: var(--card-bg);
       border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 18px;
+      padding: 16px;
+      margin-bottom: 14px;
       border: 1px solid rgba(255,255,255,0.08);
     }
     .top-input-box {
@@ -111,7 +141,7 @@
       align-items: center;
       gap: 8px;
       background: #060812;
-      padding: 8px 12px;
+      padding: 7px 11px;
       border-radius: 8px;
       border: 1px solid rgba(255,255,255,0.1);
     }
@@ -119,45 +149,47 @@
       background: transparent;
       border: none;
       color: var(--teal);
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 900;
       outline: none;
     }
 
-    /* Side-by-side wrapping pill layout so 50 players stay compact */
-    .joined-players-box {
-      max-height: 145px;
-      overflow-y: auto;
+    .mode-btn-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
       margin-top: 10px;
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      gap: 6px;
     }
-    .player-chip {
+    .m-btn {
       background: #060812;
-      padding: 5px 8px;
-      border-radius: 6px;
-      font-size: 12px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      border: 1px solid rgba(0,210,190,0.25);
-      max-width: 100%;
+      border: 1.5px solid rgba(255,255,255,0.12);
+      color: #fff;
+      padding: 11px 8px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+    .m-btn.active {
+      background: var(--pink);
+      color: #fff;
+      border-color: var(--pink);
+      box-shadow: 0 4px 14px rgba(255,46,147,0.35);
     }
 
     .pattern-btn-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 10px;
-      margin-top: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
     }
     .p-btn {
       background: #060812;
       border: 1px solid rgba(255,255,255,0.1);
       color: #fff;
-      padding: 10px 8px;
+      padding: 9px 6px;
       border-radius: 8px;
       font-weight: 700;
       font-size: 12px;
@@ -166,28 +198,27 @@
     }
     .p-btn.active { background: var(--teal); color: #06111a; border-color: var(--teal); }
 
-    /* 3D Canvas Tumbler Container */
     .tumbler-container {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 22px;
+      padding: 18px;
       background: radial-gradient(circle at 50% 35%, #1a2142 0%, #13172c 75%);
     }
     .tumbler-3d-wrapper {
       position: relative;
-      width: 230px;
-      height: 245px;
+      width: 210px;
+      height: 220px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     #tumblerCanvas {
-      width: 220px;
-      height: 220px;
+      width: 196px;
+      height: 196px;
       border-radius: 50%;
       box-shadow: 0 0 35px rgba(0, 210, 190, 0.35), inset 0 0 25px rgba(0, 0, 0, 0.85);
       transition: box-shadow 0.25s ease;
@@ -204,35 +235,50 @@
       100% { transform: translate(0px, 0px) rotate(0deg); }
     }
     .tumbler-stand {
-      width: 130px;
-      height: 16px;
+      width: 120px;
+      height: 14px;
       background: linear-gradient(90deg, #0b0f22, #2c3663, #0b0f22);
       border: 1px solid rgba(0, 210, 190, 0.4);
       border-radius: 0 0 12px 12px;
-      margin-top: -6px;
+      margin-top: -5px;
       box-shadow: 0 6px 15px rgba(0, 0, 0, 0.7);
     }
 
     .ball-spotlight {
-      font-size: 64px;
+      font-size: 56px;
       font-weight: 900;
       color: var(--pink);
-      line-height: 1;
-      margin: 8px 0 18px;
-      min-height: 68px;
+      line-height: 1.15;
+      margin: 6px 0 10px;
+      min-height: 64px;
+      text-align: center;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       text-shadow: 0 4px 18px rgba(255, 46, 147, 0.45);
-      transition: transform 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      padding: 0 12px;
     }
     .ball-spotlight.pop-in {
       animation: ballPop 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.28);
     }
     @keyframes ballPop {
       0% { transform: scale(0.35); opacity: 0.2; }
-      70% { transform: scale(1.15); }
+      70% { transform: scale(1.08); }
       100% { transform: scale(1); opacity: 1; }
+    }
+    .host-clue-box {
+      background: rgba(6, 8, 18, 0.88);
+      border: 1.5px solid var(--yellow);
+      color: #ffd875;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 10px 16px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      max-width: 580px;
+      text-align: center;
+      display: none;
     }
 
     .action-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
@@ -246,14 +292,14 @@
       gap: 8px;
     }
     .claim-item {
-      padding: 10px 14px;
+      padding: 10px 12px;
       border-radius: 6px;
       background: #060812;
       border: 1px solid var(--teal);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       animation: flashAlert 0.8s infinite alternate;
     }
     @keyframes flashAlert {
@@ -265,40 +311,48 @@
       display: grid;
       grid-template-columns: repeat(15, 1fr);
       gap: 4px;
-      margin-top: 14px;
+      margin-top: 12px;
+    }
+    .master-grid.text-mode {
+      grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+      max-height: 250px;
+      overflow-y: auto;
+      padding-right: 4px;
     }
     .grid-num {
       background: #060812;
-      padding: 8px 0;
+      padding: 7px 4px;
       text-align: center;
       border-radius: 4px;
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 800;
       color: var(--muted);
       border: 1px solid rgba(255,255,255,0.04);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .grid-num.called { background: var(--teal); color: #06111a; border-color: var(--teal); }
 
-    /* Right Sidebar Sticky Wrapper */
     .right-sidebar {
       position: sticky;
-      top: 20px;
+      top: 18px;
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 14px;
     }
 
     #sideInspectorPanel {
       background: var(--card-bg);
       border-radius: 12px;
-      padding: 20px;
+      padding: 16px;
       border: 2px solid var(--teal);
     }
     .inspector-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
       gap: 4px;
-      margin: 12px 0;
+      margin: 10px 0;
     }
     .insp-tile {
       aspect-ratio: 1;
@@ -307,22 +361,24 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 900;
+      text-align: center;
+      padding: 2px;
+      overflow: hidden;
       border: 1px solid rgba(255,255,255,0.06);
     }
-    .insp-tile.free { background: rgba(255,46,147,0.2); color: var(--pink); font-size: 10px; }
+    .insp-tile.free { background: rgba(255,46,147,0.2); color: var(--pink); font-size: 9px; }
     .insp-tile.dabbed { background: var(--teal); color: #06111a; }
 
-    /* Unified Picture-in-Picture Host Broadcast Preview */
     .host-video-card {
       background: var(--card-bg);
       border-radius: 12px;
-      padding: 16px;
+      padding: 14px;
       border: 2px solid var(--pink);
       box-shadow: 0 8px 25px rgba(255, 46, 147, 0.15);
     }
-    .unified-pip-stage {
+    .host-cam-stage {
       width: 100%;
       aspect-ratio: 16 / 9;
       background: linear-gradient(135deg, #060812 0%, #120d26 100%);
@@ -333,28 +389,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 10px 0;
+      margin: 8px 0;
     }
-    .unified-pip-stage iframe.screen-layer {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    .pip-face-bubble {
-      position: absolute;
-      top: 30px;
-      left: 8px;
-      width: 90px;
-      height: 68px;
-      border-radius: 10px;
-      overflow: hidden;
-      border: 2px solid var(--pink);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.85);
-      background: #060812;
-      z-index: 6;
-      display: none;
-    }
-    .pip-face-bubble iframe {
+    .host-cam-stage iframe {
       width: 100%;
       height: 100%;
       border: none;
@@ -396,11 +433,9 @@
     }
     .video-controls-row .btn {
       flex: 1;
-      padding: 10px 12px;
-      font-size: 13px;
+      padding: 9px 12px;
+      font-size: 12px;
     }
-
-    /* Bold white numbers away banner styling */
     .numbers-away-banner {
       color: #ffffff !important;
       font-weight: bold !important;
@@ -411,7 +446,7 @@
   <!-- Firebase SDKs -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, set, onChildAdded, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, onChildAdded, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCzcleQMnqsBadKqb8m7CXRo8ek4zpKYxE",
@@ -431,38 +466,58 @@
 
     onValue(ref(db, 'players'), (snapshot) => {
       const data = snapshot.val();
-      const rosterEl = document.getElementById("joinedPlayersRoster");
       const countEl = document.getElementById("playerCountBadge");
+      const selectEl = document.getElementById("hostPlayerSelect");
       
       if (!data) {
-        rosterEl.innerHTML = `<span style="color: var(--muted); font-size: 12px; font-style: italic;">No players joined yet...</span>`;
-        countEl.innerText = `0 Players Checked In`;
+        if (countEl) countEl.innerText = `0 Players Checked In`;
+        if (selectEl) selectEl.innerHTML = `<option value="">-- Select Player --</option>`;
+        window.activePlayersMap = {};
         return;
       }
 
       const entries = Object.entries(data);
-      countEl.innerText = `${entries.length} Players Checked In`;
-      rosterEl.innerHTML = "";
+      if (countEl) countEl.innerText = `${entries.length} Players Checked In`;
+      if (selectEl) selectEl.innerHTML = `<option value="">-- Select Player --</option>`;
+      window.activePlayersMap = {};
 
       entries.forEach(([key, p]) => {
-        const chip = document.createElement("div");
-        chip.className = "player-chip";
-        const safeName = (p.name || "Player").replace(/'/g, "\\'");
-        chip.innerHTML = `
-          <strong style="color: #fff; font-size: 12px;">${p.name}</strong>
-          <span style="color: var(--teal); font-size: 11px;">${p.cashtag}</span>
-          <button class="btn btn-danger" style="padding: 2px 6px; font-size: 10px; line-height: 1.2;" title="Kick Player" onclick="removePlayer('${key}', '${safeName}')">✕</button>
-        `;
-        rosterEl.appendChild(chip);
+        window.activePlayersMap[key] = p;
+        const curCards = p.cardCount || 2;
+        if (selectEl) {
+          const opt = document.createElement("option");
+          opt.value = key;
+          opt.textContent = `${p.name} — ${curCards} Cards`;
+          selectEl.appendChild(opt);
+        }
       });
     });
 
-    window.removePlayer = function(playerKey, playerName) {
+    window.assignHostCards = function() {
+      const selKey = document.getElementById("hostPlayerSelect").value;
+      const count = parseInt(document.getElementById("hostCardCountInput").value) || 2;
+      if (!selKey) {
+        alert("Please select a player from the dropdown first.");
+        return;
+      }
+      update(ref(db, `players/${selKey}`), { cardCount: count, updateToken: Date.now() })
+        .then(() => alert(`Assigned ${count} card(s) to player!`))
+        .catch(err => alert("Error updating card count: " + err.message));
+    };
+
+    window.kickSelectedPlayer = function() {
+      const selKey = document.getElementById("hostPlayerSelect").value;
+      if (!selKey) {
+        alert("Please select a player from the dropdown first.");
+        return;
+      }
+      const p = window.activePlayersMap ? window.activePlayersMap[selKey] : null;
+      const playerName = p ? p.name : "this player";
       if (!confirm(`Remove ${playerName} from the game room? They will be disconnected immediately.`)) return;
       if (window.kickedPlayerIds) {
-        window.kickedPlayerIds.add(playerKey);
+        window.kickedPlayerIds.add(selKey);
       }
-      remove(ref(db, `players/${playerKey}`));
+      remove(ref(db, `players/${selKey}`));
       if (typeof window.sync === 'function') window.sync();
     };
 
@@ -479,12 +534,11 @@
         item.id = snapshot.key;
         
         const claimId = 'claim_' + Math.random().toString(36).substring(2, 9);
-        window[claimId] = { cards: msg.cardsSnapshot, serials: msg.cardSerials };
+        window[claimId] = { playerName: msg.name, cards: msg.cardsSnapshot, serials: msg.cardSerials };
 
         item.innerHTML = `
           <div>
-            <strong style="color: #fff; font-size: 12px;">🚨 ${msg.name}</strong> 
-            <span style="color: var(--teal); font-size: 11px;">(${msg.cashtag})</span><br>
+            <strong style="color: #fff; font-size: 12px;">🚨 ${msg.name}</strong><br>
             <span style="color: var(--yellow); font-size: 11px;">Card #${msg.cardNum} (${msg.serialNum || 'N/A'})</span>
           </div>
           <div style="display:flex; gap:6px; align-items:center;">
@@ -510,14 +564,13 @@
       set(ref(db, 'claims'), null).then(() => {
         document.getElementById("claimsLog").innerHTML = "";
         document.getElementById("claimsSection").style.display = "none";
-        document.getElementById("sideInspectorContent").innerHTML = `<p style="color: var(--muted); font-size: 12px; text-align: center; padding: 24px 0;">Click 'Inspect' on any incoming bingo claim to review their card here.</p>`;
+        clearInspectedCard();
       });
     };
   </script>
 </head>
 <body>
 
-  <!-- Secure PIN Lock Screen Overlay -->
   <div id="lockScreen">
     <div class="lock-box">
       <h2 style="color: var(--teal); margin-bottom: 6px;">Live Host Access</h2>
@@ -531,13 +584,13 @@
   <div class="container" id="mainDashboard" style="display: none;">
     <div class="top-bar">
       <div>
-        <h1 style="font-size: 24px; color: var(--teal);">LiveVibe Caller Station</h1>
+        <h1 style="font-size: 22px; color: var(--teal);">LiveVibe Caller Station</h1>
         <span class="badge" id="lobbyStatusBadge">● Lobby Open (Players Joining)</span>
       </div>
-      <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
         <div class="top-input-box">
-          <span style="font-size: 12px; color: var(--yellow); font-weight: 800;">🎙️ HOST:</span>
-          <input type="text" id="hostNameInput" value="CC" style="width: 70px;" onchange="updateHostName()" placeholder="Host Name">
+          <span style="font-size: 11px; color: var(--yellow); font-weight: 800;">🎙️ HOST:</span>
+          <input type="text" id="hostNameInput" value="Live Host" style="width: 85px;" onchange="updateHostName()" placeholder="Host Name">
         </div>
 
         <button class="btn" id="voiceToggleBtn" onclick="toggleCallerVoice()" style="background: #2d3748; color: #fff;">
@@ -545,8 +598,8 @@
         </button>
 
         <div class="top-input-box">
-          <span style="font-size: 12px; color: var(--muted); font-weight: 700;">PIN:</span>
-          <input type="text" id="roomPinInput" value="7722" maxlength="4" style="width: 55px; text-align: center;" onchange="updateRoomPin()">
+          <span style="font-size: 11px; color: var(--muted); font-weight: 700;">PIN:</span>
+          <input type="text" id="roomPinInput" value="7722" maxlength="4" style="width: 50px; text-align: center;" onchange="updateRoomPin()">
         </div>
 
         <button class="btn btn-lock" id="toggleLockBtn" onclick="toggleDoorLock()">Lock Out Late Players</button>
@@ -554,139 +607,158 @@
       </div>
     </div>
 
-    <!-- Side-by-Side Main Layout -->
+    <!-- Built-In 5-Tune Soft Background Lounge Music Player -->
+    <div class="music-bar">
+      <div class="music-controls">
+        <span style="font-size: 13px; font-weight: 900; color: var(--teal);">🎶 Soft Lounge Tunes (5 Vibes):</span>
+        <button class="btn btn-teal" id="musicPlayBtn" style="padding: 6px 14px; font-size: 12px;" onclick="toggleLoungeMusic()">▶ Play Tunes</button>
+        <select id="musicStyleSelect" class="music-select" onchange="changeLoungeMusicStyle()">
+          <option value="chill">1. 🎹 Chill Electric Piano</option>
+          <option value="upbeat">2. ✨ Upbeat Game Lounge</option>
+          <option value="spa">3. 🌿 Soft Ambient Pad</option>
+          <option value="bossa">4. 🎷 Smooth Bossa Groove</option>
+          <option value="lofi">5. 🌅 Sunset Lo-Fi Chill</option>
+        </select>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 11px; color: var(--muted); font-weight: 700;">Volume:</span>
+        <input type="range" id="musicVolumeSlider" min="0" max="100" value="30" oninput="updateLoungeMusicVolume(this.value)" style="width: 100px; accent-color: var(--teal); cursor: pointer;">
+      </div>
+    </div>
+
     <div class="main-layout">
-      <!-- Left Column -->
       <div>
-        <!-- Live Joined Players Roster (Side-by-Side Pills + Instant Kick) -->
+        <!-- Game Mode Switcher -->
         <div class="section-card">
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="font-size: 14px; color: var(--teal); text-transform: uppercase;">Joined Players Roster</h3>
-            <span style="font-size: 12px; color: var(--muted); font-weight: 700;" id="playerCountBadge">0 Players Checked In</span>
+            <h3 style="font-size: 13px; color: var(--pink); text-transform: uppercase;">🎮 Game Mode</h3>
+            <span style="font-size: 11px; color: var(--muted);">Trivia &amp; Emoji modes give a 10-second clue timer before revealing the answer</span>
           </div>
-          <div class="joined-players-box" id="joinedPlayersRoster">
-            <span style="color: var(--muted); font-size: 12px; font-style: italic;">No players joined yet...</span>
+          <div class="mode-btn-grid">
+            <button class="m-btn active" onclick="setGameMode('classic', this)">🎱 Classic 75-Ball</button>
+            <button class="m-btn" onclick="setGameMode('trivia', this)">🧠 Trivia Bingo (10s)</button>
+            <button class="m-btn" onclick="setGameMode('emoji', this)">🎬 Movie &amp; TV Emoji (10s)</button>
           </div>
         </div>
 
-        <!-- Custom Banner Broadcast Control Card -->
+        <!-- Unified Player Card Roster, Assignment & Kick Control -->
         <div class="section-card">
-          <h3 style="font-size: 14px; color: var(--yellow); text-transform: uppercase; margin-bottom: 8px;">🎉 Custom Banner Broadcast</h3>
-          <p style="color: var(--muted); font-size: 12px; margin-bottom: 10px;">Type a custom message (e.g., "Happy Birthday Mary!") to display across all player screens.</p>
-          <div style="display: flex; gap: 8px;">
-            <input type="text" id="customBannerInput" placeholder="e.g. Happy Birthday Mary!" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: #060812; color: #fff; font-size: 14px; outline: none;">
-            <button class="btn btn-pink" style="padding: 10px 16px;" onclick="sync()">Push Banner</button>
-            <button class="btn" style="background: #2d3748; color: #fff; padding: 10px 14px;" onclick="clearBanner()">Clear</button>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <h3 style="font-size: 13px; color: var(--yellow); text-transform: uppercase;">🎴 Player Card Roster &amp; Control</h3>
+            <span style="font-size: 12px; color: var(--teal); font-weight: 700;" id="playerCountBadge">0 Players Checked In</span>
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+            <select id="hostPlayerSelect" style="flex: 2; min-width: 180px; padding: 9px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: #060812; color: #fff; font-size: 13px; outline: none;">
+              <option value="">-- Select Player --</option>
+            </select>
+            <input type="number" id="hostCardCountInput" value="2" min="1" max="4" style="width: 64px; padding: 9px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: #060812; color: #fff; font-size: 14px; text-align: center; outline: none;" title="Card Count (Max 4)">
+            <button class="btn btn-teal" onclick="assignHostCards()">Assign Cards</button>
+            <button class="btn btn-danger" onclick="kickSelectedPlayer()">✕ Kick</button>
           </div>
         </div>
 
-        <!-- Compact Theme Selector Dropdown -->
-        <div class="section-card" style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+        <!-- Custom Banner & Event Theme Selector -->
+        <div class="section-card" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; align-items: end;">
           <div>
-            <h3 style="font-size: 14px; color: var(--teal); text-transform: uppercase;">🎨 Active Event Theme</h3>
-            <p style="color: var(--muted); font-size: 12px; margin-top: 2px;">Updates player cards &amp; wallpaper live.</p>
+            <h3 style="font-size: 13px; color: var(--yellow); text-transform: uppercase; margin-bottom: 6px;">🎉 Custom Banner Broadcast</h3>
+            <div style="display: flex; gap: 6px;">
+              <input type="text" id="customBannerInput" placeholder="e.g. Happy Birthday Mary!" style="flex: 1; padding: 9px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: #060812; color: #fff; font-size: 13px; outline: none;">
+              <button class="btn btn-pink" onclick="sync()">Push</button>
+              <button class="btn" style="background: #2d3748; color: #fff;" onclick="clearBanner()">Clear</button>
+            </div>
           </div>
-          <select id="themeDropdown" style="min-width: 220px; flex: 1; max-width: 320px; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: #060812; color: #fff; font-size: 14px; font-weight: 700; outline: none; cursor: pointer;" onchange="setThemeDropdown(this.value)">
-            <option value="classic">⚡ Electric Teal</option>
-            <option value="christmas">🎄 Christmas</option>
-            <option value="thanksgiving">🦃 Thanksgiving</option>
-            <option value="birthday">🎂 Birthday</option>
-            <option value="valentine">💖 Valentine’s</option>
-            <option value="stpatricks">🍀 St. Patrick’s</option>
-            <option value="spring">🌷 Spring</option>
-            <option value="summer">☀️ Summer</option>
-            <option value="autumn">🍂 Autumn</option>
-            <option value="cozyfall">🍁 Cozy Fall</option>
-            <option value="winter">❄️ Arctic Ice</option>
-            <option value="halloween">🎃 Halloween</option>
-            <option value="patriotic">🇺🇸 Patriotic</option>
-            <option value="happiness">✨ Happiness</option>
-          </select>
+          <div>
+            <h3 style="font-size: 13px; color: var(--teal); text-transform: uppercase; margin-bottom: 6px;">🎨 Event Theme</h3>
+            <select id="themeDropdown" style="width: 100%; padding: 9px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: #060812; color: #fff; font-size: 13px; font-weight: 700; outline: none; cursor: pointer;" onchange="setThemeDropdown(this.value)">
+              <option value="none">🚫 No Theme (Clean Dark)</option>
+              <option value="classic" selected>⚡ Electric Teal</option>
+              <option value="birthday">🎂 Birthday Party</option>
+              <option value="happiness">✨ Happiness</option>
+              <option value="christmas">🎄 Holiday / Christmas</option>
+              <option value="patriotic">🇺🇸 Patriotic</option>
+              <option value="summer">☀️ Summer Party</option>
+            </select>
+          </div>
         </div>
 
         <div class="section-card">
-          <h3 style="font-size: 15px; color: var(--muted); text-transform: uppercase;">Active Round & Cash Prize</h3>
+          <h3 style="font-size: 13px; color: var(--muted); text-transform: uppercase;">Active Round Pattern</h3>
           <div class="pattern-btn-grid">
-            <button class="p-btn active" onclick="setGame(1, 'Regular Bingo', '$25', this)">Game 1: Regular ($25)</button>
-            <button class="p-btn" onclick="setGame(2, 'Regular Bingo', '$25', this)">Game 2: Regular ($25)</button>
-            <button class="p-btn" onclick="setGame(3, '4 Corners', '$25', this)">Game 3: 4 Corners ($25)</button>
-            <button class="p-btn" onclick="setGame(4, 'Double Bingo', '$50', this)">Game 4: Double ($50)</button>
-            <button class="p-btn" onclick="setGame(5, 'Coverall', '$150', this)">Game 5: Coverall ($150)</button>
+            <button class="p-btn active" onclick="setGame(1, 'Regular Line', this)">Round 1: Regular Line</button>
+            <button class="p-btn" onclick="setGame(2, 'Regular Line', this)">Round 2: Regular Line</button>
+            <button class="p-btn" onclick="setGame(3, '4 Corners', this)">Round 3: 4 Corners</button>
+            <button class="p-btn" onclick="setGame(4, 'Double Bingo', this)">Round 4: Double Bingo</button>
+            <button class="p-btn" onclick="setGame(5, 'Coverall', this)">Round 5: Coverall</button>
           </div>
         </div>
 
-        <!-- 3D Physics Hopping Balls Tumbler Cage -->
+        <!-- 3D Tumbler Cage & Host Call Spotlight -->
         <div class="section-card tumbler-container">
           <div class="tumbler-3d-wrapper">
-            <canvas id="tumblerCanvas" width="440" height="440"></canvas>
+            <canvas id="tumblerCanvas" width="392" height="392"></canvas>
             <div class="tumbler-stand"></div>
           </div>
 
           <div class="ball-spotlight" id="hostBall">-</div>
+          <div class="host-clue-box" id="hostClueBox"></div>
           
           <div class="action-row">
-            <button class="btn btn-teal" id="drawBtn" style="font-size: 16px; padding: 14px 28px;" onclick="shakeAndDraw()">Shake &amp; Draw Ball</button>
-            <button class="btn" style="background: #3182ce; color: #fff;" onclick="nextGame()">Next Game (Keep Players)</button>
+            <button class="btn btn-teal" id="drawBtn" style="font-size: 15px; padding: 12px 24px;" onclick="shakeAndDraw()">Shake &amp; Draw Ball</button>
+            <button class="btn btn-pink" id="revealNowBtn" style="display: none; font-size: 14px; padding: 12px 18px;" onclick="revealAnswerImmediately()">Reveal Answer Now</button>
+            <button class="btn" style="background: #3182ce; color: #fff;" onclick="nextGame()">Next Round (Keep Cards)</button>
             <button class="btn btn-danger" onclick="resetNewSession()">New Session (Wipe Players)</button>
           </div>
         </div>
 
         <div class="section-card">
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="font-size: 15px; color: var(--muted); text-transform: uppercase;">Master 75-Ball Board</h3>
-            <span id="callCounter" class="numbers-away-banner" style="font-size: 14px;">0 / 75 Drawn</span>
+            <h3 style="font-size: 13px; color: var(--muted); text-transform: uppercase;" id="masterBoardTitle">Master 75-Ball Board</h3>
+            <span id="callCounter" class="numbers-away-banner" style="font-size: 13px;">0 / 75 Drawn</span>
           </div>
           <div class="master-grid" id="masterGrid"></div>
         </div>
       </div>
 
-      <!-- Right Column: Card Inspector at TOP + Unified PiP Broadcast Below -->
       <div class="right-sidebar">
-        <!-- Card Inspector (Pinned to Top-Right for Instant Visibility on Screen Share) -->
         <div id="sideInspectorPanel">
-          <h3 style="color: var(--teal); font-size: 15px; margin-bottom: 4px; text-transform: uppercase;">🔍 Card Inspector</h3>
-          <p style="color: var(--muted); font-size: 11px; margin-bottom: 12px;">Inspect winning player cards side-by-side.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <h3 style="color: var(--teal); font-size: 14px; text-transform: uppercase;">🔍 Card Inspector</h3>
+            <button id="clearVerifyBtn" class="btn btn-danger" style="display: none; padding: 3px 8px; font-size: 10px;" onclick="clearInspectedCard()">✕ Clear Verification</button>
+          </div>
+          <p style="color: var(--muted); font-size: 11px; margin-bottom: 10px;">Inspect winning player cards side-by-side (broadcasts live when inspected).</p>
           <div id="sideInspectorContent">
-            <p style="color: var(--muted); font-size: 12px; text-align: center; padding: 24px 0;">Click 'Inspect' on any incoming bingo claim to review their card here.</p>
+            <p style="color: var(--muted); font-size: 12px; text-align: center; padding: 20px 0;">Click 'Inspect' on any incoming bingo claim to review their card here.</p>
           </div>
 
-          <!-- Bingo Claims Section located directly inside Card Inspector -->
-          <div class="section-card" id="claimsSection" style="display: none; margin-top: 14px; margin-bottom: 0; padding: 12px;">
+          <div class="section-card" id="claimsSection" style="display: none; margin-top: 12px; margin-bottom: 0; padding: 10px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <h3 style="font-size: 13px; color: var(--pink); text-transform: uppercase;">🚨 Bingo Claims</h3>
+              <h3 style="font-size: 12px; color: var(--pink); text-transform: uppercase;">🚨 Bingo Claims</h3>
               <button class="btn btn-danger" style="padding: 2px 6px; font-size: 10px;" onclick="clearAllClaims()">Clear</button>
             </div>
-            <div class="claims-log" id="claimsLog" style="max-height: 180px;"></div>
+            <div class="claims-log" id="claimsLog" style="max-height: 160px;"></div>
           </div>
         </div>
 
-        <!-- Unified Picture-in-Picture Host Broadcast -->
         <div class="host-video-card">
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="color: var(--pink); font-size: 14px; text-transform: uppercase;">🎥 Unified PiP Broadcast</h3>
-            <span style="font-size: 10px; color: var(--teal); font-weight: 800;">SCREEN + TOP-LEFT CAM</span>
+            <h3 style="color: var(--pink); font-size: 13px; text-transform: uppercase;">📹 Host Live Camera</h3>
+            <span style="font-size: 10px; color: var(--teal); font-weight: 800;">PRIVATE CAM ONLY</span>
           </div>
-          <p style="color: var(--muted); font-size: 11px; margin-top: 4px;">Players see your shaker &amp; top-right card inspector with your face bubble in the top-left corner.</p>
+          <p style="color: var(--muted); font-size: 11px; margin-top: 4px;">Shares <strong>only your face cam</strong> (never your URL or screen). Players see your live 3D shaker &amp; verified card automatically.</p>
 
-          <!-- Combined Screen Share + Top-Left PiP Bubble Preview -->
-          <div class="unified-pip-stage">
-            <span class="live-pill" id="hostLivePill">● ON AIR</span>
+          <div class="host-cam-stage">
+            <span class="live-pill" id="hostLivePill">● CAM LIVE</span>
             <span class="brand-corner-tag">★ LIVE VIBE BINGO</span>
-            <span id="hostStagePlaceholder" style="color: var(--muted); font-size: 11px; text-align: center; padding: 0 14px;">Broadcast Offline. Click <strong>Go Live (Screen + PiP Cam)</strong> below.</span>
-            <iframe id="hostScreenIframe" class="screen-layer" allow="display-capture;autoplay" style="display: none;"></iframe>
-
-            <!-- Top-Left Face Cam Bubble -->
-            <div class="pip-face-bubble" id="hostPipBubble">
-              <iframe id="hostCamIframe" allow="camera;microphone;autoplay"></iframe>
-            </div>
+            <span id="hostStagePlaceholder" style="color: var(--muted); font-size: 11px; text-align: center; padding: 0 14px;">Camera Offline. Click <strong>Start Host Camera</strong> below.</span>
+            <iframe id="hostCamIframe" allow="camera;microphone;autoplay" style="display: none;"></iframe>
           </div>
 
           <div class="video-controls-row" id="startCamRow">
-            <button class="btn btn-pink" onclick="startHostBroadcast()">Go Live (Screen + PiP Cam)</button>
+            <button class="btn btn-pink" onclick="startHostBroadcast()">Start Host Camera</button>
           </div>
 
           <div class="video-controls-row" id="activeCamControls" style="display: none;">
-            <button class="btn btn-danger" onclick="stopHostBroadcast()">End Broadcast</button>
+            <button class="btn btn-danger" onclick="stopHostBroadcast()">End Camera</button>
           </div>
         </div>
       </div>
@@ -696,26 +768,347 @@
   <script>
     const MASTER_PASS = "LiveVibe2026";
     const VDO_HOST_CAM_ID = "LiveVibeHostCam";
-    const VDO_HOST_SCREEN_ID = "LiveVibeHostScreen";
+
+    // ==========================================
+    // 5 BUILT-IN SOFT LOUNGE BACKGROUND TUNES
+    // ==========================================
+    let loungeAudioCtx = null;
+    let loungeMasterGain = null;
+    let loungeTimer = null;
+    let loungePlaying = false;
+    let loungeStep = 0;
+
+    const LOUNGE_CHORDS = {
+      chill: {
+        tempo: 1800,
+        wave: "sine",
+        chords: [
+          [261.63, 329.63, 392.00, 493.88],
+          [220.00, 261.63, 329.63, 392.00],
+          [174.61, 220.00, 261.63, 329.63],
+          [196.00, 246.94, 293.66, 349.23]
+        ]
+      },
+      upbeat: {
+        tempo: 1200,
+        wave: "triangle",
+        chords: [
+          [293.66, 369.99, 440.00, 523.25],
+          [246.94, 293.66, 369.99, 440.00],
+          [196.00, 246.94, 293.66, 369.99],
+          [220.00, 277.18, 329.63, 392.00]
+        ]
+      },
+      spa: {
+        tempo: 2400,
+        wave: "sine",
+        chords: [
+          [220.00, 329.63, 440.00],
+          [196.00, 293.66, 392.00],
+          [174.61, 261.63, 349.23],
+          [196.00, 293.66, 392.00]
+        ]
+      },
+      bossa: {
+        tempo: 1500,
+        wave: "triangle",
+        chords: [
+          [174.61, 220.00, 261.63, 329.63],
+          [196.00, 246.94, 293.66, 349.23],
+          [164.81, 196.00, 246.94, 293.66],
+          [220.00, 261.63, 329.63, 392.00]
+        ]
+      },
+      lofi: {
+        tempo: 2000,
+        wave: "sine",
+        chords: [
+          [246.94, 293.66, 369.99, 440.00],
+          [196.00, 246.94, 293.66, 369.99],
+          [146.83, 220.00, 277.18, 329.63],
+          [185.00, 220.00, 277.18, 329.63]
+        ]
+      }
+    };
+
+    function startLoungeInterval() {
+      if (loungeTimer) clearInterval(loungeTimer);
+      const style = document.getElementById("musicStyleSelect").value || "chill";
+      const preset = LOUNGE_CHORDS[style] || LOUNGE_CHORDS.chill;
+      playLoungeStep();
+      loungeTimer = setInterval(playLoungeStep, preset.tempo);
+    }
+
+    function toggleLoungeMusic() {
+      const btn = document.getElementById("musicPlayBtn");
+      if (loungePlaying) {
+        loungePlaying = false;
+        if (loungeTimer) clearInterval(loungeTimer);
+        btn.innerText = "▶ Play Tunes";
+        btn.style.background = "var(--teal)";
+        btn.style.color = "#06111a";
+      } else {
+        if (!loungeAudioCtx) {
+          loungeAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          loungeMasterGain = loungeAudioCtx.createGain();
+          const vol = (parseInt(document.getElementById("musicVolumeSlider").value) || 30) / 100;
+          loungeMasterGain.gain.setValueAtTime(vol * 0.25, loungeAudioCtx.currentTime);
+          loungeMasterGain.connect(loungeAudioCtx.destination);
+        }
+        if (loungeAudioCtx.state === "suspended") loungeAudioCtx.resume();
+        loungePlaying = true;
+        btn.innerText = "⏸ Pause Tunes";
+        btn.style.background = "var(--pink)";
+        btn.style.color = "#fff";
+        startLoungeInterval();
+      }
+    }
+
+    function changeLoungeMusicStyle() {
+      loungeStep = 0;
+      if (loungePlaying) startLoungeInterval();
+    }
+
+    function updateLoungeMusicVolume(val) {
+      if (loungeMasterGain && loungeAudioCtx) {
+        loungeMasterGain.gain.setTargetAtTime((val / 100) * 0.25, loungeAudioCtx.currentTime, 0.05);
+      }
+    }
+
+    function playLoungeStep() {
+      if (!loungePlaying || !loungeAudioCtx || !loungeMasterGain) return;
+      const style = document.getElementById("musicStyleSelect").value || "chill";
+      const preset = LOUNGE_CHORDS[style] || LOUNGE_CHORDS.chill;
+      const chord = preset.chords[loungeStep % preset.chords.length];
+      const now = loungeAudioCtx.currentTime;
+      const dur = preset.tempo / 1000;
+
+      chord.forEach((freq, idx) => {
+        const osc = loungeAudioCtx.createOscillator();
+        const noteGain = loungeAudioCtx.createGain();
+        osc.type = preset.wave;
+        osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+
+        noteGain.gain.setValueAtTime(0.001, now + idx * 0.06);
+        noteGain.gain.linearRampToValueAtTime(0.18 / chord.length, now + idx * 0.06 + 0.12);
+        noteGain.gain.exponentialRampToValueAtTime(0.0008, now + dur);
+
+        osc.connect(noteGain);
+        noteGain.connect(loungeMasterGain);
+        osc.start(now + idx * 0.06);
+        osc.stop(now + dur + 0.05);
+      });
+
+      loungeStep++;
+    }
+
+    // ==========================================
+    // 75-ITEM TRIVIA & EMOJI MOVIE DECKS
+    // ==========================================
+    const TRIVIA_DECK = [
+      { q: "Which planet is known as the Red Planet?", a: "Mars" },
+      { q: "What is the largest ocean on Earth?", a: "Pacific Ocean" },
+      { q: "Who painted the Mona Lisa?", a: "Leonardo da Vinci" },
+      { q: "What is the capital city of France?", a: "Paris" },
+      { q: "How many continents are there on Earth?", a: "7 Continents" },
+      { q: "Which mammal is known as the King of the Jungle?", a: "Lion" },
+      { q: "What is the chemical symbol for Gold?", a: "Au" },
+      { q: "In which year did the Titanic sink?", a: "1912" },
+      { q: "Who wrote the play Romeo and Juliet?", a: "Shakespeare" },
+      { q: "What is the fastest land animal?", a: "Cheetah" },
+      { q: "Which US state is known as the Sunshine State?", a: "Florida" },
+      { q: "What is the hardest natural substance on Earth?", a: "Diamond" },
+      { q: "How many players are on a standard soccer team on the field?", a: "11 Players" },
+      { q: "Which planet is closest to the Sun?", a: "Mercury" },
+      { q: "What is the capital of Japan?", a: "Tokyo" },
+      { q: "Who was the first person to walk on the Moon?", a: "Neil Armstrong" },
+      { q: "What is the largest mammal in the world?", a: "Blue Whale" },
+      { q: "Which country gifted the Statue of Liberty to the US?", a: "France" },
+      { q: "How many stripes are on the US flag?", a: "13 Stripes" },
+      { q: "What is the smallest prime number?", a: "2" },
+      { q: "Which organ pumps blood through the human body?", a: "Heart" },
+      { q: "What is the tallest mountain in the world?", a: "Mount Everest" },
+      { q: "Which gas do plants absorb from the atmosphere?", a: "Carbon Dioxide" },
+      { q: "In what city is the Colosseum located?", a: "Rome" },
+      { q: "How many teeth does an adult human normally have?", a: "32 Teeth" },
+      { q: "What is the currency of the United Kingdom?", a: "Pound Sterling" },
+      { q: "Which Disney movie features Elsa and Anna?", a: "Frozen" },
+      { q: "What is the longest river in the world?", a: "Nile River" },
+      { q: "Who invented the telephone?", a: "Alexander Graham Bell" },
+      { q: "What is the freezing point of water in Fahrenheit?", a: "32°F" },
+      { q: "Which superhero is known as the Caped Crusader?", a: "Batman" },
+      { q: "How many sides does a hexagon have?", a: "6 Sides" },
+      { q: "What is the main ingredient in guacamole?", a: "Avocado" },
+      { q: "Which planet has the most visible rings?", a: "Saturn" },
+      { q: "What is the capital of Italy?", a: "Rome" },
+      { q: "Which bird is a universal symbol of peace?", a: "Dove" },
+      { q: "How many days are in a leap year?", a: "366 Days" },
+      { q: "What is the largest desert in the world?", a: "Antarctica" },
+      { q: "Who sang 'Thriller' in 1982?", a: "Michael Jackson" },
+      { q: "What is the chemical symbol for Water?", a: "H2O" },
+      { q: "Which country is home to the kangaroo?", a: "Australia" },
+      { q: "How many keys are on a standard full-size piano?", a: "88 Keys" },
+      { q: "What is the capital of Canada?", a: "Ottawa" },
+      { q: "Which instrument has 6 strings and is strummed?", a: "Guitar" },
+      { q: "What is the largest state in the US by area?", a: "Alaska" },
+      { q: "Who is known as the Queen of Pop?", a: "Madonna" },
+      { q: "How many colors are in a standard rainbow?", a: "7 Colors" },
+      { q: "What is the boiling point of water in Celsius?", a: "100°C" },
+      { q: "Which animal is the tallest in the world?", a: "Giraffe" },
+      { q: "In what sport do you score a touchdown?", a: "Football" },
+      { q: "What is the capital of Spain?", a: "Madrid" },
+      { q: "Which gem is red in color?", a: "Ruby" },
+      { q: "How many bones are in the adult human body?", a: "206 Bones" },
+      { q: "Which planet is the largest in our solar system?", a: "Jupiter" },
+      { q: "What is the name of Harry Potter's pet owl?", a: "Hedwig" },
+      { q: "Which US city is known as the Windy City?", a: "Chicago" },
+      { q: "What is the primary language spoken in Brazil?", a: "Portuguese" },
+      { q: "How many minutes are in two hours?", a: "120 Minutes" },
+      { q: "Which metal is liquid at room temperature?", a: "Mercury" },
+      { q: "What is the capital of Egypt?", a: "Cairo" },
+      { q: "Who painted 'The Starry Night'?", a: "Vincent van Gogh" },
+      { q: "Which sea creature has three hearts?", a: "Octopus" },
+      { q: "What is the smallest US state by area?", a: "Rhode Island" },
+      { q: "In which sport is the Wimbledon tournament played?", a: "Tennis" },
+      { q: "What is the main gas found in the air we breathe?", a: "Nitrogen" },
+      { q: "How many zeros are in one million?", a: "6 Zeros" },
+      { q: "Which city hosted the 2024 Summer Olympics?", a: "Paris" },
+      { q: "What is the name of the toy cowboy in Toy Story?", a: "Woody" },
+      { q: "Which vitamin is produced when skin is exposed to sunlight?", a: "Vitamin D" },
+      { q: "What is the capital of Germany?", a: "Berlin" },
+      { q: "How many cards are in a standard deck (no jokers)?", a: "52 Cards" },
+      { q: "Which planet is known as the Morning Star?", a: "Venus" },
+      { q: "What is the fastest bird in a dive?", a: "Peregrine Falcon" },
+      { q: "Which US state is famous for potatoes?", a: "Idaho" },
+      { q: "What is the national animal of the United States?", a: "Bald Eagle" }
+    ];
+
+    const EMOJI_MOVIES_DECK = [
+      { q: "🦁 👑 🌅", a: "The Lion King" },
+      { q: "🚢 🧊 💔", a: "Titanic" },
+      { q: "🧙‍♂️ ⚡ 🦉", a: "Harry Potter" },
+      { q: "🕷️ 🕸️ 🏙️", a: "Spider-Man" },
+      { q: "❄️ ⛄ 👸", a: "Frozen" },
+      { q: "🦖 🌴 🚙", a: "Jurassic Park" },
+      { q: "👻 🚫 🔫", a: "Ghostbusters" },
+      { q: "🦈 🏖️ 🚤", a: "Jaws" },
+      { q: "👽 🚲 🌕", a: "E.T." },
+      { q: "🤠 🚀 🧸", a: "Toy Story" },
+      { q: "🐠 🔍 🌊", a: "Finding Nemo" },
+      { q: "👠 🎃 🕛", a: "Cinderella" },
+      { q: "🌹 👹 🕯️", a: "Beauty & The Beast" },
+      { q: "🧞‍♂️ 🪔 🐒", a: "Aladdin" },
+      { q: "🍫 🏭 🎫", a: "Willy Wonka" },
+      { q: "🌪️ 👠 🌈", a: "Wizard of Oz" },
+      { q: "🦇 🃏 🌃", a: "The Dark Knight" },
+      { q: "🥊 🏃‍♂️ 🔔", a: "Rocky" },
+      { q: "🕶️ 💊 🟢", a: "The Matrix" },
+      { q: "🚗 ⚡ 🕰️", a: "Back to the Future" },
+      { q: "🏴‍☠️ 🧭 🏝️", a: "Pirates of Caribbean" },
+      { q: "🐼 🥋 🥟", a: "Kung Fu Panda" },
+      { q: "🐀 👨‍🍳 🍲", a: "Ratatouille" },
+      { q: "🎈 🏠 👴", a: "Up" },
+      { q: "🎸 💀 🇲🇽", a: "Coco" },
+      { q: "🌊 🪝 🌺", a: "Moana" },
+      { q: "🕯️ 🦋 🏡", a: "Encanto" },
+      { q: "👹 💚 🐴", a: "Shrek" },
+      { q: "🦸‍♂️ 🛡️ 🔨", a: "The Avengers" },
+      { q: "🐆 👑 🌍", a: "Black Panther" },
+      { q: "⭐ ⚔️ 🤖", a: "Star Wars" },
+      { q: "💍 🌋 🧝‍♂️", a: "Lord of the Rings" },
+      { q: "🏠 😱 🎄", a: "Home Alone" },
+      { q: "🧝‍♂️ 🍝 🎅", a: "Elf" },
+      { q: "💚 🎄 🐶", a: "The Grinch" },
+      { q: "☕ 🛋️ 🗽", a: "Friends (TV)" },
+      { q: "📄 📎 ☕", a: "The Office (TV)" },
+      { q: "🧪 🚐 💎", a: "Breaking Bad (TV)" },
+      { q: "🐉 ⚔️ ❄️", a: "Game of Thrones (TV)" },
+      { q: "🚲 💡 👾", a: "Stranger Things (TV)" },
+      { q: "🦑 🟢 🔴", a: "Squid Game (TV)" },
+      { q: "👑 🇬🇧 🏰", a: "The Crown (TV)" },
+      { q: "🏥 🩺 ❤️", a: "Grey's Anatomy (TV)" },
+      { q: "🍩 💛 👨‍👩‍👧‍👦", a: "The Simpsons (TV)" },
+      { q: "🍍 🍔 🌊", a: "SpongeBob (TV)" },
+      { q: "🏀 🏆 🐐", a: "Space Jam" },
+      { q: "🏎️ ⚡ 🏁", a: "Cars" },
+      { q: "🐝 🍯 🌸", a: "Bee Movie" },
+      { q: "🤖 🌱 🚀", a: "WALL-E" },
+      { q: "🧠 😊 😢", a: "Inside Out" },
+      { q: "👠 💄 👜", a: "Devil Wears Prada" },
+      { q: "💖 💅 🎀", a: "Legally Blonde" },
+      { q: "📅 📓 💕", a: "Mean Girls" },
+      { q: "🎤 🎶 🏆", a: "Pitch Perfect" },
+      { q: "💃 🕺 🍉", a: "Dirty Dancing" },
+      { q: "⚡ 🚗 🎶", a: "Grease" },
+      { q: "☔ 🎶 🎩", a: "Singin' in the Rain" },
+      { q: "🏔️ 🎶 🐐", a: "Sound of Music" },
+      { q: "☂️ 👜 🐧", a: "Mary Poppins" },
+      { q: "🐺 📈 💰", a: "Wolf of Wall Street" },
+      { q: "🕵️‍♂️ 🔍 🎻", a: "Sherlock Holmes" },
+      { q: "🍸 🤵 🔫", a: "James Bond 007" },
+      { q: "🕶️ 👽 💥", a: "Men in Black" },
+      { q: "🦍 🏢 ✈️", a: "King Kong" },
+      { q: "🦖 🔥 🏙️", a: "Godzilla" },
+      { q: "🚌 💣 ⏱️", a: "Speed" },
+      { q: "✈️ 😎 🏍️", a: "Top Gun" },
+      { q: "🏃‍♂️ 🍫 🦐", a: "Forrest Gump" },
+      { q: "🏐 🏝️ 🔥", a: "Cast Away" },
+      { q: "🔨 🧱 🌧️", a: "Shawshank Redemption" },
+      { q: "🍝 🤵 🌹", a: "The Godfather" },
+      { q: "🏹 🔥 🐦", a: "The Hunger Games" },
+      { q: "🧛‍♂️ 🐺 🍎", a: "Twilight" },
+      { q: "🎩 🐇 🫖", a: "Alice in Wonderland" },
+      { q: "🧜‍♀️ 🦀 🔱", a: "The Little Mermaid" }
+    ];
+
     let calledSet = new Set();
-    let currentGame = { round: 1, name: "Regular Bingo", prize: "$25" };
+    let gameMode = "classic"; // 'classic' | 'trivia' | 'emoji'
+    let currentGame = { round: 1, name: "Regular Line" };
     let currentTheme = "classic";
     let currentPin = "7722";
     let isLobbyLocked = false;
     let isDrawing = false;
     let callerVoiceEnabled = true;
-    let hostName = "CC";
+    let hostName = "Live Host";
     let isHostLive = false;
     let kickedPlayerIds = new Set();
     window.kickedPlayerIds = kickedPlayerIds;
+    window.latestInspectedCard = null;
     window.sync = sync;
 
-    // ==========================================
-    // 3D CANVAS PHYSICS BINGO TUMBLER ENGINE
-    // ==========================================
+    let pendingDrawIndex = null;
+    let clueCountdownTimer = null;
+    let clueSecondsLeft = 0;
+
     let tumblerBalls = [];
     let cageAngle = 0;
     let tumblerAnimStarted = false;
+
+    function getLetter(n) {
+      if (n <= 15) return "B";
+      if (n <= 30) return "I";
+      if (n <= 45) return "N";
+      if (n <= 60) return "G";
+      return "O";
+    }
+
+    function formatItemForMode(n) {
+      if (gameMode === "trivia") {
+        return TRIVIA_DECK[n - 1] ? TRIVIA_DECK[n - 1].a : `Answer`;
+      } else if (gameMode === "emoji") {
+        return EMOJI_MOVIES_DECK[n - 1] ? EMOJI_MOVIES_DECK[n - 1].a : `Movie`;
+      }
+      return `${getLetter(n)}-${n}`;
+    }
+
+    function getClueForMode(n) {
+      if (gameMode === "trivia") {
+        return TRIVIA_DECK[n - 1] ? TRIVIA_DECK[n - 1].q : "";
+      } else if (gameMode === "emoji") {
+        return EMOJI_MOVIES_DECK[n - 1] ? EMOJI_MOVIES_DECK[n - 1].q : "";
+      }
+      return "";
+    }
 
     function init3DTumbler() {
       const canvas = document.getElementById("tumblerCanvas");
@@ -736,7 +1129,7 @@
         const num = (i % 5) * 15 + ((i * 3) % 15) + 1;
         const theta = Math.random() * Math.PI * 2;
         const phi = Math.acos(2 * Math.random() - 1);
-        const r = Math.random() * 110;
+        const r = Math.random() * 100;
         tumblerBalls.push({
           x: r * Math.sin(phi) * Math.cos(theta),
           y: r * Math.sin(phi) * Math.sin(theta),
@@ -744,7 +1137,7 @@
           vx: (Math.random() - 0.5) * 3,
           vy: (Math.random() - 0.5) * 3,
           vz: (Math.random() - 0.5) * 3,
-          radius: 23,
+          radius: 21,
           letter: p.letter,
           num: num,
           colorMain: p.main,
@@ -764,12 +1157,12 @@
       const H = canvas.height;
       const cx = W / 2;
       const cy = H / 2;
-      const sphereRadius = 185;
-      const focalLength = 420;
+      const sphereRadius = 172;
+      const focalLength = 400;
 
       ctx.clearRect(0, 0, W, H);
 
-      const bgGrad = ctx.createRadialGradient(cx - 50, cy - 50, 20, cx, cy, sphereRadius);
+      const bgGrad = ctx.createRadialGradient(cx - 45, cy - 45, 18, cx, cy, sphereRadius);
       bgGrad.addColorStop(0, "rgba(32, 44, 88, 0.95)");
       bgGrad.addColorStop(0.7, "rgba(10, 14, 32, 0.98)");
       bgGrad.addColorStop(1, "rgba(4, 6, 16, 1)");
@@ -796,12 +1189,12 @@
 
       const gravity = isDrawing ? 0.25 : 0.42;
       const bounce = isDrawing ? 0.94 : 0.72;
-      const maxPosR = sphereRadius - 26;
+      const maxPosR = sphereRadius - 24;
 
       tumblerBalls.forEach(b => {
         if (isDrawing) {
-          const distFromBottom = Math.hypot(b.x, b.y - 110, b.z);
-          if (distFromBottom < 120) {
+          const distFromBottom = Math.hypot(b.x, b.y - 100, b.z);
+          if (distFromBottom < 110) {
             b.vy -= (1.8 + Math.random() * 1.6);
             b.vx += (Math.random() - 0.5) * 4.5;
             b.vz += (Math.random() - 0.5) * 4.5;
@@ -879,7 +1272,8 @@
         ctx.font = `900 ${Math.max(9, Math.round(sr * 0.52))}px system-ui, sans-serif`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(`${b.letter}${b.num}`, sx, sy + 0.5);
+        const badgeLabel = gameMode === "emoji" ? "🎬" : (gameMode === "trivia" ? "?" : `${b.letter}${b.num}`);
+        ctx.fillText(badgeLabel, sx, sy + 0.5);
       });
 
       const glassRim = ctx.createLinearGradient(0, cy - sphereRadius, 0, cy + sphereRadius);
@@ -904,13 +1298,8 @@
 
     function startHostBroadcast() {
       const camFrame = document.getElementById("hostCamIframe");
-      const screenFrame = document.getElementById("hostScreenIframe");
-
-      camFrame.src = `https://vdo.ninja/?push=${VDO_HOST_CAM_ID}&webcam&blur&autostart&cleanoutput&noaudioout`;
-      document.getElementById("hostPipBubble").style.display = "block";
-
-      screenFrame.src = `https://vdo.ninja/?push=${VDO_HOST_SCREEN_ID}&screenshare&mic=0&autostart&cleanoutput&noaudioout`;
-      screenFrame.style.display = "block";
+      camFrame.src = `https://vdo.ninja/?push=${VDO_HOST_CAM_ID}&webcam&autostart&cleanoutput&noaudioout`;
+      camFrame.style.display = "block";
 
       document.getElementById("hostStagePlaceholder").style.display = "none";
       document.getElementById("hostLivePill").style.display = "block";
@@ -922,13 +1311,8 @@
 
     function stopHostBroadcast() {
       const camFrame = document.getElementById("hostCamIframe");
-      const screenFrame = document.getElementById("hostScreenIframe");
-
       camFrame.src = "about:blank";
-      document.getElementById("hostPipBubble").style.display = "none";
-
-      screenFrame.src = "about:blank";
-      screenFrame.style.display = "none";
+      camFrame.style.display = "none";
 
       document.getElementById("hostStagePlaceholder").style.display = "block";
       document.getElementById("hostLivePill").style.display = "none";
@@ -983,7 +1367,7 @@
     }
 
     function updateHostName() {
-      hostName = document.getElementById("hostNameInput").value.trim() || "CC";
+      hostName = document.getElementById("hostNameInput").value.trim() || "Live Host";
       sync();
     }
 
@@ -1035,37 +1419,89 @@
       alert("Banner cleared from player screens.");
     }
 
+    function clearActiveClueTimer() {
+      if (clueCountdownTimer) {
+        clearInterval(clueCountdownTimer);
+        clueCountdownTimer = null;
+      }
+      pendingDrawIndex = null;
+      clueSecondsLeft = 0;
+      const revBtn = document.getElementById("revealNowBtn");
+      if (revBtn) revBtn.style.display = "none";
+    }
+
+    function setGameMode(mode, btn) {
+      if (calledSet.size > 0 || pendingDrawIndex !== null) {
+        if (!confirm("Switching Game Mode will reset the current board and issue fresh cards to players. Continue?")) return;
+      }
+      clearActiveClueTimer();
+      document.querySelectorAll(".mode-btn-grid .m-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      gameMode = mode;
+
+      calledSet.clear();
+      clearInspectedCard();
+      document.getElementById("hostBall").innerText = "-";
+      document.getElementById("hostBall").style.fontSize = "56px";
+      document.getElementById("hostClueBox").style.display = "none";
+      document.getElementById("callCounter").innerText = "0 / 75 Drawn";
+
+      const drawBtn = document.getElementById("drawBtn");
+      const boardTitle = document.getElementById("masterBoardTitle");
+      if (mode === "trivia") {
+        drawBtn.innerText = "Shake & Ask Trivia (10s)";
+        boardTitle.innerText = "Master 75-Answer Trivia Board";
+      } else if (mode === "emoji") {
+        drawBtn.innerText = "Shake & Draw Emoji Clue (10s)";
+        boardTitle.innerText = "Master 75-Movie & TV Board";
+      } else {
+        drawBtn.innerText = "Shake & Draw Ball";
+        boardTitle.innerText = "Master 75-Ball Board";
+      }
+
+      if (typeof window.clearAllClaims === 'function') window.clearAllClaims();
+      initGrid();
+      sync("MODE_CHANGE");
+    }
+
     function initGrid() {
       const g = document.getElementById("masterGrid");
       if (!g) return;
       g.innerHTML = "";
+      if (gameMode === "trivia" || gameMode === "emoji") {
+        g.classList.add("text-mode");
+      } else {
+        g.classList.remove("text-mode");
+      }
+
       for (let i = 1; i <= 75; i++) {
         const d = document.createElement("div");
         d.className = "grid-num";
         d.id = `ball_${i}`;
-        d.innerText = i;
+        if (gameMode === "trivia") {
+          d.innerText = TRIVIA_DECK[i - 1].a;
+          d.title = `Q: ${TRIVIA_DECK[i - 1].q} | A: ${TRIVIA_DECK[i - 1].a}`;
+        } else if (gameMode === "emoji") {
+          d.innerText = EMOJI_MOVIES_DECK[i - 1].a;
+          d.title = `${EMOJI_MOVIES_DECK[i - 1].q} → ${EMOJI_MOVIES_DECK[i - 1].a}`;
+        } else {
+          d.innerText = i;
+        }
         g.appendChild(d);
       }
     }
 
-    function getLetter(n) {
-      if (n <= 15) return "B";
-      if (n <= 30) return "I";
-      if (n <= 45) return "N";
-      if (n <= 60) return "G";
-      return "O";
-    }
-
     function shakeAndDraw() {
-      if (isDrawing) return;
+      if (isDrawing || pendingDrawIndex !== null) return;
       if (calledSet.size >= 75) {
-        alert("All 75 balls drawn!");
+        alert("All 75 items have been drawn!");
         return;
       }
 
       isDrawing = true;
       const canvas = document.getElementById("tumblerCanvas");
       const spotlight = document.getElementById("hostBall");
+      const clueBox = document.getElementById("hostClueBox");
       const drawBtn = document.getElementById("drawBtn");
 
       drawBtn.disabled = true;
@@ -1073,14 +1509,17 @@
       canvas.classList.add("shaking-glow");
       spotlight.classList.remove("pop-in");
       spotlight.innerText = "Shaking...";
-      spotlight.style.fontSize = "44px";
+      spotlight.style.fontSize = "40px";
       spotlight.style.color = "var(--teal)";
+      clueBox.style.display = "none";
 
       tumblerBalls.forEach(b => {
         b.vy -= (6 + Math.random() * 6);
         b.vx += (Math.random() - 0.5) * 8;
         b.vz += (Math.random() - 0.5) * 8;
       });
+
+      sync("SHAKING");
 
       setTimeout(() => {
         canvas.classList.remove("shaking-glow");
@@ -1090,46 +1529,123 @@
           n = Math.floor(Math.random() * 75) + 1;
         } while (calledSet.has(n));
 
-        calledSet.add(n);
-        const str = `${getLetter(n)}-${n}`;
-        spotlight.style.fontSize = "64px";
-        spotlight.innerText = str;
-        spotlight.style.color = "var(--pink)";
-        void spotlight.offsetWidth;
-        spotlight.classList.add("pop-in");
-
-        document.getElementById(`ball_${n}`).classList.add("called");
-        document.getElementById("callCounter").innerText = `${calledSet.size} / 75 Drawn`;
-
-        if (callerVoiceEnabled && 'speechSynthesis' in window) {
-          const utter = new SpeechSynthesisUtterance(`${getLetter(n)} ${n}`);
-          utter.rate = 0.9;
-          window.speechSynthesis.speak(utter);
-        }
-
-        sync(str);
         isDrawing = false;
-        drawBtn.disabled = false;
-        drawBtn.style.opacity = "1";
+
+        if (gameMode === "trivia" || gameMode === "emoji") {
+          pendingDrawIndex = n;
+          clueSecondsLeft = 10;
+          const clueText = getClueForMode(n);
+          const answerText = formatItemForMode(n);
+
+          spotlight.style.fontSize = gameMode === "emoji" ? "44px" : "22px";
+          spotlight.style.color = "var(--yellow)";
+          spotlight.innerText = gameMode === "emoji" ? clueText : `❓ ${clueText}`;
+          void spotlight.offsetWidth;
+          spotlight.classList.add("pop-in");
+
+          clueBox.style.display = "block";
+          clueBox.innerText = `⏳ Revealing answer in ${clueSecondsLeft}s... (Host Preview Answer: ${answerText})`;
+
+          document.getElementById("revealNowBtn").style.display = "inline-block";
+
+          if (callerVoiceEnabled && 'speechSynthesis' in window && gameMode === "trivia") {
+            const utter = new SpeechSynthesisUtterance(clueText);
+            utter.rate = 0.92;
+            window.speechSynthesis.speak(utter);
+          }
+
+          sync("CLUE_ACTIVE", clueText, clueSecondsLeft);
+
+          clueCountdownTimer = setInterval(() => {
+            clueSecondsLeft--;
+            if (clueSecondsLeft > 0) {
+              clueBox.innerText = `⏳ Revealing answer in ${clueSecondsLeft}s... (Host Preview Answer: ${answerText})`;
+              sync("CLUE_ACTIVE", clueText, clueSecondsLeft);
+            } else {
+              revealAnswerImmediately();
+            }
+          }, 1000);
+
+        } else {
+          finalizeRevealedItem(n);
+        }
       }, 1500);
     }
 
-    function setGame(round, name, prize, btn) {
+    function revealAnswerImmediately() {
+      if (pendingDrawIndex === null) return;
+      const n = pendingDrawIndex;
+      clearActiveClueTimer();
+      finalizeRevealedItem(n);
+    }
+
+    function finalizeRevealedItem(n) {
+      calledSet.add(n);
+      const displayStr = formatItemForMode(n);
+      const spotlight = document.getElementById("hostBall");
+      const clueBox = document.getElementById("hostClueBox");
+      const drawBtn = document.getElementById("drawBtn");
+
+      if (gameMode === "trivia") {
+        const item = TRIVIA_DECK[n - 1];
+        spotlight.style.fontSize = "28px";
+        spotlight.innerText = `✅ ${item.a}`;
+        clueBox.style.display = "block";
+        clueBox.innerText = `Q: "${item.q}" → ANSWER: ${item.a}`;
+      } else if (gameMode === "emoji") {
+        const item = EMOJI_MOVIES_DECK[n - 1];
+        spotlight.style.fontSize = "28px";
+        spotlight.innerText = `🎬 ${item.a}`;
+        clueBox.style.display = "block";
+        clueBox.innerText = `Clue: ${item.q} → MOVIE/SHOW: ${item.a}`;
+      } else {
+        spotlight.style.fontSize = "56px";
+        spotlight.innerText = displayStr;
+        clueBox.style.display = "none";
+      }
+
+      spotlight.style.color = "var(--pink)";
+      void spotlight.offsetWidth;
+      spotlight.classList.add("pop-in");
+
+      const boardEl = document.getElementById(`ball_${n}`);
+      if (boardEl) boardEl.classList.add("called");
+      document.getElementById("callCounter").innerText = `${calledSet.size} / 75 Drawn`;
+
+      if (callerVoiceEnabled && 'speechSynthesis' in window) {
+        const spoken = gameMode === "classic" ? displayStr.replace("-", " ") : `The answer is ${displayStr}`;
+        const utter = new SpeechSynthesisUtterance(spoken);
+        utter.rate = 0.94;
+        window.speechSynthesis.speak(utter);
+      }
+
+      sync(displayStr, "", 0);
+      drawBtn.disabled = false;
+      drawBtn.style.opacity = "1";
+    }
+
+    function setGame(round, name, btn) {
       document.querySelectorAll(".section-card .p-btn").forEach(b => {
         if (b.getAttribute("onclick") && b.getAttribute("onclick").includes("setGame")) {
           b.classList.remove("active");
         }
       });
       btn.classList.add("active");
-      currentGame = { round, name, prize };
+      currentGame = { round, name };
       sync();
     }
 
     function nextGame() {
-      if (!confirm("Clear called balls for the next game? Players keep their cards and stay in the room.")) return;
+      if (!confirm("Clear called items for the next round? Players keep their cards and stay in the room.")) return;
+      clearActiveClueTimer();
       calledSet.clear();
+      clearInspectedCard();
       document.getElementById("hostBall").innerText = "-";
+      document.getElementById("hostBall").style.fontSize = "56px";
+      document.getElementById("hostClueBox").style.display = "none";
       document.getElementById("callCounter").innerText = "0 / 75 Drawn";
+      document.getElementById("drawBtn").disabled = false;
+      document.getElementById("drawBtn").style.opacity = "1";
       document.querySelectorAll(".grid-num").forEach(n => n.classList.remove("called"));
       if (typeof window.clearAllClaims === 'function') window.clearAllClaims();
       sync("NEXT_GAME");
@@ -1137,15 +1653,19 @@
 
     function resetNewSession() {
       if (!confirm("Start a brand-new session? This will wipe connected players, claims, and issue fresh cards.")) return;
+      clearActiveClueTimer();
       calledSet.clear();
       kickedPlayerIds.clear();
+      clearInspectedCard();
       document.getElementById("hostBall").innerText = "-";
+      document.getElementById("hostBall").style.fontSize = "56px";
+      document.getElementById("hostClueBox").style.display = "none";
       document.getElementById("callCounter").innerText = "0 / 75 Drawn";
+      document.getElementById("drawBtn").disabled = false;
+      document.getElementById("drawBtn").style.opacity = "1";
       document.querySelectorAll(".grid-num").forEach(n => n.classList.remove("called"));
       if (typeof window.clearAllClaims === 'function') window.clearAllClaims();
       
-      const rosterEl = document.getElementById("joinedPlayersRoster");
-      if (rosterEl) rosterEl.innerHTML = `<span style="color: var(--muted); font-size: 12px; font-style: italic;">No players joined yet...</span>`;
       const countEl = document.getElementById("playerCountBadge");
       if (countEl) countEl.innerText = `0 Players Checked In`;
 
@@ -1157,7 +1677,18 @@
       sync("RESET_SESSION");
     }
 
-    function sync(latest = null) {
+    function clearInspectedCard() {
+      window.latestInspectedCard = null;
+      const content = document.getElementById("sideInspectorContent");
+      if (content) {
+        content.innerHTML = `<p style="color: var(--muted); font-size: 12px; text-align: center; padding: 20px 0;">Click 'Inspect' on any incoming bingo claim to review their card here.</p>`;
+      }
+      const btn = document.getElementById("clearVerifyBtn");
+      if (btn) btn.style.display = "none";
+      sync();
+    }
+
+    function sync(latest = null, activeClue = "", clueCountdown = 0) {
       if (!window.database) return;
       const bannerInput = document.getElementById("customBannerInput");
       const bannerText = bannerInput ? bannerInput.value.trim() : "";
@@ -1165,17 +1696,21 @@
       const data = {
         hostName: hostName,
         roomPin: currentPin,
+        gameMode: gameMode,
         game: currentGame,
         theme: currentTheme,
         customBanner: bannerText,
         hostVideoLive: isHostLive,
+        isShaking: isDrawing,
         autoVoice: callerVoiceEnabled,
         vdoHostCamStream: VDO_HOST_CAM_ID,
-        vdoHostScreenStream: VDO_HOST_SCREEN_ID,
         vdoLoungeRoom: "LiveVibeLounge",
+        inspectedCard: window.latestInspectedCard,
         kickedIds: Array.from(kickedPlayerIds),
         called: Array.from(calledSet),
         latest: latest,
+        activeClue: activeClue,
+        clueCountdown: clueCountdown,
         lobbyLocked: isLobbyLocked,
         time: Date.now()
       };
@@ -1190,12 +1725,24 @@
       }
       const targetCard = dataPack.cards[cardNum - 1];
       const targetSerial = dataPack.serials ? dataPack.serials[cardNum - 1] : "N/A";
+      const winnerName = dataPack.playerName || "Winner";
       
+      window.latestInspectedCard = {
+        playerName: winnerName,
+        cardNum: cardNum,
+        serial: targetSerial,
+        matrix: targetCard
+      };
+      sync();
+
+      const clearBtn = document.getElementById("clearVerifyBtn");
+      if (clearBtn) clearBtn.style.display = "inline-block";
+
       const panel = document.getElementById("sideInspectorContent");
       let html = `
         <div style="background:#060812; padding:12px; border-radius:8px; border:1px solid rgba(255,255,255,0.1);">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-            <span style="color:var(--teal); font-weight:900; font-size:13px;">Card #${cardNum}</span>
+            <span style="color:var(--teal); font-weight:900; font-size:13px;">🏆 ${winnerName} (Card #${cardNum})</span>
             <span style="color:var(--yellow); font-size:11px; font-weight:700;">${targetSerial}</span>
           </div>
           <div class="inspector-grid">
@@ -1213,7 +1760,8 @@
             const isCalled = calledSet.has(cell.val);
             const dagClass = cell.dabbed ? "insp-tile dabbed" : "insp-tile";
             const borderStyle = (isCalled && !cell.dabbed) ? "border: 2px solid var(--pink);" : "";
-            html += `<div class="${dagClass}" style="${borderStyle}; color:${cell.dabbed ? '#06111a' : '#fff'}">${cell.val}</div>`;
+            const label = formatItemForMode(cell.val);
+            html += `<div class="${dagClass}" style="${borderStyle}; color:${cell.dabbed ? '#06111a' : '#fff'}; font-size:${gameMode === 'classic' ? '12px' : '8px'};">${label}</div>`;
           }
         });
       });

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>LiveVibe Bingo | Live Player Arena (4 Cards)</title>
+  <title>LiveVibe Bingo | Live Player Arena</title>
   <style>
     :root {
       --bg: #090c19;
@@ -28,7 +28,7 @@
       min-height: 100vh; 
       display: flex; 
       flex-direction: column; 
-      transition: background 0.5s ease; 
+      transition: background 0.5s ease;
     }
 
     #loginScreen {
@@ -45,8 +45,8 @@
       background: var(--card-bg);
       border: 2px solid var(--teal);
       border-radius: 16px;
-      padding: 34px 26px;
-      max-width: 420px;
+      padding: 32px 26px;
+      max-width: 400px;
       width: 100%;
       text-align: center;
       box-shadow: 0 10px 40px rgba(0, 210, 190, 0.2);
@@ -66,7 +66,6 @@
       outline: none;
     }
     .input-group input:focus { border-color: var(--teal); }
-    .input-hint { font-size: 11px; color: var(--pink); margin-top: 4px; display: block; }
     .btn-enter {
       width: 100%;
       padding: 14px;
@@ -77,35 +76,35 @@
       font-size: 17px;
       font-weight: 900;
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     header {
       background: rgba(19, 23, 44, 0.95);
       backdrop-filter: blur(8px);
-      padding: 12px 20px;
+      padding: 8px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid rgba(255,255,255,0.08);
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
     }
     .player-pill {
       background: rgba(0,210,190,0.15);
       border: 1px solid var(--teal);
-      padding: 6px 14px;
+      padding: 4px 12px;
       border-radius: 20px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       color: var(--teal);
     }
     .game-pattern-badge {
       background: rgba(255,46,147,0.15);
       border: 1px solid var(--pink);
-      padding: 6px 14px;
+      padding: 4px 12px;
       border-radius: 20px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
       color: var(--pink);
     }
@@ -113,20 +112,19 @@
       background: rgba(248, 192, 40, 0.15);
       border: 1px solid var(--yellow);
       color: #ffd875;
-      padding: 6px 14px;
+      padding: 4px 12px;
       border-radius: 20px;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
       letter-spacing: 0.3px;
     }
 
-    /* Custom Celebration & Welcome Banner Broadcast */
     .custom-banner {
       background: linear-gradient(90deg, rgba(255,46,147,0.4), rgba(0,210,190,0.4));
       border-bottom: 3px solid var(--yellow);
       text-align: center;
-      padding: 12px;
-      font-size: 20px;
+      padding: 7px;
+      font-size: 16px;
       font-weight: 900;
       color: var(--yellow);
       letter-spacing: 0.5px;
@@ -135,205 +133,544 @@
       z-index: 100;
     }
 
-    .broadcast-bar {
-      background: rgba(20, 24, 47, 0.9);
-      backdrop-filter: blur(8px);
-      padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      border-bottom: 2px solid var(--teal);
-      flex-wrap: wrap;
+    /* ENLARGED LAPTOP DUAL VIEW ARENA */
+    .arena-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      padding: 12px 16px;
+      max-width: 1520px;
+      margin: 0 auto;
+      width: 100%;
     }
-    .current-ball-container {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .big-ball {
-      min-width: 68px;
-      height: 68px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #ff5cb1, var(--pink));
-      color: #ffffff;
-      font-size: 26px;
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 3px solid #ffffff;
-      box-shadow: 0 0 20px rgba(255, 46, 147, 0.6);
-      letter-spacing: 1px;
-    }
-    .ball-details h3 {
-      font-size: 20px;
-      font-weight: 900;
-      color: var(--teal);
-    }
-    .ball-details p {
-      font-size: 13px;
-      color: var(--muted);
+    @media (min-width: 920px) {
+      .arena-grid {
+        grid-template-columns: 430px minmax(0, 1fr);
+        align-items: start;
+      }
     }
 
-    .called-rack { display: flex; gap: 6px; overflow-x: auto; max-width: 480px; padding: 4px; }
-    .mini-ball {
-      min-width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: #060812;
-      color: var(--teal);
-      font-size: 13px;
-      font-weight: 800;
+    .host-feed-pane {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid var(--teal);
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: 430px;
     }
 
-    /* Unified Picture-in-Picture Live Video Lounge */
-    .video-lounge-bar {
+    .live-stage-card {
       background: rgba(11, 15, 32, 0.96);
       backdrop-filter: blur(8px);
-      padding: 12px 20px;
-      border-bottom: 2px solid var(--pink);
-      display: none;
-    }
-    .video-lounge-inner {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: flex;
-      align-items: stretch;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .unified-broadcast-stage {
-      width: 420px;
-      max-width: 100%;
-      height: 236px;
-      background: linear-gradient(135deg, #060812 0%, #140e29 100%);
-      border: 2px solid var(--pink);
-      box-shadow: 0 0 20px rgba(255, 46, 147, 0.25);
+      padding: 10px;
       border-radius: 12px;
+      border: 2px solid var(--pink);
+    }
+    .stage-split-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      align-items: stretch;
+    }
+    .host-cam-box {
+      aspect-ratio: 4 / 3;
+      background: #060812;
+      border: 2px solid var(--teal);
+      border-radius: 8px;
       position: relative;
       overflow: hidden;
-      flex-shrink: 0;
-      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .unified-broadcast-stage.expanded {
-      width: 100%;
-      height: 480px;
-    }
-    .unified-broadcast-stage iframe.screen-feed {
+    .host-cam-box iframe {
       width: 100%;
       height: 100%;
       border: none;
     }
-    .host-pip-bubble {
-      position: absolute;
-      top: 34px;
-      left: 10px;
+    .player-tumbler-box {
+      aspect-ratio: 4 / 3;
+      background: radial-gradient(circle at 50% 40%, #1a2142 0%, #060812 85%);
+      border: 2px solid var(--pink);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #playerTumblerCanvas {
       width: 104px;
-      height: 78px;
-      border-radius: 10px;
-      overflow: hidden;
-      border: 2px solid var(--teal);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.85), 0 0 12px rgba(0, 210, 190, 0.4);
-      background: #060812;
-      z-index: 6;
-      transition: all 0.25s ease;
-    }
-    .unified-broadcast-stage.expanded .host-pip-bubble {
-      width: 148px;
-      height: 112px;
-    }
-    .host-pip-bubble iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    .pip-host-tag {
-      position: absolute;
-      bottom: 3px;
-      left: 4px;
-      right: 4px;
-      background: rgba(6, 8, 18, 0.82);
-      color: var(--teal);
-      font-size: 9px;
-      font-weight: 900;
-      text-align: center;
-      padding: 1px 4px;
-      border-radius: 4px;
-      pointer-events: none;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      height: 104px;
+      border-radius: 50%;
     }
     .cam-label-tag {
       position: absolute;
-      bottom: 8px;
-      left: 8px;
+      bottom: 4px;
+      left: 5px;
       background: rgba(6, 8, 18, 0.88);
       color: #fff;
-      font-size: 11px;
+      font-size: 9px;
       font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 5px;
-      border: 1px solid rgba(0, 210, 190, 0.35);
+      padding: 2px 6px;
+      border-radius: 4px;
       z-index: 5;
       pointer-events: none;
     }
     .live-dot-badge {
       position: absolute;
-      top: 8px;
-      left: 8px;
-      background: linear-gradient(90deg, #e53e3e, var(--pink));
+      top: 4px;
+      left: 5px;
+      background: #e53e3e;
       color: #fff;
-      font-size: 10px;
+      font-size: 8.5px;
       font-weight: 900;
-      padding: 3px 8px;
-      border-radius: 5px;
-      letter-spacing: 0.4px;
+      padding: 2px 6px;
+      border-radius: 4px;
       z-index: 5;
       pointer-events: none;
     }
-    .video-lounge-controls {
+
+    /* Current Ball / Trivia Clue / Emoji Clue Call Bar */
+    .broadcast-bar {
+      background: rgba(20, 24, 47, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 10px 12px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 2px solid var(--teal);
+    }
+    .current-ball-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex: 1;
+    }
+    .big-ball {
+      width: 60px;
+      height: 60px;
+      min-width: 60px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ff5cb1, var(--pink));
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      border: 2.5px solid #ffffff;
+      box-shadow: 0 0 14px rgba(255, 46, 147, 0.6);
+    }
+    .ball-details {
+      min-width: 0;
+      flex: 1;
+    }
+    .ball-details h3 {
+      font-size: 14px;
+      font-weight: 900;
+      color: var(--teal);
+      line-height: 1.25;
+      word-break: break-word;
+    }
+    .ball-details p {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .recent-wrap {
       display: flex;
       flex-direction: column;
+      align-items: flex-end;
+    }
+    .called-rack { display: flex; gap: 4px; overflow-x: auto; max-width: 145px; padding: 2px; }
+    .mini-ball {
+      min-width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #060812;
+      color: var(--teal);
+      font-size: 9px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
       justify-content: center;
+      border: 1px solid var(--teal);
+      flex-shrink: 0;
+    }
+    .mini-text-pill {
+      padding: 3px 7px;
+      border-radius: 12px;
+      background: #060812;
+      color: var(--teal);
+      font-size: 9.5px;
+      font-weight: 800;
+      border: 1px solid var(--teal);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Master 75-Ball Board (Shown in Classic Mode) + Compact Verified Card Mirror */
+    .board-and-verify-wrap {
+      display: flex;
       gap: 8px;
-      min-width: 215px;
+      align-items: stretch;
+      width: 100%;
+    }
+    .player-master-card {
+      flex: 1;
+      min-width: 0;
+      background: rgba(11, 15, 32, 0.96);
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(0, 210, 190, 0.45);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .player-master-grid {
+      display: grid;
+      grid-template-columns: repeat(15, 1fr);
+      gap: 2px;
+      margin-top: 6px;
+    }
+    .p-grid-num {
+      background: #13172c;
+      padding: 3px 2px;
+      text-align: center;
+      border-radius: 3px;
+      font-size: 9px;
+      font-weight: 800;
+      color: var(--muted);
+    }
+    .p-grid-num.called {
+      background: var(--teal);
+      color: #06111a;
+      font-weight: 900;
+    }
+
+    .verified-card-mirror {
+      width: 100%;
+      max-width: 195px;
+      flex-shrink: 0;
+      background: rgba(11, 15, 32, 0.96);
+      border: 2px solid var(--yellow);
+      border-radius: 12px;
+      padding: 8px;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .verified-card-mirror.full-span {
+      max-width: 265px;
+      margin: 0 auto;
+    }
+    .mirror-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 2.5px;
+      margin-top: 5px;
+    }
+    .mirror-tile {
+      aspect-ratio: 1;
+      background: #13172c;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2px;
+      font-size: 9px;
+      font-weight: 900;
+      line-height: 1.05;
+      word-break: break-word;
+      overflow: hidden;
+    }
+    .mirror-tile.text-mirror {
+      font-size: 8px;
+      font-weight: 800;
+      min-height: 36px;
+    }
+    .mirror-tile.dabbed { background: var(--teal); color: #06111a; }
+    .mirror-tile.free { background: rgba(255,46,147,0.3); color: var(--yellow); font-size: 7.5px; }
+
+    /* Right Pane: Enlarged Uniform Cards */
+    .cards-pane {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 0;
+      width: 100%;
+    }
+
+    .clue-prompt-banner {
+      background: linear-gradient(90deg, rgba(248,192,40,0.3), rgba(255,46,147,0.3));
+      border: 2px solid var(--yellow);
+      border-radius: 10px;
+      padding: 10px 14px;
+      text-align: center;
+      display: none;
+      box-shadow: 0 4px 16px rgba(248, 192, 40, 0.25);
+    }
+    .clue-prompt-banner .clue-timer-tag {
+      display: inline-block;
+      background: var(--yellow);
+      color: #060812;
+      font-size: 11.5px;
+      font-weight: 900;
+      padding: 2px 10px;
+      border-radius: 12px;
+      margin-bottom: 4px;
+    }
+    .clue-prompt-banner .clue-main-text {
+      font-size: 17px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 0.4px;
+    }
+
+    .status-banner {
+      background: rgba(20, 23, 42, 0.92);
+      backdrop-filter: blur(8px);
+      text-align: center;
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-weight: 900;
+      font-size: 13.5px;
+      color: #ffffff !important;
+      border: 1px solid rgba(255,255,255,0.12);
+      letter-spacing: 0.3px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+      line-height: 1.35;
+    }
+    .status-banner.need-two { background: rgba(0, 210, 190, 0.22); border: 1.5px solid var(--teal); color: #fff !important; }
+    .status-banner.need-one { background: rgba(248, 192, 40, 0.35); border: 2px solid var(--yellow); color: #fff !important; }
+    .status-banner.bingo-ready { background: rgba(255, 46, 147, 0.45); border: 2px solid var(--pink); animation: pulseReady 0.8s infinite alternate; }
+    @keyframes pulseReady {
+      0% { opacity: 0.85; }
+      100% { opacity: 1; }
+    }
+
+    .accessibility-bar {
+      background: rgba(15, 18, 36, 0.92);
+      backdrop-filter: blur(8px);
+      padding: 8px 14px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+      flex-wrap: wrap;
+      gap: 10px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .color-picker { display: flex; align-items: center; gap: 7px; }
+    .color-dot { width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+    .color-dot.active { border-color: #fff; transform: scale(1.15); }
+
+    .btn-bingo-top {
+      background: linear-gradient(135deg, #ff2e93, #e01b7c);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 900;
+      border: 2px solid rgba(255,255,255,0.35);
+      padding: 8px 24px;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(255,46,147,0.55);
+      letter-spacing: 0.5px;
+      transition: transform 0.1s ease;
+    }
+    .btn-bingo-top:active { transform: scale(0.96); }
+
+    /* Uniform Enlarged Card Grid Across All Modes */
+    .cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(235px, 275px));
+      gap: 12px;
+      width: 100%;
+      justify-content: start;
+    }
+    
+    .bingo-card {
+      background: var(--card-bg);
+      background-image: var(--card-wallpaper);
+      background-size: cover;
+      background-position: center;
+      border-radius: 12px;
+      padding: 8px;
+      border: 2.5px solid var(--card-border);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.75);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      width: 100%;
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .card-alert-strip {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 4px 6px;
+      border-radius: 5px;
+      margin-bottom: 5px;
+      letter-spacing: 0.3px;
+      display: none;
+    }
+    .card-alert-strip.two-away {
+      display: block;
+      background: rgba(0, 210, 190, 0.25);
+      border: 1px solid var(--teal);
+      color: var(--teal);
+    }
+    .card-alert-strip.one-away {
+      display: block;
+      background: #f8c028;
+      color: #060812;
+      box-shadow: 0 0 12px rgba(248, 192, 40, 0.95);
+      animation: flashOneAway 0.55s infinite alternate;
+    }
+    .card-alert-strip.bingo-hit {
+      display: block;
+      background: #ff2e93;
+      color: #ffffff;
+      box-shadow: 0 0 14px rgba(255, 46, 147, 0.95);
+      animation: flashOneAway 0.45s infinite alternate;
+    }
+    @keyframes flashOneAway {
+      0% { transform: scale(0.98); opacity: 0.88; }
+      100% { transform: scale(1.01); opacity: 1; }
+    }
+    
+    .bingo-card::before {
+      content: attr(data-watermark);
+      position: absolute;
+      right: 6px;
+      bottom: 2px;
+      font-size: 85px;
+      opacity: 0.14;
+      pointer-events: none;
+      z-index: 0;
+      line-height: 1;
+    }
+
+    .card-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+      position: relative;
+      z-index: 1;
+      background: rgba(0, 0, 0, 0.82);
+      padding: 4px 7px;
+      border-radius: 5px;
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+    .card-title {
+      font-size: 11px;
+      font-weight: 900;
+      color: var(--yellow);
+      text-transform: uppercase;
+    }
+    .card-serial {
+      font-size: 9.5px;
+      font-weight: 800;
+      color: var(--teal);
+    }
+    .b-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3.5px; flex: 1; position: relative; z-index: 1; }
+    .col-header {
+      background: #060812;
+      color: var(--teal);
+      font-weight: 900;
+      font-size: 13px;
+      text-align: center;
+      padding: 3.5px 0;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+    .tile {
+      aspect-ratio: 1;
+      background: rgba(6, 8, 18, 0.9);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      user-select: none;
+      border: 1.5px solid rgba(255,255,255,0.16);
+      line-height: 1.05;
+      word-break: break-word;
+      overflow: hidden;
+    }
+    .tile.text-tile {
+      font-size: 8.5px;
+      font-weight: 800;
+    }
+    .tile.free { background: rgba(255,46,147,0.4); border-color: var(--pink); color: var(--yellow); font-size: 8px; }
+    .tile.dabbed { background: var(--dab) !important; color: #06111a !important; font-weight: 900; box-shadow: 0 0 8px var(--dab); border-color: #fff !important; }
+
+    /* End-to-End Full-Width Player Video Lounge Spanning Both Columns Across Entire Page */
+    .player-lounge-card {
+      grid-column: 1 / -1;
+      width: 100%;
+      background: rgba(11, 15, 32, 0.96);
+      backdrop-filter: blur(8px);
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1.5px solid rgba(0, 210, 190, 0.45);
+    }
+    .lounge-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .lounge-controls-row {
+      display: flex;
+      gap: 8px;
     }
     .cam-toggle-btn {
-      padding: 9px 14px;
-      border-radius: 8px;
-      font-size: 12px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11.5px;
       font-weight: 800;
       cursor: pointer;
       border: 1px solid rgba(255,255,255,0.15);
       background: #1b213e;
       color: #fff;
-      text-align: left;
-      transition: all 0.15s ease;
+      text-align: center;
     }
     .cam-toggle-btn.active {
       background: var(--teal);
       color: #060812;
       border-color: var(--teal);
     }
-    .players-lounge-wrap {
+    .lounge-cams-grid {
       display: flex;
       gap: 10px;
-      flex: 1;
-      min-width: 260px;
-      height: 236px;
+      width: 100%;
     }
     .my-self-cam-box {
-      width: 180px;
-      height: 236px;
+      width: 165px;
+      height: 145px;
       background: #060812;
       border: 2px solid var(--teal);
-      border-radius: 10px;
+      border-radius: 8px;
       position: relative;
       overflow: hidden;
       flex-shrink: 0;
@@ -346,10 +683,10 @@
     }
     .players-scene-box {
       flex: 1;
-      height: 236px;
+      height: 145px;
       background: #060812;
-      border: 1px solid rgba(0, 210, 190, 0.35);
-      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 8px;
       position: relative;
       overflow: hidden;
     }
@@ -357,191 +694,6 @@
       width: 100%;
       height: 100%;
       border: none;
-    }
-
-    .accessibility-bar {
-      background: rgba(15, 18, 36, 0.9);
-      backdrop-filter: blur(8px);
-      padding: 8px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 13px;
-      flex-wrap: wrap;
-      gap: 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-    .color-picker { display: flex; align-items: center; gap: 8px; }
-    .color-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
-    .color-dot.active { border-color: #fff; transform: scale(1.15); }
-
-    .status-banner {
-      background: rgba(20, 23, 42, 0.9);
-      backdrop-filter: blur(8px);
-      text-align: center;
-      padding: 10px;
-      font-weight: bold;
-      font-size: 15px;
-      color: #ffffff !important;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      letter-spacing: 0.5px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-    }
-    .status-banner.need-one { background: rgba(248,192,40,0.3); color: #ffffff !important; border-bottom: 1px solid var(--yellow); }
-    .status-banner.bingo-ready { background: rgba(255,46,147,0.4); color: #ffffff !important; border-bottom: 2px solid var(--pink); animation: pulseReady 1s infinite alternate; }
-    @keyframes pulseReady {
-      0% { opacity: 0.85; }
-      100% { opacity: 1; }
-    }
-
-    .card-tabs-bar {
-      display: flex;
-      gap: 8px;
-      padding: 8px 20px;
-      background: rgba(8, 10, 21, 0.9);
-      overflow-x: auto;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-    .tab-btn {
-      padding: 6px 14px;
-      border-radius: 6px;
-      background: #14172a;
-      border: 1px solid rgba(255,255,255,0.1);
-      color: #fff;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .tab-btn.active { background: var(--teal); color: #06111a; border-color: var(--teal); }
-
-    .cards-container {
-      flex: 1;
-      padding: 16px;
-      max-width: 1400px;
-      margin: 0 auto;
-      width: 100%;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-      gap: 18px;
-    }
-    
-    .bingo-card {
-      background: var(--card-bg);
-      background-image: var(--card-wallpaper);
-      background-size: cover;
-      background-position: center;
-      border-radius: 16px;
-      padding: 14px;
-      border: 4px solid var(--card-border);
-      box-shadow: 0 15px 45px rgba(0,0,0,0.8);
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.4s ease;
-    }
-    
-    .bingo-card::before {
-      content: attr(data-watermark);
-      position: absolute;
-      right: 10px;
-      bottom: 5px;
-      font-size: 160px;
-      opacity: 0.2;
-      pointer-events: none;
-      z-index: 0;
-      line-height: 1;
-      filter: drop-shadow(0 0 12px rgba(255,255,255,0.4));
-    }
-
-    .bingo-card::after {
-      content: attr(data-mosaic);
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      font-size: 36px;
-      opacity: 0.35;
-      letter-spacing: 12px;
-      pointer-events: none;
-      z-index: 0;
-      line-height: 1.2;
-    }
-
-    .card-header-flex {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-      position: relative;
-      z-index: 1;
-      background: rgba(0, 0, 0, 0.75);
-      padding: 6px 10px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.15);
-    }
-    .card-title {
-      font-size: 13px;
-      font-weight: 900;
-      color: var(--yellow);
-      text-transform: uppercase;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-    }
-    .card-serial {
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--teal);
-    }
-    .b-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; flex: 1; position: relative; z-index: 1; }
-    .col-header {
-      background: #060812;
-      color: var(--teal);
-      font-weight: 900;
-      font-size: 18px;
-      text-align: center;
-      padding: 6px 0;
-      border-radius: 6px;
-      border: 1px solid rgba(255,255,255,0.2);
-    }
-    .tile {
-      aspect-ratio: 1;
-      background: rgba(6, 8, 18, 0.88);
-      backdrop-filter: blur(4px);
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: clamp(14px, 2vw, 20px);
-      font-weight: 900;
-      cursor: pointer;
-      user-select: none;
-      border: 2px solid rgba(255,255,255,0.15);
-      box-shadow: inset 0 2px 5px rgba(0,0,0,0.6);
-    }
-    .tile.free { background: rgba(255,46,147,0.4); border-color: var(--pink); color: var(--yellow); font-size: 10px; text-shadow: 0 1px 3px rgba(0,0,0,0.9); }
-    .tile.dabbed { background: var(--dab) !important; color: #06111a !important; font-weight: 900; box-shadow: 0 0 15px var(--dab); border-color: #fff !important; }
-
-    .call-bar {
-      position: sticky;
-      bottom: 0;
-      background: rgba(9, 12, 25, 0.96);
-      backdrop-filter: blur(10px);
-      padding: 12px 20px;
-      display: flex;
-      justify-content: center;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      z-index: 100;
-    }
-    .btn-bingo {
-      background: linear-gradient(135deg, #ff2e93, #e01b7c);
-      color: #fff;
-      font-size: 22px;
-      font-weight: 900;
-      border: none;
-      padding: 14px 60px;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 6px 25px rgba(255,46,147,0.5);
     }
 
     #winModal {
@@ -558,9 +710,9 @@
       background: var(--card-bg);
       border: 3px solid var(--teal);
       border-radius: 16px;
-      padding: 34px 24px;
+      padding: 28px 22px;
       text-align: center;
-      max-width: 440px;
+      max-width: 400px;
       width: 100%;
     }
   </style>
@@ -586,6 +738,7 @@
     window.dbRef = ref;
     window.dbSet = set;
     window.dbPush = push;
+    window.dbOnValue = onValue;
 
     onValue(ref(db, 'gameState'), (snapshot) => {
       const data = snapshot.val();
@@ -603,27 +756,15 @@
   <div id="loginScreen">
     <div class="login-box">
       <h1>Live Player Arena</h1>
-      <p>Enter your details, $Cashtag & Event PIN</p>
+      <p>Enter your Name &amp; 4-Digit Event PIN</p>
       <form onsubmit="joinLobby(event)">
         <div class="input-group">
-          <label>Full Name (Matches Ticket)</label>
+          <label>Your Name / Display Name</label>
           <input type="text" id="pName" required autofocus placeholder="e.g. Mary Johnson">
         </div>
         <div class="input-group">
-          <label>Cash App $Cashtag (Mandatory For Prizes)</label>
-          <input 
-            type="text" 
-            id="pCashtag" 
-            required 
-            placeholder="$YourCashAppName" 
-            pattern="^\$[A-Za-z0-9_]{1,19}$" 
-            title="Must begin with a $ followed by your Cash App handle (e.g. $MaryJohnson)"
-            oninput="autoPrependDollar(this)">
-          <span class="input-hint">Must start with $ (e.g. $MaryWins)</span>
-        </div>
-        <div class="input-group">
           <label>4-Digit Event PIN</label>
-          <input type="password" id="pPin" required maxlength="4" placeholder="From Confirmation" style="text-align: center; letter-spacing: 4px;">
+          <input type="password" id="pPin" required maxlength="4" placeholder="From Host" style="text-align: center; letter-spacing: 4px;">
         </div>
         <button type="submit" class="btn-enter">Enter Game Arena</button>
       </form>
@@ -631,122 +772,129 @@
   </div>
 
   <header>
-    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
       <span class="player-pill" id="playerNameDisplay">Player</span>
-      <span class="player-pill" style="border-color: var(--pink); color: var(--pink);" id="playerCashtagDisplay">$Cashtag</span>
-      <span class="game-pattern-badge" id="gamePatternDisplay">Game 1: Regular ($25)</span>
-      <span class="caller-badge" id="hostNameBadge">🎙️ Host: CC</span>
+      <span class="player-pill" style="border-color: var(--yellow); color: var(--yellow);" id="gameModeBadge">🎱 Classic 75-Ball</span>
+      <span class="game-pattern-badge" id="gamePatternDisplay">Round 1: Regular Line</span>
+      <span class="caller-badge" id="hostNameBadge">🎙️ Live Host</span>
     </div>
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <button onclick="enableAudioEngine()" style="background: var(--teal); color: #060812; border: none; padding: 6px 12px; border-radius: 14px; font-size: 12px; font-weight: 800; cursor: pointer;">🔊 Turn On Audio</button>
-      <button onclick="logoutPlayer()" style="background: #e53e3e; color: #fff; border: none; padding: 6px 12px; border-radius: 14px; font-size: 12px; font-weight: 900; cursor: pointer;">🚪 Logout</button>
-      <div style="font-size: 12px; color: var(--muted);" id="connectionStatus">● Connected</div>
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <button onclick="enableAudioEngine()" style="background: var(--teal); color: #060812; border: none; padding: 5px 11px; border-radius: 14px; font-size: 11px; font-weight: 800; cursor: pointer;">🔊 Audio</button>
+      <button onclick="logoutPlayer()" style="background: #e53e3e; color: #fff; border: none; padding: 5px 11px; border-radius: 14px; font-size: 11px; font-weight: 900; cursor: pointer;">🚪 Logout</button>
+      <div style="font-size: 11px; color: var(--muted);" id="connectionStatus">● Connected</div>
     </div>
   </header>
 
-  <!-- Custom Celebration Message Banner -->
   <div class="custom-banner" id="customBanner">🎉 <span id="customBannerText"></span> 🎉</div>
 
-  <!-- Unified Picture-in-Picture Live Video Lounge -->
-  <div class="video-lounge-bar" id="videoLoungeBar">
-    <div class="video-lounge-inner">
-      <!-- Single Unified Stage: Host Screen Share + Top-Left Host Face Cam Bubble -->
-      <div class="unified-broadcast-stage" id="hostStreamContainer">
-        <span class="live-dot-badge">● LIVE VIBE BINGO</span>
-        <iframe id="hostStreamIframe" class="screen-feed" allow="autoplay;fullscreen"></iframe>
-        <span class="cam-label-tag">Shaker &amp; Card Verification</span>
+  <!-- ENLARGED LAPTOP DUAL VIEW ARENA -->
+  <div class="arena-grid">
+    <!-- Left Pane: Host Cam + 3D Shaker + Ball Call Bar + Classic Master Board & Compact Verified Card Mirror -->
+    <div class="host-feed-pane">
+      <div class="live-stage-card">
+        <div class="stage-split-row">
+          <div class="host-cam-box">
+            <span class="live-dot-badge" id="hostCamStatusBadge" style="background:#4a5568;">● CAM OFF</span>
+            <span id="hostCamOfflineText" style="color: var(--muted); font-size: 10px; text-align: center; padding: 0 6px;">Host cam offline</span>
+            <iframe id="hostCamViewIframe" allow="autoplay;fullscreen" style="display: none;"></iframe>
+            <span class="cam-label-tag" id="hostCamNameTag">🎙️ Live Host</span>
+          </div>
 
-        <!-- Top-Left PiP Host Cam Bubble -->
-        <div class="host-pip-bubble" id="hostPipBubblePlayer">
-          <iframe id="hostCamViewIframe" allow="autoplay;fullscreen"></iframe>
-          <span class="pip-host-tag" id="hostCamNameTag">🎙️ CC</span>
+          <div class="player-tumbler-box">
+            <span class="live-dot-badge" style="background: var(--teal); color: #06111a;">● 3D SHAKER</span>
+            <canvas id="playerTumblerCanvas" width="208" height="208"></canvas>
+            <span class="cam-label-tag" id="shakerStatusTag">Ready</span>
+          </div>
         </div>
       </div>
 
-      <!-- Player Broadcast & Opt-In Camera Controls -->
-      <div class="video-lounge-controls">
-        <button class="cam-toggle-btn" id="expandHostBtn" onclick="toggleExpandHostScreen()">🔍 Expand Broadcast</button>
-        <button class="cam-toggle-btn active" id="toggleHostPipBtn" onclick="toggleHostPipBubble()">🖼️ Host Cam Bubble: ON</button>
-        <button class="cam-toggle-btn" id="toggleMyCamBtn" onclick="togglePlayerCam()">📹 Share My Cam: OFF</button>
-        <button class="cam-toggle-btn active" id="togglePeersBtn" onclick="toggleSeeOtherPlayers()">👥 See Other Players: ON</button>
+      <!-- Current Call Bar -->
+      <div class="broadcast-bar">
+        <div class="current-ball-container">
+          <div class="big-ball" id="activeBall">-</div>
+          <div class="ball-details">
+            <h3 id="ballAnnounce">Waiting...</h3>
+            <p id="totalDrawnCount">0 drawn</p>
+          </div>
+        </div>
+        <div class="recent-wrap">
+          <span style="font-size: 9px; color: var(--muted); margin-bottom: 2px; font-weight: 700; text-transform: uppercase;">Recent</span>
+          <div class="called-rack" id="calledRack">
+            <span style="color: var(--muted); font-size: 10px;">None</span>
+          </div>
+        </div>
       </div>
 
-      <!-- Optional Player-to-Player Camera Lounge -->
-      <div class="players-lounge-wrap" id="playersLoungeWrap">
+      <!-- Classic Master 75-Ball Board (Hidden during Trivia/Emoji) + Compact Verified Card Mirror -->
+      <div class="board-and-verify-wrap" id="boardAndVerifyWrap">
+        <div class="player-master-card" id="playerMasterCard">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span id="playerMasterTitle" style="font-size: 10px; color: var(--teal); font-weight: 900; text-transform: uppercase;">Master 75-Ball Board</span>
+            <span id="playerMasterCounter" style="font-size: 10px; color: var(--muted); font-weight: 700;">0 / 75</span>
+          </div>
+          <div class="player-master-grid" id="playerMasterGrid"></div>
+        </div>
+
+        <div class="verified-card-mirror" id="verifiedCardMirror">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 4px;">
+            <span id="verifiedWinnerHeader" style="color: var(--yellow); font-size: 9px; font-weight: 900; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">🔍 VERIFIED</span>
+            <span id="verifiedCardSerial" style="color: var(--teal); font-size: 8.5px; font-weight: 800; flex-shrink: 0;"></span>
+          </div>
+          <div class="mirror-grid" id="verifiedMirrorGrid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Pane: Clue Banner, Multi-Card Status, Action Bar, Uniform Cards -->
+    <div class="cards-pane">
+      <div class="clue-prompt-banner" id="cluePromptBanner">
+        <div class="clue-timer-tag" id="clueTimerTag">⏳ GUESS NOW: 10s</div>
+        <div class="clue-main-text" id="clueMainText"></div>
+      </div>
+
+      <div class="status-banner" id="statusBanner">
+        Monitoring your cards across all rounds...
+      </div>
+
+      <div class="accessibility-bar">
+        <div style="display: flex; align-items: center; gap: 7px;">
+          <input type="checkbox" id="autoDabToggle" checked style="width: 16px; height: 16px; cursor: pointer;">
+          <label for="autoDabToggle" style="cursor: pointer; font-weight: 700; color: var(--muted);">Auto-Dab &amp; Auto-Call</label>
+        </div>
+
+        <button class="btn-bingo-top" onclick="claimBingo()">🎉 CALL BINGO!</button>
+
+        <div class="color-picker">
+          <span style="color: var(--muted); font-weight: 700;">Marker:</span>
+          <div class="color-dot active" style="background: #00d2be;" onclick="setDabColor('#00d2be', this)"></div>
+          <div class="color-dot" style="background: #ff2e93;" onclick="setDabColor('#ff2e93', this)"></div>
+          <div class="color-dot" style="background: #f8c028;" onclick="setDabColor('#f8c028', this)"></div>
+        </div>
+      </div>
+
+      <div class="cards-container" id="cardsGridContainer"></div>
+    </div>
+
+    <!-- End-to-End Full-Width Player Video Lounge Spanning Entire Bottom Row -->
+    <div class="player-lounge-card">
+      <div class="lounge-header-row">
+        <span style="font-size: 11.5px; font-weight: 900; color: var(--teal); text-transform: uppercase;">👥 Live Player Lounge (Up to 75 Guests)</span>
+        <div class="lounge-controls-row">
+          <button class="cam-toggle-btn" id="toggleMyCamBtn" onclick="togglePlayerCam()">📹 Share My Cam: OFF</button>
+          <button class="cam-toggle-btn active" id="togglePeersBtn" onclick="toggleSeeOtherPlayers()">👥 Lounge Cams: ON</button>
+        </div>
+      </div>
+      <div class="lounge-cams-grid">
         <div class="my-self-cam-box" id="mySelfCamBox">
           <iframe id="mySelfCamIframe" allow="camera;microphone;autoplay"></iframe>
-          <span class="cam-label-tag">You (Live)</span>
+          <span class="cam-label-tag">You</span>
         </div>
         <div class="players-scene-box" id="playersSceneBox">
           <iframe id="playersSceneIframe" allow="autoplay;fullscreen"></iframe>
-          <span class="cam-label-tag">Player Lounge Cams</span>
+          <span class="cam-label-tag">Player Lounge</span>
         </div>
       </div>
     </div>
-  </div>
-
-  <div class="broadcast-bar">
-    <div class="current-ball-container">
-      <div class="big-ball" id="activeBall">-</div>
-      <div class="ball-details">
-        <h3 id="ballAnnounce">Waiting for First Draw</h3>
-        <p id="totalDrawnCount">Host is preparing the tumbler</p>
-      </div>
-    </div>
-    <div style="display: flex; flex-direction: column; align-items: flex-end;">
-      <span style="font-size: 11px; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; font-weight: 700;">Recent Calls</span>
-      <div class="called-rack" id="calledRack">
-        <span style="color: var(--muted); font-size: 12px;">No calls yet</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="status-banner" id="statusBanner">
-    Monitoring your 4 cards across all rounds...
-  </div>
-
-  <div class="accessibility-bar">
-    <div style="display: flex; align-items: center; gap: 8px;">
-      <input type="checkbox" id="autoDabToggle" checked style="width: 17px; height: 17px; cursor: pointer;">
-      <label for="autoDabToggle" style="cursor: pointer; font-weight: 700; color: var(--muted);">Auto-Dab (4 Cards)</label>
-    </div>
-    <div class="color-picker">
-      <span style="color: var(--muted); font-weight: 700;">Marker:</span>
-      <div class="color-dot active" style="background: #00d2be;" onclick="setDabColor('#00d2be', this)"></div>
-      <div class="color-dot" style="background: #ff2e93;" onclick="setDabColor('#ff2e93', this)"></div>
-      <div class="color-dot" style="background: #f8c028;" onclick="setDabColor('#f8c028', this)"></div>
-    </div>
-  </div>
-
-  <div class="card-tabs-bar">
-    <button class="tab-btn active" onclick="filterCardView('ALL', this)">View All 4</button>
-    <button class="tab-btn" onclick="filterCardView(1, this)">Card 1</button>
-    <button class="tab-btn" onclick="filterCardView(2, this)">Card 2</button>
-    <button class="tab-btn" onclick="filterCardView(3, this)">Card 3</button>
-    <button class="tab-btn" onclick="filterCardView(4, this)">Card 4</button>
-  </div>
-
-  <div class="cards-container">
-    <div class="bingo-card" id="cardWrap1" data-watermark="⚡" data-mosaic="⚡ ⚡ ⚡">
-      <div class="card-header-flex"><span class="card-title" id="cardTitle1">Card 1</span><span class="card-serial" id="serial1">LVB-0001</span></div>
-      <div class="b-grid" id="cardGrid1"></div>
-    </div>
-    <div class="bingo-card" id="cardWrap2" data-watermark="⚡" data-mosaic="⚡ ⚡ ⚡">
-      <div class="card-header-flex"><span class="card-title" id="cardTitle2">Card 2</span><span class="card-serial" id="serial2">LVB-0002</span></div>
-      <div class="b-grid" id="cardGrid2"></div>
-    </div>
-    <div class="bingo-card" id="cardWrap3" data-watermark="⚡" data-mosaic="⚡ ⚡ ⚡">
-      <div class="card-header-flex"><span class="card-title" id="cardTitle3">Card 3</span><span class="card-serial" id="serial3">LVB-0003</span></div>
-      <div class="b-grid" id="cardGrid3"></div>
-    </div>
-    <div class="bingo-card" id="cardWrap4" data-watermark="⚡" data-mosaic="⚡ ⚡ ⚡">
-      <div class="card-header-flex"><span class="card-title" id="cardTitle4">Card 4</span><span class="card-serial" id="serial4">LVB-0004</span></div>
-      <div class="b-grid" id="cardGrid4"></div>
-    </div>
-  </div>
-
-  <div class="call-bar">
-    <button class="btn-bingo" onclick="claimBingo()">CALL BINGO!</button>
   </div>
 
   <div id="winModal">
@@ -759,54 +907,258 @@
 
   <script>
     const themes = {
-      classic: { name: "Electric Teal", short: "⚡ Electric Teal", icon: "⚡", mosaic: "⚡ ⚡ ⚡", wallpaper: "url('electrical teal.jpg')", border: "#00d2be", teal: "#00d2be", pink: "#ff2e93", dab: "#00d2be" },
-      christmas: { name: "Christmas", short: "🎄 Christmas", icon: "🎄", mosaic: "🎄 ⭐ 🎁", wallpaper: "url('christmas.jpg')", border: "#2ec4b6", teal: "#2ec4b6", pink: "#e71d36", dab: "#ff9f1c" },
-      thanksgiving: { name: "Thanksgiving", short: "🦃 Thanksgiving", icon: "🦃", mosaic: "🦃 🍂 🥧", wallpaper: "url('thanksgiving.jpg')", border: "#f4a261", teal: "#f4a261", pink: "#e76f51", dab: "#e9c46a" },
-      birthday: { name: "Birthday", short: "🎂 Birthday Party", icon: "🎂", mosaic: "🎂 🎈 🎁", wallpaper: "url('birthday.jpg')", border: "#ff70a6", teal: "#ff70a6", pink: "#ff9770", dab: "#ffd166" },
-      valentine: { name: "Valentine’s", short: "💖 Valentine's", icon: "💖", mosaic: "💖 🌹 ✨", wallpaper: "url('valentine.jpg')", border: "#ff758f", teal: "#ff758f", pink: "#ff3366", dab: "#ffccd5" },
-      stpatricks: { name: "St. Patrick’s", short: "🍀 St. Patrick's", icon: "🍀", mosaic: "🍀 🪙 ☘️", wallpaper: "url('st.patrick.jpg')", border: "#52b788", teal: "#52b788", pink: "#ffd166", dab: "#95d5b2" },
-      spring: { name: "Spring", short: "🌷 Spring Blossom", icon: "🌷", mosaic: "🌷 🐝 🌸", wallpaper: "url('spring.jpg')", border: "#48cae4", teal: "#48cae4", pink: "#ffb703", dab: "#90e0ef" },
-      summer: { name: "Summer", short: "☀️ Summer Luau", icon: "🌴", mosaic: "🌴 ☀️ 🍍", wallpaper: "url('summer.jpg')", border: "#64ffda", teal: "#64ffda", pink: "#ff007f", dab: "#f72585" },
-      autumn: { name: "Autumn", short: "🍂 Autumn Leaves", icon: "🍂", mosaic: "🍂 ☕ 🍁", wallpaper: "url('autumn.jpg')", border: "#d4a373", teal: "#d4a373", pink: "#bc6c25", dab: "#faedcd" },
-      cozyfall: { name: "Cozy Fall", short: "🍁 Cozy Fall", icon: "☕", mosaic: "🍁 ☕ 🍂", wallpaper: "url('cozy fall.jpg')", border: "#d4a373", teal: "#d4a373", pink: "#bc6c25", dab: "#faedcd" },
-      winter: { name: "Arctic Ice", short: "❄️ Winter Wonderland", icon: "❄️", mosaic: "❄️ ⛄ 🧊", wallpaper: "url('arctic ice.jpg')", border: "#00b4d8", teal: "#00b4d8", pink: "#90e0ef", dab: "#caf0f8" },
-      halloween: { name: "Halloween", short: "🎃 Halloween Theme", icon: "🎃", mosaic: "🎃 👻 🦇", wallpaper: "url('halloween.jpg')", border: "#ff7b00", teal: "#ff7b00", pink: "#b5179e", dab: "#f77f00" },
-      patriotic: { name: "Patriotic", short: "🇺🇸 Patriotic", icon: "⭐", mosaic: "🇺🇸 ⭐ 🎆", wallpaper: "url('patriotic.jpg')", border: "#38bdf8", teal: "#38bdf8", pink: "#fb7185", dab: "#facc15" },
-      happiness: { name: "Happiness", short: "✨ Happiness", icon: "✨", mosaic: "✨ 💖 🌻", wallpaper: "url('happiness.jpg')", border: "#ffd166", teal: "#ffd166", pink: "#ff007f", dab: "#00d2be" }
+      none: { name: "No Theme", icon: "", wallpaper: "none", border: "#2d3748", teal: "#00d2be", pink: "#ff2e93", dab: "#00d2be" },
+      classic: { name: "Electric Teal", icon: "⚡", wallpaper: "url('electrical teal.jpg')", border: "#00d2be", teal: "#00d2be", pink: "#ff2e93", dab: "#00d2be" },
+      birthday: { name: "Birthday Party", icon: "🎂", wallpaper: "url('birthday.jpg')", border: "#ff70a6", teal: "#ff70a6", pink: "#ff9770", dab: "#ffd166" },
+      happiness: { name: "Happiness", icon: "✨", wallpaper: "url('happiness.jpg')", border: "#ffd166", teal: "#ffd166", pink: "#ff007f", dab: "#00d2be" },
+      christmas: { name: "Holiday / Christmas", icon: "🎄", wallpaper: "url('christmas.jpg')", border: "#2ec4b6", teal: "#2ec4b6", pink: "#e71d36", dab: "#ff9f1c" },
+      patriotic: { name: "Patriotic", icon: "⭐", wallpaper: "url('patriotic.jpg')", border: "#38bdf8", teal: "#38bdf8", pink: "#fb7185", dab: "#facc15" },
+      summer: { name: "Summer Party", icon: "☀️", wallpaper: "url('summer.jpg')", border: "#64ffda", teal: "#64ffda", pink: "#ff007f", dab: "#f72585" }
     };
 
+    const TRIVIA_ANSWERS_DECK = [
+      "Mars", "Pacific Ocean", "Leonardo da Vinci", "Paris", "7 Continents",
+      "Lion", "Au", "1912", "Shakespeare", "Cheetah",
+      "Florida", "Diamond", "11 Players", "Mercury", "Tokyo",
+      "Neil Armstrong", "Blue Whale", "France", "13 Stripes", "2",
+      "Heart", "Mount Everest", "Carbon Dioxide", "Rome", "32 Teeth",
+      "Pound Sterling", "Frozen", "Nile River", "Alexander Graham Bell", "32°F",
+      "Batman", "6 Sides", "Avocado", "Saturn", "Rome",
+      "Dove", "366 Days", "Antarctica", "Michael Jackson", "H2O",
+      "Australia", "88 Keys", "Ottawa", "Guitar", "Alaska",
+      "Madonna", "7 Colors", "100°C", "Giraffe", "Football",
+      "Madrid", "Ruby", "206 Bones", "Jupiter", "Hedwig",
+      "Chicago", "Portuguese", "120 Minutes", "Mercury", "Cairo",
+      "Vincent van Gogh", "Octopus", "Rhode Island", "Tennis", "Nitrogen",
+      "6 Zeros", "Paris", "Woody", "Vitamin D", "Berlin",
+      "52 Cards", "Venus", "Peregrine Falcon", "Idaho", "Bald Eagle"
+    ];
+
+    const EMOJI_MOVIES_ANSWERS = [
+      "The Lion King", "Titanic", "Harry Potter", "Spider-Man", "Frozen",
+      "Jurassic Park", "Ghostbusters", "Jaws", "E.T.", "Toy Story",
+      "Finding Nemo", "Cinderella", "Beauty & The Beast", "Aladdin", "Willy Wonka",
+      "Wizard of Oz", "The Dark Knight", "Rocky", "The Matrix", "Back to the Future",
+      "Pirates of Caribbean", "Kung Fu Panda", "Ratatouille", "Up", "Coco",
+      "Moana", "Encanto", "Shrek", "The Avengers", "Black Panther",
+      "Star Wars", "Lord of the Rings", "Home Alone", "Elf", "The Grinch",
+      "Friends (TV)", "The Office (TV)", "Breaking Bad (TV)", "Game of Thrones (TV)", "Stranger Things (TV)",
+      "Squid Game (TV)", "The Crown (TV)", "Grey's Anatomy (TV)", "The Simpsons (TV)", "SpongeBob (TV)",
+      "Space Jam", "Cars", "Bee Movie", "WALL-E", "Inside Out",
+      "Devil Wears Prada", "Legally Blonde", "Mean Girls", "Pitch Perfect", "Dirty Dancing",
+      "Grease", "Singin' in the Rain", "Sound of Music", "Mary Poppins", "Wolf of Wall Street",
+      "Sherlock Holmes", "James Bond 007", "Men in Black", "King Kong", "Godzilla",
+      "Speed", "Top Gun", "Forrest Gump", "Cast Away", "Shawshank Redemption",
+      "The Godfather", "The Hunger Games", "Twilight", "Alice in Wonderland", "The Little Mermaid"
+    ];
+
     const VDO_HOST_CAM_ID = "LiveVibeHostCam";
-    const VDO_HOST_SCREEN_ID = "LiveVibeHostScreen";
     const VDO_LOUNGE_ROOM = "LiveVibeLounge";
 
     let calledSet = new Set();
+    let gameMode = "classic"; // 'classic' | 'trivia' | 'emoji'
     let currentRound = 1;
-    let currentRoundName = "Regular Bingo";
-    let currentPrize = "$25";
+    let currentRoundName = "Regular Line";
     let activeSessionPin = "7722";
     let isLobbyLocked = false;
-    let currentHostName = "CC";
-    let cards = [[], [], [], []];
+    let currentHostName = "Live Host";
+    let currentThemeKey = "classic";
+    let currentCustomBanner = "";
+    let cards = [];
     let cardSerials = [];
+    let autoClaimedRounds = new Set();
     let playerFullName = "";
-    let playerCashtag = "";
     let hasJoinedArena = false;
     let myPlayerKey = null;
     window.latestCachedState = null;
     let lastSpokenBall = "";
 
-    // VDO.Ninja Video State
-    let videoLoungeActive = false;
-    let hostPipVisible = true;
+    let hostCamConnected = false;
     let myCamSharing = false;
     let seeOtherPlayers = true;
+    let isShakingSync = false;
+
+    let pBalls = [];
+    let pAngle = 0;
+    let pAnimStarted = false;
+
+    function formatTileLabel(n) {
+      if (gameMode === "trivia") return TRIVIA_ANSWERS_DECK[n - 1] || `Answer`;
+      if (gameMode === "emoji") return EMOJI_MOVIES_ANSWERS[n - 1] || `Movie`;
+      return String(n);
+    }
+
+    function initPlayerMasterGrid() {
+      const g = document.getElementById("playerMasterGrid");
+      const masterCard = document.getElementById("playerMasterCard");
+      if (!g || !masterCard) return;
+
+      if (gameMode === "classic") {
+        masterCard.style.display = "flex";
+        g.innerHTML = "";
+        for (let i = 1; i <= 75; i++) {
+          const d = document.createElement("div");
+          d.className = "p-grid-num";
+          d.id = `pball_${i}`;
+          d.innerText = i;
+          g.appendChild(d);
+        }
+      } else {
+        masterCard.style.display = "none";
+      }
+    }
+
+    function updatePlayerMasterGrid() {
+      if (gameMode !== "classic") return;
+      for (let i = 1; i <= 75; i++) {
+        const el = document.getElementById(`pball_${i}`);
+        if (el) {
+          el.classList.toggle("called", calledSet.has(i));
+        }
+      }
+      const counter = document.getElementById("playerMasterCounter");
+      if (counter) counter.innerText = `${calledSet.size} / 75`;
+    }
+
+    function initPlayer3DShaker() {
+      const canvas = document.getElementById("playerTumblerCanvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+
+      const palette = [
+        { letter: "B", main: "#00d2be", dark: "#00695f", light: "#a8fff6" },
+        { letter: "I", main: "#ff2e93", dark: "#8c0b49", light: "#ffb8da" },
+        { letter: "N", main: "#f8c028", dark: "#8f6900", light: "#ffeaad" },
+        { letter: "G", main: "#9d4edd", dark: "#4b1775", light: "#e5c2ff" },
+        { letter: "O", main: "#ff7a00", dark: "#8a4200", light: "#ffd2a8" }
+      ];
+
+      pBalls = [];
+      for (let i = 0; i < 18; i++) {
+        const p = palette[i % palette.length];
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        const r = Math.random() * 48;
+        pBalls.push({
+          x: r * Math.sin(phi) * Math.cos(theta),
+          y: r * Math.sin(phi) * Math.sin(theta),
+          z: r * Math.cos(phi),
+          vx: (Math.random() - 0.5) * 1.5,
+          vy: (Math.random() - 0.5) * 1.5,
+          vz: (Math.random() - 0.5) * 1.5,
+          radius: 12,
+          letter: p.letter,
+          colorMain: p.main,
+          colorDark: p.dark,
+          colorLight: p.light
+        });
+      }
+
+      if (!pAnimStarted) {
+        pAnimStarted = true;
+        renderPlayer3DLoop(canvas, ctx);
+      }
+    }
+
+    function renderPlayer3DLoop(canvas, ctx) {
+      const W = canvas.width;
+      const H = canvas.height;
+      const cx = W / 2;
+      const cy = H / 2;
+      const sphereR = 90;
+      const focal = 230;
+
+      ctx.clearRect(0, 0, W, H);
+
+      const bgGrad = ctx.createRadialGradient(cx - 24, cy - 24, 10, cx, cy, sphereR);
+      bgGrad.addColorStop(0, "rgba(32, 44, 88, 0.95)");
+      bgGrad.addColorStop(1, "rgba(4, 6, 16, 1)");
+      ctx.beginPath();
+      ctx.arc(cx, cy, sphereR, 0, Math.PI * 2);
+      ctx.fillStyle = bgGrad;
+      ctx.fill();
+
+      pAngle += isShakingSync ? 0.1 : 0.004;
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, sphereR, 0, Math.PI * 2);
+      ctx.clip();
+
+      const gravity = isShakingSync ? 0.18 : 0.35;
+      const bounce = isShakingSync ? 0.94 : 0.45;
+      const maxR = sphereR - 14;
+
+      pBalls.forEach(b => {
+        if (isShakingSync) {
+          if (b.y > 40) {
+            b.vy -= (1.5 + Math.random() * 1.4);
+            b.vx += (Math.random() - 0.5) * 3.5;
+            b.vz += (Math.random() - 0.5) * 3.5;
+          }
+          b.vx += -b.z * 0.01;
+          b.vz += b.x * 0.01;
+        }
+        b.vy += gravity;
+        b.x += b.vx;
+        b.y += b.vy;
+        b.z += b.vz;
+        b.vx *= isShakingSync ? 0.98 : 0.9;
+        b.vy *= isShakingSync ? 0.98 : 0.9;
+        b.vz *= isShakingSync ? 0.98 : 0.9;
+
+        const dist = Math.hypot(b.x, b.y, b.z);
+        if (dist > maxR) {
+          const nx = b.x / dist, ny = b.y / dist, nz = b.z / dist;
+          b.x = nx * maxR; b.y = ny * maxR; b.z = nz * maxR;
+          const dot = b.vx * nx + b.vy * ny + b.vz * nz;
+          if (dot > 0) {
+            b.vx = (b.vx - 2 * dot * nx) * bounce;
+            b.vy = (b.vy - 2 * dot * ny) * bounce;
+            b.vz = (b.vz - 2 * dot * nz) * bounce;
+          }
+        }
+      });
+
+      const sorted = [...pBalls].sort((a, b) => b.z - a.z);
+      sorted.forEach(b => {
+        const scale = focal / (focal + b.z);
+        const sx = cx + b.x * scale;
+        const sy = cy + b.y * scale;
+        const sr = b.radius * scale;
+
+        const grad = ctx.createRadialGradient(sx - sr * 0.35, sy - sr * 0.35, sr * 0.1, sx, sy, sr);
+        grad.addColorStop(0, b.colorLight);
+        grad.addColorStop(0.4, b.colorMain);
+        grad.addColorStop(1, b.colorDark);
+
+        ctx.beginPath();
+        ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        ctx.fillStyle = "#fff";
+        ctx.font = `900 ${Math.max(9, Math.round(sr * 0.75))}px system-ui, sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        const iconTxt = gameMode === "emoji" ? "🎬" : (gameMode === "trivia" ? "?" : b.letter);
+        ctx.fillText(iconTxt, sx, sy);
+      });
+
+      ctx.restore();
+      ctx.beginPath();
+      ctx.arc(cx, cy, sphereR - 2, 0, Math.PI * 2);
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = isShakingSync ? "#ff2e93" : "#00d2be";
+      ctx.stroke();
+
+      requestAnimationFrame(() => renderPlayer3DLoop(canvas, ctx));
+    }
 
     function forceDisconnectPlayer(reason) {
       if (!hasJoinedArena) return;
       hasJoinedArena = false;
       try {
         document.getElementById("hostCamViewIframe").src = "about:blank";
-        document.getElementById("hostStreamIframe").src = "about:blank";
         document.getElementById("mySelfCamIframe").src = "about:blank";
         document.getElementById("playersSceneIframe").src = "about:blank";
       } catch (e) {}
@@ -814,59 +1166,34 @@
       window.location.reload();
     }
 
-    function syncPlayerVideoRoom(hostIsLive, hostCamId, hostScreenId, loungeRoomId) {
-      const loungeBar = document.getElementById("videoLoungeBar");
+    function syncHostCamera(hostIsLive, hostCamId) {
       const camFrame = document.getElementById("hostCamViewIframe");
-      const screenFrame = document.getElementById("hostStreamIframe");
-      const sceneFrame = document.getElementById("playersSceneIframe");
+      const offlineText = document.getElementById("hostCamOfflineText");
+      const badge = document.getElementById("hostCamStatusBadge");
+
+      document.getElementById("hostCamNameTag").innerText = `🎙️ ${currentHostName}`;
 
       if (!hostIsLive) {
-        if (videoLoungeActive) {
-          loungeBar.style.display = "none";
+        if (hostCamConnected) {
           camFrame.src = "about:blank";
-          screenFrame.src = "about:blank";
-          sceneFrame.src = "about:blank";
-          if (myCamSharing) {
-            togglePlayerCam();
-          }
-          videoLoungeActive = false;
+          camFrame.style.display = "none";
+          offlineText.style.display = "block";
+          badge.innerText = "● CAM OFF";
+          badge.style.background = "#4a5568";
+          hostCamConnected = false;
         }
         return;
       }
 
-      document.getElementById("hostCamNameTag").innerText = `🎙️ ${currentHostName}`;
-
-      if (!videoLoungeActive) {
-        loungeBar.style.display = "block";
+      if (!hostCamConnected) {
         const camStream = hostCamId || VDO_HOST_CAM_ID;
-        const screenStream = hostScreenId || VDO_HOST_SCREEN_ID;
-        const roomName = loungeRoomId || VDO_LOUNGE_ROOM;
-
         camFrame.src = `https://vdo.ninja/?view=${encodeURIComponent(camStream)}&solo&cleanoutput&autoplay`;
-        screenFrame.src = `https://vdo.ninja/?view=${encodeURIComponent(screenStream)}&solo&cleanoutput&noaudio&autoplay`;
-
-        if (seeOtherPlayers) {
-          sceneFrame.src = `https://vdo.ninja/?room=${encodeURIComponent(roomName)}&scene&cleanoutput&noaudio`;
-        }
-        videoLoungeActive = true;
+        camFrame.style.display = "block";
+        offlineText.style.display = "none";
+        badge.innerText = "● HOST LIVE";
+        badge.style.background = "#e53e3e";
+        hostCamConnected = true;
       }
-    }
-
-    function toggleExpandHostScreen() {
-      const box = document.getElementById("hostStreamContainer");
-      const btn = document.getElementById("expandHostBtn");
-      const isExpanded = box.classList.toggle("expanded");
-      btn.innerText = isExpanded ? "🗗 Shrink Broadcast" : "🔍 Expand Broadcast";
-      btn.classList.toggle("active", isExpanded);
-    }
-
-    function toggleHostPipBubble() {
-      hostPipVisible = !hostPipVisible;
-      const bubble = document.getElementById("hostPipBubblePlayer");
-      const btn = document.getElementById("toggleHostPipBtn");
-      bubble.style.display = hostPipVisible ? "block" : "none";
-      btn.innerText = hostPipVisible ? "🖼️ Host Cam Bubble: ON" : "🖼️ Host Cam Bubble: OFF";
-      btn.classList.toggle("active", hostPipVisible);
     }
 
     function togglePlayerCam() {
@@ -877,7 +1204,7 @@
 
       if (myCamSharing) {
         const cleanLabel = encodeURIComponent(playerFullName || "Player");
-        selfFrame.src = `https://vdo.ninja/?room=${VDO_LOUNGE_ROOM}&push&label=${cleanLabel}&webcam&blur&autostart&cleanoutput&noaudioout&mic=0`;
+        selfFrame.src = `https://vdo.ninja/?room=${VDO_LOUNGE_ROOM}&push&label=${cleanLabel}&webcam&meshcast&bitrate=150&scale=35&autostart&cleanoutput&noaudioout&mic=0`;
         selfBox.style.display = "block";
         btn.innerText = "📹 Share My Cam: ON";
         btn.classList.add("active");
@@ -897,28 +1224,66 @@
 
       if (seeOtherPlayers) {
         sceneBox.style.display = "block";
-        if (videoLoungeActive) {
-          sceneFrame.src = `https://vdo.ninja/?room=${VDO_LOUNGE_ROOM}&scene&cleanoutput&noaudio`;
-        }
-        btn.innerText = "👥 See Other Players: ON";
+        sceneFrame.src = `https://vdo.ninja/?room=${VDO_LOUNGE_ROOM}&scene&meshcast&bitrate=150&maxtotalbitrate=2500&cleanoutput&noaudio`;
+        btn.innerText = "👥 Lounge Cams: ON";
         btn.classList.add("active");
       } else {
         sceneFrame.src = "about:blank";
         sceneBox.style.display = "none";
-        btn.innerText = "👥 See Other Players: OFF";
+        btn.innerText = "👥 Lounge Cams: OFF";
         btn.classList.remove("active");
       }
     }
 
-    function autoPrependDollar(input) {
-      if (input.value.length > 0 && !input.value.startsWith('$')) {
-        input.value = '$' + input.value.replace(/\$/g, '');
+    function renderVerifiedCardMirror(inspectedData) {
+      const box = document.getElementById("verifiedCardMirror");
+      const grid = document.getElementById("verifiedMirrorGrid");
+      const serialEl = document.getElementById("verifiedCardSerial");
+      const headerEl = document.getElementById("verifiedWinnerHeader");
+
+      if (!inspectedData || !inspectedData.matrix) {
+        box.style.display = "none";
+        return;
       }
+
+      box.style.display = "flex";
+      if (gameMode === "classic") {
+        box.classList.remove("full-span");
+      } else {
+        box.classList.add("full-span");
+      }
+
+      const wName = inspectedData.playerName ? `${inspectedData.playerName}` : "VERIFIED";
+      if (headerEl) headerEl.innerText = `🏆 ${wName}`;
+      serialEl.innerText = `#${inspectedData.cardNum}`;
+      grid.innerHTML = "";
+
+      ['B','I','N','G','O'].forEach(l => {
+        const h = document.createElement("div");
+        h.style.cssText = "background:#090c19; color:var(--teal); font-weight:900; font-size:8px; text-align:center; padding:2px 0; border-radius:2px;";
+        h.innerText = l;
+        grid.appendChild(h);
+      });
+
+      inspectedData.matrix.forEach(row => {
+        row.forEach(cell => {
+          const d = document.createElement("div");
+          if (cell.val === "FREE") {
+            d.className = "mirror-tile free";
+            d.innerText = "★ FREE";
+          } else {
+            d.className = cell.dabbed ? "mirror-tile dabbed" : "mirror-tile";
+            if (gameMode !== "classic") d.classList.add("text-mirror");
+            d.innerText = formatTileLabel(cell.val);
+          }
+          grid.appendChild(d);
+        });
+      });
     }
 
     function enableAudioEngine() {
       if ('speechSynthesis' in window) {
-        const utter = new SpeechSynthesisUtterance("Audio enabled. Ready for bingo calls!");
+        const utter = new SpeechSynthesisUtterance("Audio enabled. Ready for game calls!");
         utter.rate = 1.0;
         window.speechSynthesis.cancel();
         window.speechSynthesis.speak(utter);
@@ -937,16 +1302,11 @@
     function joinLobby(e) {
       e.preventDefault();
       const enteredPin = document.getElementById("pPin").value.trim();
-      const enteredTag = document.getElementById("pCashtag").value.trim();
-
-      if (!enteredTag.startsWith('$') || enteredTag.length < 2) {
-        alert("Please enter a valid Cash App name starting with $ (e.g. $YourName).");
-        return;
-      }
       
       if (window.latestCachedState) {
         if (window.latestCachedState.roomPin) activeSessionPin = String(window.latestCachedState.roomPin).trim();
         if (window.latestCachedState.hostName) currentHostName = window.latestCachedState.hostName;
+        if (window.latestCachedState.gameMode) gameMode = window.latestCachedState.gameMode;
         isLobbyLocked = window.latestCachedState.lobbyLocked === true;
       }
 
@@ -968,24 +1328,76 @@
 
       hasJoinedArena = true;
       playerFullName = document.getElementById("pName").value.trim();
-      playerCashtag = enteredTag;
       document.getElementById("playerNameDisplay").innerText = playerFullName;
-      document.getElementById("playerCashtagDisplay").innerText = playerCashtag;
-      document.getElementById("hostNameBadge").innerText = `🎙️ Host: ${currentHostName}`;
+      document.getElementById("hostNameBadge").innerText = `🎙️ ${currentHostName}`;
       document.getElementById("loginScreen").style.display = "none";
-      generateAll4Cards();
 
-      if (window.database && window.dbPush && window.dbSet) {
+      initPlayerMasterGrid();
+      initPlayer3DShaker();
+      document.getElementById("playersSceneIframe").src = `https://vdo.ninja/?room=${VDO_LOUNGE_ROOM}&scene&meshcast&bitrate=150&maxtotalbitrate=2500&cleanoutput&noaudio`;
+
+      cards = [];
+      cardSerials = [];
+      addNewCard();
+      addNewCard();
+      renderAllCards();
+
+      if (window.database && window.dbPush && window.dbSet && window.dbOnValue) {
         const newPlayerRef = window.dbPush(window.dbRef(window.database, 'players'));
         myPlayerKey = newPlayerRef.key;
         window.dbSet(newPlayerRef, {
           name: playerFullName,
-          cashtag: playerCashtag,
+          cardCount: 2,
           time: Date.now()
+        });
+
+        window.dbOnValue(newPlayerRef, (snap) => {
+          if (!snap.exists()) {
+            forceDisconnectPlayer("You have been removed from the game room by the host.");
+            return;
+          }
+          const pData = snap.val();
+          const targetCount = parseInt(pData.cardCount) || 2;
+          if (targetCount !== cards.length) {
+            syncCardCountFromHost(targetCount);
+          }
         });
       }
 
       if (window.latestCachedState) handleBroadcast(window.latestCachedState);
+    }
+
+    function syncCardCountFromHost(targetCount) {
+      if (targetCount < 1) targetCount = 1;
+      if (targetCount > 4) targetCount = 4;
+
+      while (cards.length < targetCount) {
+        addNewCard();
+      }
+      while (cards.length > targetCount) {
+        cards.pop();
+        cardSerials.pop();
+      }
+
+      cards.forEach((mat) => {
+        for (let r = 0; r < 5; r++) {
+          for (let c = 0; c < 5; c++) {
+            if (mat[r][c].val !== "FREE" && calledSet.has(mat[r][c].val)) {
+              mat[r][c].dabbed = true;
+            }
+          }
+        }
+      });
+
+      renderAllCards();
+      applyTheme(currentThemeKey, currentCustomBanner);
+      evaluatePlayerStatus();
+    }
+
+    function addNewCard() {
+      cards.push(createCardMatrix());
+      const serial = 'LVB-' + Math.floor(1000 + Math.random() * 9000) + '-C' + cards.length;
+      cardSerials.push(serial);
     }
 
     function setDabColor(color, el) {
@@ -995,6 +1407,8 @@
     }
 
     function applyTheme(themeKey, customBannerText = "") {
+      currentThemeKey = themeKey;
+      currentCustomBanner = customBannerText;
       const t = themes[themeKey] || themes.classic;
       const root = document.documentElement;
       root.style.setProperty('--body-wallpaper', t.wallpaper);
@@ -1003,14 +1417,15 @@
       root.style.setProperty('--pink', t.pink);
       root.style.setProperty('--dab', t.dab);
 
-      for (let i = 1; i <= 4; i++) {
+      for (let i = 1; i <= cards.length; i++) {
         const cardWrap = document.getElementById(`cardWrap${i}`);
-        cardWrap.style.backgroundImage = t.wallpaper;
-        cardWrap.style.backgroundSize = "cover";
-        cardWrap.style.backgroundPosition = "center";
-        cardWrap.setAttribute("data-watermark", t.icon);
-        cardWrap.setAttribute("data-mosaic", t.mosaic);
-        document.getElementById(`cardTitle${i}`).innerText = `${t.short} • Card ${i}`;
+        if (cardWrap) {
+          cardWrap.style.backgroundImage = t.wallpaper;
+          cardWrap.style.backgroundSize = "cover";
+          cardWrap.style.backgroundPosition = "center";
+          cardWrap.setAttribute("data-watermark", t.icon);
+          document.getElementById(`cardTitle${i}`).innerText = `Card ${i}`;
+        }
       }
 
       const banner = document.getElementById("customBanner");
@@ -1021,27 +1436,6 @@
       } else {
         banner.style.display = "none";
       }
-    }
-
-    function filterCardView(view, btn) {
-      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      for (let i = 1; i <= 4; i++) {
-        const wrap = document.getElementById(`cardWrap${i}`);
-        wrap.style.display = (view === 'ALL' || view === i) ? "flex" : "none";
-      }
-    }
-
-    function generateAll4Cards() {
-      cardSerials = [];
-      for (let i = 0; i < 4; i++) {
-        cards[i] = createCardMatrix();
-        const serial = 'LVB-' + Math.floor(1000 + Math.random() * 9000) + '-C' + (i+1);
-        cardSerials.push(serial);
-        document.getElementById(`serial${i+1}`).innerText = serial;
-        renderCard(`cardGrid${i+1}`, cards[i], i+1);
-      }
-      evaluatePlayerStatus();
     }
 
     function createCardMatrix() {
@@ -1075,7 +1469,35 @@
       return arr;
     }
 
-    function renderCard(gridId, matrix, cardNum) {
+    function renderAllCards() {
+      const container = document.getElementById("cardsGridContainer");
+      container.innerHTML = "";
+      const t = themes[currentThemeKey] || themes.classic;
+
+      cards.forEach((matrix, idx) => {
+        const cardNum = idx + 1;
+        const cardDiv = document.createElement("div");
+        cardDiv.className = "bingo-card";
+        cardDiv.id = `cardWrap${cardNum}`;
+        cardDiv.style.backgroundImage = t.wallpaper;
+        cardDiv.style.backgroundSize = "cover";
+        cardDiv.style.backgroundPosition = "center";
+        cardDiv.setAttribute("data-watermark", t.icon);
+
+        cardDiv.innerHTML = `
+          <div class="card-alert-strip" id="cardAlert${cardNum}"></div>
+          <div class="card-header-flex">
+            <span class="card-title" id="cardTitle${cardNum}">Card ${cardNum}</span>
+            <span class="card-serial" id="serial${cardNum}">${cardSerials[idx]}</span>
+          </div>
+          <div class="b-grid" id="cardGrid${cardNum}"></div>
+        `;
+        container.appendChild(cardDiv);
+        renderCardGrid(`cardGrid${cardNum}`, matrix, cardNum);
+      });
+    }
+
+    function renderCardGrid(gridId, matrix, cardNum) {
       const el = document.getElementById(gridId);
       el.innerHTML = "";
       ['B','I','N','G','O'].forEach(l => {
@@ -1093,9 +1515,13 @@
           tile.id = `c${cardNum}_${r}_${c}`;
           if (item.val === "FREE") {
             tile.classList.add("free", "dabbed");
-            tile.innerText = "★ SPACE ★";
+            tile.innerText = "★ FREE ★";
           } else {
-            tile.innerText = item.val;
+            if (gameMode === "trivia" || gameMode === "emoji") {
+              tile.classList.add("text-tile");
+            }
+            tile.innerText = formatTileLabel(item.val);
+            tile.title = formatTileLabel(item.val);
             if (item.dabbed) tile.classList.add("dabbed");
             tile.onclick = () => {
               toggleManualDab(cardNum - 1, r, c, tile);
@@ -1117,7 +1543,6 @@
       if (!data) return;
       window.latestCachedState = data;
 
-      // Instant Kick-Out Check via synced gameState
       if (hasJoinedArena && myPlayerKey && Array.isArray(data.kickedIds) && data.kickedIds.includes(myPlayerKey)) {
         forceDisconnectPlayer("You have been removed from the game room by the host.");
         return;
@@ -1128,19 +1553,50 @@
 
       if (data.hostName) {
         currentHostName = data.hostName;
-        document.getElementById("hostNameBadge").innerText = `🎙️ Host: ${currentHostName}`;
+        document.getElementById("hostNameBadge").innerText = `🎙️ ${currentHostName}`;
       }
 
       if (data.roomPin) activeSessionPin = String(data.roomPin).trim();
       if (data.lobbyLocked !== undefined) isLobbyLocked = data.lobbyLocked === true;
 
+      if (data.gameMode && data.gameMode !== gameMode) {
+        gameMode = data.gameMode;
+        const modeBadge = document.getElementById("gameModeBadge");
+        if (modeBadge) {
+          modeBadge.innerText = gameMode === "emoji" ? "🎬 Movie & TV Emoji" : (gameMode === "trivia" ? "🧠 Trivia Bingo" : "🎱 Classic 75-Ball");
+        }
+        if (hasJoinedArena) {
+          calledSet.clear();
+          autoClaimedRounds.clear();
+          initPlayerMasterGrid();
+          const keepCount = cards.length || 2;
+          cards = [];
+          cardSerials = [];
+          for (let k = 0; k < keepCount; k++) addNewCard();
+          renderAllCards();
+          evaluatePlayerStatus();
+        }
+      } else {
+        const modeBadge = document.getElementById("gameModeBadge");
+        if (modeBadge) {
+          modeBadge.innerText = gameMode === "emoji" ? "🎬 Movie & TV Emoji" : (gameMode === "trivia" ? "🧠 Trivia Bingo" : "🎱 Classic 75-Ball");
+        }
+        if (hasJoinedArena) {
+          initPlayerMasterGrid();
+          renderAllCards();
+        }
+      }
+
+      isShakingSync = (data.latest === "SHAKING");
+      const shakerTag = document.getElementById("shakerStatusTag");
+      if (shakerTag) shakerTag.innerText = isShakingSync ? "Shaking..." : "Ready";
+
       if (hasJoinedArena) {
-        syncPlayerVideoRoom(
+        syncHostCamera(
           data.hostVideoLive === true,
-          data.vdoHostCamStream || VDO_HOST_CAM_ID,
-          data.vdoHostScreenStream || VDO_HOST_SCREEN_ID,
-          data.vdoLoungeRoom || VDO_LOUNGE_ROOM
+          data.vdoHostCamStream || VDO_HOST_CAM_ID
         );
+        renderVerifiedCardMirror(data.inspectedCard || null);
       }
 
       if (data.theme) {
@@ -1152,23 +1608,35 @@
       if (data.game) {
         currentRound = data.game.round;
         currentRoundName = data.game.name;
-        currentPrize = data.game.prize;
-        document.getElementById("gamePatternDisplay").innerText = `Game ${currentRound}: ${currentRoundName} (${currentPrize})`;
-        evaluatePlayerStatus();
+        document.getElementById("gamePatternDisplay").innerText = `Round ${currentRound}: ${currentRoundName}`;
       }
 
-      if (data.latest === "NEXT_GAME") {
+      const clueBanner = document.getElementById("cluePromptBanner");
+
+      if (data.latest === "SHAKING") {
+        clueBanner.style.display = "none";
+        document.getElementById("ballAnnounce").innerText = "Shaking...";
+        return;
+      }
+
+      if (data.latest === "CLUE_ACTIVE" && data.activeClue) {
+        clueBanner.style.display = "block";
+        document.getElementById("clueTimerTag").innerText = `⏳ GUESS NOW: ${data.clueCountdown || 10}s`;
+        document.getElementById("clueMainText").innerText = gameMode === "emoji" ? `Guess the Movie/TV Show: ${data.activeClue}` : `Trivia Question: ${data.activeClue}`;
+        document.getElementById("activeBall").innerText = `${data.clueCountdown || 10}s`;
+        document.getElementById("ballAnnounce").innerText = "Guess before reveal!";
+        return;
+      } else {
+        clueBanner.style.display = "none";
+      }
+
+      if (data.latest === "NEXT_GAME" || data.latest === "MODE_CHANGE") {
         calledSet.clear();
+        autoClaimedRounds.clear();
+        initPlayerMasterGrid();
         document.getElementById("activeBall").innerText = "-";
-        document.getElementById("ballAnnounce").innerText = "Next Game Started (Same Cards)";
-        document.getElementById("calledRack").innerHTML = '<span style="color: var(--muted); font-size: 12px;">New game</span>';
-        
-        if (data.game) {
-          currentRound = data.game.round;
-          currentRoundName = data.game.name;
-          currentPrize = data.game.prize;
-          document.getElementById("gamePatternDisplay").innerText = `Game ${currentRound}: ${currentRoundName} (${currentPrize})`;
-        }
+        document.getElementById("ballAnnounce").innerText = data.latest === "MODE_CHANGE" ? "New Game Mode Started" : "Next Round Started";
+        document.getElementById("calledRack").innerHTML = '<span style="color: var(--muted); font-size: 10px;">Ready</span>';
         
         cards.forEach(matrix => {
           matrix.forEach(row => {
@@ -1177,44 +1645,59 @@
             });
           });
         });
-        for (let i = 1; i <= 4; i++) {
-          renderCard(`cardGrid${i}`, cards[i-1], i);
-        }
+        renderAllCards();
         evaluatePlayerStatus();
         return;
       }
 
       if (data.latest === "RESET_SESSION") {
         calledSet.clear();
+        autoClaimedRounds.clear();
+        initPlayerMasterGrid();
         document.getElementById("activeBall").innerText = "-";
         document.getElementById("ballAnnounce").innerText = "New Session Started";
-        document.getElementById("calledRack").innerHTML = '<span style="color: var(--muted); font-size: 12px;">New session</span>';
-        generateAll4Cards();
+        document.getElementById("calledRack").innerHTML = '<span style="color: var(--muted); font-size: 10px;">New session</span>';
+        const keepCount = cards.length || 2;
+        cards = [];
+        cardSerials = [];
+        for (let k = 0; k < keepCount; k++) addNewCard();
+        renderAllCards();
+        evaluatePlayerStatus();
         return;
       }
 
       if (data.called) {
         calledSet = new Set(data.called);
-        document.getElementById("totalDrawnCount").innerText = `${calledSet.size} balls drawn`;
+        updatePlayerMasterGrid();
+        document.getElementById("totalDrawnCount").innerText = `${calledSet.size} drawn`;
         renderRack(data.called);
         if (document.getElementById("autoDabToggle").checked) {
-          applyAutoDab();
+          applyAutoDabAndCheckBingo();
         }
       }
 
-      if (data.latest && data.latest !== "NEXT_GAME" && data.latest !== "RESET_SESSION" && data.latest !== lastSpokenBall) {
-        lastSpokenBall = data.latest;
-        document.getElementById("activeBall").innerText = data.latest;
-        document.getElementById("ballAnnounce").innerText = `CALLED: ${data.latest}`;
+      evaluatePlayerStatus();
 
-        if (data.autoVoice !== false && 'speechSynthesis' in window) {
+      if (data.latest && data.latest !== "NEXT_GAME" && data.latest !== "RESET_SESSION" && data.latest !== "SHAKING" && data.latest !== "MODE_CHANGE" && data.latest !== "CLUE_ACTIVE" && data.latest !== lastSpokenBall) {
+        lastSpokenBall = data.latest;
+        const activeBallEl = document.getElementById("activeBall");
+        if (gameMode === "emoji") {
+          activeBallEl.innerText = "🎬";
+          document.getElementById("ballAnnounce").innerText = `ANSWER: ${data.latest}`;
+        } else if (gameMode === "trivia") {
+          activeBallEl.innerText = "🧠";
+          document.getElementById("ballAnnounce").innerText = `ANSWER: ${data.latest}`;
+        } else {
+          activeBallEl.innerText = data.latest;
+          document.getElementById("ballAnnounce").innerText = `CALLED: ${data.latest}`;
+        }
+
+        if (data.autoVoice !== false && 'speechSynthesis' in window && gameMode === "classic") {
           const cleanText = data.latest.replace("-", " ");
           const utter = new SpeechSynthesisUtterance(cleanText);
           utter.rate = 0.95;
           window.speechSynthesis.cancel();
           window.speechSynthesis.speak(utter);
-        } else if ('speechSynthesis' in window) {
-          window.speechSynthesis.cancel();
         }
       }
     }
@@ -1222,57 +1705,134 @@
     function renderRack(nums) {
       const rack = document.getElementById("calledRack");
       rack.innerHTML = "";
-      const rev = [...nums].reverse().slice(0, 8);
+      const rev = [...nums].reverse().slice(0, 3);
       rev.forEach(n => {
         const div = document.createElement("div");
-        div.className = "mini-ball";
-        div.innerText = n;
+        if (gameMode === "classic") {
+          div.className = "mini-ball";
+          div.innerText = n;
+        } else {
+          div.className = "mini-text-pill";
+          div.innerText = formatTileLabel(n);
+        }
         rack.appendChild(div);
       });
     }
 
-    function applyAutoDab() {
-      for (let i = 0; i < 4; i++) {
-        const mat = cards[i];
+    function applyAutoDabAndCheckBingo() {
+      cards.forEach((mat, i) => {
         for (let r = 0; r < 5; r++) {
           for (let c = 0; c < 5; c++) {
-            if (mat[r][c].val !== "FREE" && calledSet.has(mat[r][c].val)) {
+            if (mat[r][c].val !== "FREE" && calledSet.has(mat[r][c].val) && !mat[r][c].dabbed) {
               mat[r][c].dabbed = true;
               const tile = document.getElementById(`c${i+1}_${r}_${c}`);
               if (tile) tile.classList.add("dabbed");
             }
           }
         }
-      }
+      });
       evaluatePlayerStatus();
+      checkAndAutoCallBingo();
+    }
+
+    function checkAndAutoCallBingo() {
+      if (calledSet.size === 0) return;
+      const roundKey = `${gameMode}_${currentRound}_${currentRoundName}`;
+      if (autoClaimedRounds.has(roundKey)) return;
+
+      let winningCards = [];
+      for (let i = 0; i < cards.length; i++) {
+        if (checkWin(cards[i], currentRound)) {
+          winningCards.push(i + 1);
+        }
+      }
+
+      if (winningCards.length > 0) {
+        autoClaimedRounds.add(roundKey);
+        winningCards.forEach(cardNum => sendClaimToHost(cardNum));
+
+        const modal = document.getElementById("winModal");
+        document.getElementById("modalTitle").innerText = "AUTO-BINGO CALLED!";
+        document.getElementById("modalTitle").style.color = "var(--teal)";
+        document.getElementById("modalDesc").innerText = `Auto-Dab detected ${currentRoundName} on Card(s) #${winningCards.join(', #')} and automatically sent your claim to the host!`;
+        modal.style.display = "flex";
+      }
+    }
+
+    function sendClaimToHost(cardNum) {
+      if (window.database && window.dbPush) {
+        window.dbPush(window.dbRef(window.database, 'claims'), {
+          type: "BINGO_CLAIM",
+          name: playerFullName,
+          cardNum: cardNum,
+          serialNum: cardSerials[cardNum-1],
+          roundName: currentRoundName,
+          playerPasscode: activeSessionPin,
+          cardsSnapshot: cards,
+          cardSerials: cardSerials,
+          time: Date.now() + Math.random()
+        });
+      }
     }
 
     function evaluatePlayerStatus() {
       const banner = document.getElementById("statusBanner");
+      if (!banner || cards.length === 0) return;
+
       let readyCards = [];
       let needOneCards = [];
+      let needTwoCards = [];
       let closestCard = 1;
       let minNeeded = 99;
 
-      for (let i = 0; i < 4; i++) {
-        const needed = getCardsNeededCount(cards[i], currentRound);
+      cards.forEach((matrix, i) => {
+        const cardNum = i + 1;
+        const needed = getCardsNeededCount(matrix, currentRound);
+        const cardAlert = document.getElementById(`cardAlert${cardNum}`);
+
         if (needed < minNeeded) {
           minNeeded = needed;
-          closestCard = i + 1;
+          closestCard = cardNum;
         }
-        if (needed === 0) readyCards.push(i + 1);
-        else if (needed === 1) needOneCards.push(i + 1);
-      }
+
+        if (needed === 0) {
+          readyCards.push(`Card #${cardNum}`);
+          if (cardAlert) {
+            cardAlert.className = "card-alert-strip bingo-hit";
+            cardAlert.innerText = `🔥 BINGO ON CARD #${cardNum}! 🔥`;
+          }
+        } else if (needed === 1) {
+          needOneCards.push(`Card #${cardNum}`);
+          if (cardAlert) {
+            cardAlert.className = "card-alert-strip one-away";
+            cardAlert.innerText = `⚠️ 1 NEEDED! ⚠️`;
+          }
+        } else if (needed === 2) {
+          needTwoCards.push(`Card #${cardNum}`);
+          if (cardAlert) {
+            cardAlert.className = "card-alert-strip two-away";
+            cardAlert.innerText = `⚡ 2 AWAY`;
+          }
+        } else {
+          if (cardAlert) {
+            cardAlert.className = "card-alert-strip";
+            cardAlert.innerText = "";
+          }
+        }
+      });
 
       if (readyCards.length > 0) {
         banner.className = "status-banner bingo-ready";
-        banner.innerText = `🔥 BINGO READY ON CARD(S) #${readyCards.join(', #')}! HIT CALL BINGO! 🔥`;
-      } else if (needOneCards.length > 0) {
-        banner.className = "status-banner need-one";
-        banner.innerText = `⚠️ NEED 1 NUMBER ON CARD(S) #${needOneCards.join(', #')} (${currentRoundName})!`;
+        banner.innerText = `🔥 BINGO READY ON ${readyCards.join(', ')}! 🔥`;
+      } else if (needOneCards.length > 0 || needTwoCards.length > 0) {
+        let parts = [];
+        if (needOneCards.length > 0) parts.push(`⚠️ 1 AWAY: ${needOneCards.join(', ')}`);
+        if (needTwoCards.length > 0) parts.push(`⚡ 2 AWAY: ${needTwoCards.join(', ')}`);
+        banner.className = needOneCards.length > 0 ? "status-banner need-one" : "status-banner need-two";
+        banner.innerText = parts.join("  |  ");
       } else {
         banner.className = "status-banner";
-        banner.innerText = `Playing ${currentRoundName} — Closest is Card #${closestCard} (${minNeeded} away)`;
+        banner.innerText = `Playing ${currentRoundName} (${cards.length} Cards) — Closest: Card #${closestCard} (${minNeeded} away)`;
       }
     }
 
@@ -1297,8 +1857,19 @@
         let corners = [matrix[0][0], matrix[0][4], matrix[4][0], matrix[4][4]];
         return corners.filter(c => !c.dabbed).length;
       } else if (round === 4) {
-        let linesComplete = countLines(matrix);
-        return linesComplete >= 2 ? 0 : (2 - linesComplete);
+        let lineDeficits = [];
+        for (let r = 0; r < 5; r++) lineDeficits.push(matrix[r].filter(cell => !cell.dabbed).length);
+        for (let c = 0; c < 5; c++) {
+          let m = 0;
+          for (let r = 0; r < 5; r++) if (!matrix[r][c].dabbed) m++;
+          lineDeficits.push(m);
+        }
+        let d1 = 0; for (let i = 0; i < 5; i++) if (!matrix[i][i].dabbed) d1++;
+        lineDeficits.push(d1);
+        let d2 = 0; for (let i = 0; i < 5; i++) if (!matrix[i][4-i].dabbed) d2++;
+        lineDeficits.push(d2);
+        lineDeficits.sort((a, b) => a - b);
+        return lineDeficits[0] + lineDeficits[1];
       } else if (round === 5) {
         let totalMissing = 0;
         matrix.forEach(row => row.forEach(cell => { if (!cell.dabbed) totalMissing++; }));
@@ -1309,16 +1880,16 @@
 
     function claimBingo() {
       if (calledSet.size === 0) {
-        alert("The game has not started yet! Wait for the host to draw numbers.");
+        alert("The game has not started yet! Wait for the host to start calling.");
         return;
       }
 
       let winningCardNumbers = [];
-      for (let i = 0; i < 4; i++) {
-        if (checkWin(cards[i], currentRound)) {
+      cards.forEach((matrix, i) => {
+        if (checkWin(matrix, currentRound)) {
           winningCardNumbers.push(i + 1);
         }
-      }
+      });
 
       const modal = document.getElementById("winModal");
       const title = document.getElementById("modalTitle");
@@ -1330,21 +1901,7 @@
         desc.innerText = `Verified ${currentRoundName} on Card(s) #${winningCardNumbers.join(', #')}! Sent to host console.`;
 
         winningCardNumbers.forEach(cardNum => {
-          if (window.database && window.dbPush) {
-            window.dbPush(window.dbRef(window.database, 'claims'), {
-              type: "BINGO_CLAIM",
-              name: playerFullName,
-              cashtag: playerCashtag,
-              cardNum: cardNum,
-              serialNum: cardSerials[cardNum-1],
-              roundName: currentRoundName,
-              prize: currentPrize,
-              playerPasscode: activeSessionPin,
-              cardsSnapshot: cards,
-              cardSerials: cardSerials,
-              time: Date.now() + Math.random()
-            });
-          }
+          sendClaimToHost(cardNum);
         });
       } else {
         title.innerText = "Keep Playing!";
