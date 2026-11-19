@@ -209,8 +209,8 @@
     .type-pill h4 { color: var(--teal); font-size: 13.5px; margin-bottom: 2px; }
     .type-pill p { color: var(--muted); font-size: 11.5px; line-height: 1.35; }
 
-    /* Private Event Booking Form */
-    .section-form {
+    /* Direct Booking Callout */
+    .section-booking-cta {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
@@ -219,29 +219,9 @@
       padding: 24px 22px;
       text-align: center;
     }
-    .section-form h2 { font-size: 21px; color: #fff; margin-bottom: 4px; }
-    .section-form p { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 10px;
-      text-align: left;
-    }
-    .form-group { display: flex; flex-direction: column; gap: 4px; }
-    .form-group.full-width { grid-column: 1 / -1; }
-    .form-group label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
-    .form-group input, .form-group select, .form-group textarea {
-      background: #060812;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 6px;
-      padding: 9px 11px;
-      color: #fff;
-      font-size: 13px;
-      outline: none;
-    }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-      border-color: var(--teal);
-    }
+    .section-booking-cta h2 { font-size: 21px; color: #fff; margin-bottom: 6px; }
+    .section-booking-cta p { color: var(--muted); font-size: 13px; max-width: 580px; margin: 0 auto 16px; }
+    .cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
     /* Contact */
     .section-contact {
@@ -342,7 +322,7 @@
       <h1>Live-Hosted Games. <span class="teal">Zero Setup.</span> <span class="pink">Big Vibe.</span></h1>
       <p class="tagline">Turnkey virtual game nights for private parties, corporate teams &amp; permitted non-profits.</p>
       <p class="hero-desc">
-        We provide the private PIN-protected digital arena, live 3D ball shaker, 2 auto-dab cards per player, and a Live Host—so you and your guests just show up and play.
+        We provide the private PIN-protected digital arena, live 3D ball shaker, 2 standard auto-dab cards per player, and a Live Host—so you and your guests just show up and play.
       </p>
 
       <div class="features-strip">
@@ -405,7 +385,7 @@
       <div class="boundary-notice">
         <strong style="color: var(--teal); font-size: 13px;">⚖️ Entertainment Vendor &amp; Event Policy:</strong>
         <p style="margin-top: 4px; color: #cbd5e1;">
-          <strong>LiveVibe Bingo operates strictly as a private virtual entertainment and software hosting vendor.</strong> Guests never pay to play, and we do not provide prizes or icebreakers. Clients select one game mode per booking (Classic 75-Ball, Trivia Bingo, or Movie &amp; TV Emoji). For non-profit fundraisers, the host organization must hold any required state or county charitable gaming permit and retains all ticket proceeds.
+          <strong>LiveVibe Bingo operates strictly as a private virtual entertainment and software hosting vendor.</strong> Guests never pay to play, and we do not offer prizes or icebreakers. Clients select one game mode per booking (Classic 75-Ball, Trivia Bingo, or Movie &amp; TV Emoji). For non-profit fundraisers, the host organization must hold any required state or county charitable gaming permit and retains all ticket proceeds.
         </p>
       </div>
 
@@ -469,7 +449,7 @@
         </div>
         <div class="type-pill">
           <h4>💼 Corporate Team Building</h4>
-          <p>Host a fun, structured remote team session with custom company shoutouts and 2 cards per guest.</p>
+          <p>Host a fun, structured remote team session with custom company shoutouts and 2 standard cards per guest.</p>
         </div>
         <div class="type-pill">
           <h4>👨‍👩‍👧‍👦 Family Reunions</h4>
@@ -490,63 +470,14 @@
       </div>
     </section>
 
-    <!-- Private Bookings & Service Inquiry Form -->
-    <section class="section-form" id="booking">
+    <!-- Direct Booking Callout -->
+    <section class="section-booking-cta" id="booking">
       <h2>Reserve Your Event Date</h2>
-      <p>Submit your preferred date and time block—we will confirm room availability and send your invoice within 24 hours.</p>
-
-      <form action="https://formsubmit.co/cmchub@icloud.com" method="POST">
-        <input type="hidden" name="_subject" value="New LiveVibe Bingo Event Booking Request!">
-        <input type="hidden" name="_template" value="table">
-        <input type="hidden" name="_next" value="https://livevibebingo.com/#booking">
-
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Organizer Name / Company</label>
-            <input type="text" name="Organizer Name" required placeholder="e.g. Jessica Miller / Acme Corp">
-          </div>
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" name="email" required placeholder="jessica@example.com">
-          </div>
-          <div class="form-group">
-            <label>Phone Number</label>
-            <input type="tel" name="Phone" required placeholder="571-435-4865">
-          </div>
-          <div class="form-group">
-            <label>Select Package</label>
-            <select name="Package Selected">
-              <option value="Virtual Private Party (75 Min - $225)">Virtual Private Party (75 Min - $225)</option>
-              <option value="Corporate Team Building (90 Min - $375)">Corporate Team Building (90 Min - $375)</option>
-              <option value="Permitted Non-Profit / Club (90 Min - $250)">Permitted Non-Profit / Club (90 Min - $250)</option>
-              <option value="Custom Duration / Other">Custom Duration / Other</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Game Mode Choice (1 Per Session)</label>
-            <select name="Game Mode">
-              <option value="Classic 75-Ball">Classic 75-Ball</option>
-              <option value="Trivia Bingo">Trivia Bingo</option>
-              <option value="Movie & TV Emoji">Movie &amp; TV Emoji</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Target Date &amp; Time</label>
-            <input type="text" name="Target Date and Time" required placeholder="e.g. Next Saturday, 7:30 PM EST">
-          </div>
-          <div class="form-group">
-            <label>Estimated Headcount</label>
-            <input type="text" name="Estimated Attendees" placeholder="e.g. 25-40 guests (2 cards each)">
-          </div>
-          <div class="form-group full-width">
-            <label>Custom Banner Message &amp; Event Details</label>
-            <textarea name="Event Details" rows="2" placeholder="Share your custom banner text, theme, or event notes..."></textarea>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-teal" style="margin-top: 16px; padding: 11px 28px; font-size: 14px;">
-          Submit Booking Request
-        </button>
-      </form>
+      <p>Reach out by email or phone with your preferred date, time block, estimated headcount, and chosen game mode (Classic 75-Ball, Trivia Bingo, or Movie &amp; TV Emoji)—we confirm availability within 24 hours.</p>
+      <div class="cta-actions">
+        <a href="mailto:cmcbizhub@att.net?subject=LiveVibe%20Bingo%20Private%20Event%20Booking%20Request" class="btn btn-teal">Email to Book</a>
+        <a href="tel:5714354865" class="btn btn-pink">Call or Text 571-435-4865</a>
+      </div>
     </section>
 
     <!-- Contact Section -->
