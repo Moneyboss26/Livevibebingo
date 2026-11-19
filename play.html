@@ -721,11 +721,12 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, push, onValue, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCzcleQMnqsBadKqb8m7CXRo8ek4zpKYxE",
       authDomain: "livevibebingo.firebaseapp.com",
+      databaseURL: "https://livevibebingo-default-rtdb.firebaseio.com",
       projectId: "livevibebingo",
       storageBucket: "livevibebingo.firebasestorage.app",
       messagingSenderId: "924400116859",
@@ -742,9 +743,10 @@
     window.dbSet = set;
     window.dbPush = push;
     window.dbOnValue = onValue;
+    window.dbGet = get;
     window.authReady = false;
 
-    signInAnonymously(auth).catch((error) => {
+    window.authPromise = signInAnonymously(auth).catch((error) => {
       console.error("Player silent auth failed:", error);
     });
 
@@ -1315,12 +1317,30 @@
       }
     }
 
-    function joinLobby(e) {
+    async function joinLobby(e) {
       e.preventDefault();
       const enteredPin = document.getElementById("pPin").value.trim();
-      
-      if (window.latestCachedState) {
-        if (window.latestCachedState.roomPin) activeSessionPin = String(window.latestCachedState.roomPin).trim();
+
+      if (window.authPromise) {
+        await window.authPromise;
+      }
+
+      if (window.database && window.dbGet && window.dbRef) {
+        try {
+          const snap = await window.dbGet(window.dbRef(window.database, 'gameState'));
+          if (snap.exists()) {
+            const liveData = snap.val();
+            window.latestCachedState = liveData;
+            if (liveData.roomPin !== undefined) activeSessionPin = String(liveData.roomPin).trim();
+            if (liveData.hostName) currentHostName = liveData.hostName;
+            if (liveData.gameMode) gameMode = liveData.gameMode;
+            isLobbyLocked = liveData.lobbyLocked === true;
+          }
+        } catch (err) {
+          console.error("Error reading live PIN:", err);
+        }
+      } else if (window.latestCachedState) {
+        if (window.latestCachedState.roomPin !== undefined) activeSessionPin = String(window.latestCachedState.roomPin).trim();
         if (window.latestCachedState.hostName) currentHostName = window.latestCachedState.hostName;
         if (window.latestCachedState.gameMode) gameMode = window.latestCachedState.gameMode;
         isLobbyLocked = window.latestCachedState.lobbyLocked === true;

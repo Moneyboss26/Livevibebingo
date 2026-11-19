@@ -452,6 +452,7 @@
     const firebaseConfig = {
       apiKey: "AIzaSyCzcleQMnqsBadKqb8m7CXRo8ek4zpKYxE",
       authDomain: "livevibebingo.firebaseapp.com",
+      databaseURL: "https://livevibebingo-default-rtdb.firebaseio.com",
       projectId: "livevibebingo",
       storageBucket: "livevibebingo.firebasestorage.app",
       messagingSenderId: "924400116859",
@@ -479,7 +480,7 @@
       listenersAttached = true;
       window.authReady = true;
 
-      if (typeof window.sync === 'function' && document.getElementById("mainDashboard")?.style.display === "block") {
+      if (typeof window.sync === 'function') {
         window.sync();
       }
 
@@ -619,7 +620,7 @@
 
         <div class="top-input-box">
           <span style="font-size: 11px; color: var(--muted); font-weight: 700;">PIN:</span>
-          <input type="text" id="roomPinInput" value="7722" maxlength="4" style="width: 50px; text-align: center;" onchange="updateRoomPin()">
+          <input type="text" id="roomPinInput" value="7722" maxlength="4" style="width: 50px; text-align: center;" oninput="updateRoomPin()" onchange="updateRoomPin()">
         </div>
 
         <button class="btn btn-lock" id="toggleLockBtn" onclick="toggleDoorLock()">Lock Out Late Players</button>
