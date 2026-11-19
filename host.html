@@ -443,14 +443,13 @@
     }
   </style>
 
-  <!-- Firebase SDKs with Silent Anonymous Auth -->
+  <!-- Firebase SDKs (Database Only) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getDatabase, ref, set, onChildAdded, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, set, onChildAdded, onValue, remove, update, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
-      apiKey: "AIzaSyCzcLeQMnqsBadKqb8m7CXRo8ek4zpKYxE",
+      apiKey: "AIzaSyCzcLEQMnqsBadKqb8m7CXRo8ek4zpKYxE",
       authDomain: "livevibebingo.firebaseapp.com",
       databaseURL: "https://livevibebingo-default-rtdb.firebaseio.com",
       projectId: "livevibebingo",
@@ -461,84 +460,39 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
     const db = getDatabase(app);
 
     window.dbRef = ref;
     window.dbSet = set;
+    window.dbGet = get;
     window.database = db;
-    window.authReady = false;
+    window.authReady = true;
 
-    signInAnonymously(auth).catch((error) => {
-      console.error("Host silent auth failed:", error);
-    });
-
-    let listenersAttached = false;
-
-    onAuthStateChanged(auth, (user) => {
-      if (!user || listenersAttached) return;
-      listenersAttached = true;
-      window.authReady = true;
-
-      if (typeof window.sync === 'function') {
-        window.sync();
-      }
-
-      onValue(ref(db, 'players'), (snapshot) => {
-        const data = snapshot.val();
-        const countEl = document.getElementById("playerCountBadge");
-        const selectEl = document.getElementById("hostPlayerSelect");
-        
-        if (!data) {
-          if (countEl) countEl.innerText = `0 Players Checked In`;
-          if (selectEl) selectEl.innerHTML = `<option value="">-- Select Player --</option>`;
-          window.activePlayersMap = {};
-          return;
-        }
-
-        const entries = Object.entries(data);
-        if (countEl) countEl.innerText = `${entries.length} Players Checked In`;
+    onValue(ref(db, 'players'), (snapshot) => {
+      const data = snapshot.val();
+      const countEl = document.getElementById("playerCountBadge");
+      const selectEl = document.getElementById("hostPlayerSelect");
+      
+      if (!data) {
+        if (countEl) countEl.innerText = `0 Players Checked In`;
         if (selectEl) selectEl.innerHTML = `<option value="">-- Select Player --</option>`;
         window.activePlayersMap = {};
+        return;
+      }
 
-        entries.forEach(([key, p]) => {
-          window.activePlayersMap[key] = p;
-          const curCards = p.cardCount || 2;
-          if (selectEl) {
-            const opt = document.createElement("option");
-            opt.value = key;
-            opt.textContent = `${p.name} — ${curCards} Cards`;
-            selectEl.appendChild(opt);
-          }
-        });
-      });
+      const entries = Object.entries(data);
+      if (countEl) countEl.innerText = `${entries.length} Players Checked In`;
+      if (selectEl) selectEl.innerHTML = `<option value="">-- Select Player --</option>`;
+      window.activePlayersMap = {};
 
-      onChildAdded(ref(db, 'claims'), (snapshot) => {
-        const msg = snapshot.val();
-        if (msg) {
-          document.getElementById("claimsSection").style.display = "block";
-          const log = document.getElementById("claimsLog");
-          
-          playHostBingoAlert();
-
-          const item = document.createElement("div");
-          item.className = "claim-item";
-          item.id = snapshot.key;
-          
-          const claimId = 'claim_' + Math.random().toString(36).substring(2, 9);
-          window[claimId] = { playerName: msg.name, cards: msg.cardsSnapshot, serials: msg.cardSerials };
-
-          item.innerHTML = `
-            <div>
-              <strong style="color: #fff; font-size: 12px;">🚨 ${msg.name}</strong><br>
-              <span style="color: var(--yellow); font-size: 11px;">Card #${msg.cardNum} (${msg.serialNum || 'N/A'})</span>
-            </div>
-            <div style="display:flex; gap:6px; align-items:center;">
-              <button class="btn btn-teal" style="padding: 4px 8px; font-size: 11px;" onclick="inspectPlayerCardSide('${claimId}', ${msg.cardNum})">🔍 Inspect</button>
-              <button class="btn btn-danger" style="padding: 4px 6px; font-size: 11px;" onclick="clearSingleClaim('${snapshot.key}')">✕</button>
-            </div>
-          `;
-          log.prepend(item);
+      entries.forEach(([key, p]) => {
+        window.activePlayersMap[key] = p;
+        const curCards = p.cardCount || 2;
+        if (selectEl) {
+          const opt = document.createElement("option");
+          opt.value = key;
+          opt.textContent = `${p.name} — ${curCards} Cards`;
+          selectEl.appendChild(opt);
         }
       });
     });
@@ -570,6 +524,35 @@
       remove(ref(db, `players/${selKey}`));
       if (typeof window.sync === 'function') window.sync();
     };
+
+    onChildAdded(ref(db, 'claims'), (snapshot) => {
+      const msg = snapshot.val();
+      if (msg) {
+        document.getElementById("claimsSection").style.display = "block";
+        const log = document.getElementById("claimsLog");
+        
+        playHostBingoAlert();
+
+        const item = document.createElement("div");
+        item.className = "claim-item";
+        item.id = snapshot.key;
+        
+        const claimId = 'claim_' + Math.random().toString(36).substring(2, 9);
+        window[claimId] = { playerName: msg.name, cards: msg.cardsSnapshot, serials: msg.cardSerials };
+
+        item.innerHTML = `
+          <div>
+            <strong style="color: #fff; font-size: 12px;">🚨 ${msg.name}</strong><br>
+            <span style="color: var(--yellow); font-size: 11px;">Card #${msg.cardNum} (${msg.serialNum || 'N/A'})</span>
+          </div>
+          <div style="display:flex; gap:6px; align-items:center;">
+            <button class="btn btn-teal" style="padding: 4px 8px; font-size: 11px;" onclick="inspectPlayerCardSide('${claimId}', ${msg.cardNum})">🔍 Inspect</button>
+            <button class="btn btn-danger" style="padding: 4px 6px; font-size: 11px;" onclick="clearSingleClaim('${snapshot.key}')">✕</button>
+          </div>
+        `;
+        log.prepend(item);
+      }
+    });
 
     window.clearSingleClaim = function(claimKey) {
       remove(ref(db, `claims/${claimKey}`)).then(() => {
@@ -1710,7 +1693,7 @@
     }
 
     function sync(latest = null, activeClue = "", clueCountdown = 0) {
-      if (!window.database || !window.authReady) return;
+      if (!window.database) return;
       const bannerInput = document.getElementById("customBannerInput");
       const bannerText = bannerInput ? bannerInput.value.trim() : "";
 
