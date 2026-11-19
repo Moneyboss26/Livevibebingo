@@ -242,17 +242,6 @@
     .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
       border-color: var(--teal);
     }
-    .booking-feedback {
-      margin-top: 14px;
-      padding: 12px 14px;
-      border-radius: 8px;
-      background: rgba(0, 210, 190, 0.12);
-      border: 1px solid var(--teal);
-      color: #f0f4fc;
-      font-size: 12.5px;
-      text-align: left;
-      display: none;
-    }
 
     /* Contact */
     .section-contact {
@@ -353,7 +342,7 @@
       <h1>Live-Hosted Games. <span class="teal">Zero Setup.</span> <span class="pink">Big Vibe.</span></h1>
       <p class="tagline">Turnkey virtual game nights for private parties, corporate teams &amp; permitted non-profits.</p>
       <p class="hero-desc">
-        We provide the private PIN-protected digital arena, live 3D ball shaker, auto-dab cards, and a Live Host—so you and your guests just show up and play.
+        We provide the private PIN-protected digital arena, live 3D ball shaker, 2 auto-dab cards per player, and a Live Host—so you and your guests just show up and play.
       </p>
 
       <div class="features-strip">
@@ -506,23 +495,29 @@
       <h2>Reserve Your Event Date</h2>
       <p>Submit your preferred date and time block—we will confirm room availability and send your invoice within 24 hours.</p>
 
-      <form id="bookingForm" onsubmit="handleBookingSubmit(event)">
+      <form action="https://formsubmit.co/cmcbizhub@att.net" method="POST">
+        <!-- FormSubmit Settings -->
+        <input type="hidden" name="_subject" value="New LiveVibe Bingo Event Booking Request!">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" value="https://livevibebingo.com/#booking">
+
         <div class="form-grid">
           <div class="form-group">
             <label>Organizer Name / Company</label>
-            <input type="text" id="organizerName" name="Organizer Name" required placeholder="e.g. Jessica Miller / Acme Corp">
+            <input type="text" name="Organizer Name" required placeholder="e.g. Jessica Miller / Acme Corp">
           </div>
           <div class="form-group">
             <label>Email Address</label>
-            <input type="email" id="organizerEmail" name="Email" required placeholder="jessica@example.com">
+            <input type="email" name="email" required placeholder="jessica@example.com">
           </div>
           <div class="form-group">
             <label>Phone Number</label>
-            <input type="tel" id="organizerPhone" name="Phone" required placeholder="571-435-4865">
+            <input type="tel" name="Phone" required placeholder="571-435-4865">
           </div>
           <div class="form-group">
             <label>Select Package</label>
-            <select id="packageSelect" name="Package Selected">
+            <select name="Package Selected">
               <option value="Virtual Private Party (75 Min - $225)">Virtual Private Party (75 Min - $225)</option>
               <option value="Corporate Team Building (90 Min - $375)">Corporate Team Building (90 Min - $375)</option>
               <option value="Permitted Non-Profit / Club (90 Min - $250)">Permitted Non-Profit / Club (90 Min - $250)</option>
@@ -531,7 +526,7 @@
           </div>
           <div class="form-group">
             <label>Game Mode Choice (1 Per Session)</label>
-            <select id="gameModeSelect" name="Game Mode">
+            <select name="Game Mode">
               <option value="Classic 75-Ball">Classic 75-Ball</option>
               <option value="Trivia Bingo">Trivia Bingo</option>
               <option value="Movie & TV Emoji">Movie &amp; TV Emoji</option>
@@ -539,21 +534,20 @@
           </div>
           <div class="form-group">
             <label>Target Date &amp; Time</label>
-            <input type="text" id="targetDateTime" name="Target Date and Time" required placeholder="e.g. Next Saturday, 7:30 PM EST">
+            <input type="text" name="Target Date and Time" required placeholder="e.g. Next Saturday, 7:30 PM EST">
           </div>
           <div class="form-group">
             <label>Estimated Headcount</label>
-            <input type="text" id="estimatedAttendees" name="Estimated Attendees" placeholder="e.g. 25-40 guests (2 cards each)">
+            <input type="text" name="Estimated Attendees" placeholder="e.g. 25-40 guests (2 cards each)">
           </div>
           <div class="form-group full-width">
             <label>Custom Banner Message &amp; Event Details</label>
-            <textarea id="eventDetails" name="Event Details" rows="2" placeholder="Share your custom banner text, theme, or event notes..."></textarea>
+            <textarea name="Event Details" rows="2" placeholder="Share your custom banner text, theme, or event notes..."></textarea>
           </div>
         </div>
         <button type="submit" class="btn btn-teal" style="margin-top: 16px; padding: 11px 28px; font-size: 14px;">
           Submit Booking Request
         </button>
-        <div class="booking-feedback" id="bookingFeedback"></div>
       </form>
     </section>
 
@@ -623,49 +617,6 @@
   <script>
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-
-    function handleBookingSubmit(e) {
-      e.preventDefault();
-
-      const organizer = document.getElementById("organizerName").value.trim();
-      const email = document.getElementById("organizerEmail").value.trim();
-      const phone = document.getElementById("organizerPhone").value.trim();
-      const pkg = document.getElementById("packageSelect").value;
-      const mode = document.getElementById("gameModeSelect").value;
-      const dateTime = document.getElementById("targetDateTime").value.trim();
-      const headcount = document.getElementById("estimatedAttendees").value.trim() || "Not specified";
-      const details = document.getElementById("eventDetails").value.trim() || "None";
-
-      const summaryLines = [
-        "New LiveVibe Bingo Booking Request",
-        "----------------------------------",
-        `Organizer: ${organizer}`,
-        `Email: ${email}`,
-        `Phone: ${phone}`,
-        `Package: ${pkg}`,
-        `Game Mode: ${mode}`,
-        `Target Date & Time: ${dateTime}`,
-        `Estimated Headcount: ${headcount}`,
-        `Custom Banner / Notes: ${details}`
-      ];
-      const summaryText = summaryLines.join("\n");
-
-      const subject = encodeURIComponent(`LiveVibe Bingo Booking Request - ${organizer} (${dateTime})`);
-      const body = encodeURIComponent(summaryText);
-      const mailtoUrl = `mailto:cmcbizhub@att.net?subject=${subject}&body=${body}`;
-
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(summaryText).catch(() => {});
-      }
-
-      const feedback = document.getElementById("bookingFeedback");
-      feedback.style.display = "block";
-      feedback.innerHTML = `
-        <strong style="color: var(--teal);">✓ Request Prepared!</strong> Your email client is opening with your booking details, and a copy of your request has also been copied to your clipboard in case your browser blocks mail links. You can also send directly to <a href="${mailtoUrl}" style="color: var(--yellow); text-decoration: underline;">cmcbizhub@att.net</a> or call <a href="tel:5714354865" style="color: var(--yellow); text-decoration: underline;">571-435-4865</a>.
-      `;
-
-      window.location.href = mailtoUrl;
-    }
   </script>
 </body>
 </html>
