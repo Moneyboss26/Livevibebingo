@@ -717,9 +717,10 @@
     }
   </style>
 
-  <!-- Firebase SDKs & Realtime Listener -->
+  <!-- Firebase SDKs & Realtime Listener with Silent Anonymous Auth -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref, set, push, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const firebaseConfig = {
@@ -733,21 +734,36 @@
     };
 
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getDatabase(app);
+
     window.database = db;
     window.dbRef = ref;
     window.dbSet = set;
     window.dbPush = push;
     window.dbOnValue = onValue;
+    window.authReady = false;
 
-    onValue(ref(db, 'gameState'), (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        window.latestCachedState = data;
-        if (window.handleBroadcast) {
-          window.handleBroadcast(data);
+    signInAnonymously(auth).catch((error) => {
+      console.error("Player silent auth failed:", error);
+    });
+
+    let stateListenerAttached = false;
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user || stateListenerAttached) return;
+      stateListenerAttached = true;
+      window.authReady = true;
+
+      onValue(ref(db, 'gameState'), (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          window.latestCachedState = data;
+          if (window.handleBroadcast) {
+            window.handleBroadcast(data);
+          }
         }
-      }
+      });
     });
   </script>
 </head>
